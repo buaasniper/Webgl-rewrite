@@ -17,8 +17,8 @@ var __ActiveBuffer_frag = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
 
-var canvas = document.getElementById('my_Canvas');
-gl = canvas.getContext('experimental-webgl',{antialias: false}); 
+//var canvas = document.getElementById('my_Canvas');
+//gl = canvas.getContext('experimental-webgl',{antialias: false}); 
 //var canvas1 = getCanvas("MyCanvas1");
 //var canvas = document.getElementById('my_Canvas');
 //var gl = getGL(canvas1);
@@ -32,7 +32,7 @@ gl = canvas.getContext('experimental-webgl',{antialias: false});
 		 // 重新定义bufferData并且用全局变量记录bufferData
 		 // 这块需要确认是否是index
 		 // 如果是index的话还需要重新构造数据
-		 gl.my_glbufferData = gl.bufferData;
+		 my_glbufferData = gl.bufferData;
 		 gl.bufferData = function (a, b, c){
 			if (a == gl.ELEMENT_ARRAY_BUFFER){
 				__My_index = b;
@@ -40,7 +40,7 @@ gl = canvas.getContext('experimental-webgl',{antialias: false});
 			}
 			else{
 				__My_buffer = b;
-			gl.my_glbufferData(a, b, c);
+				my_glbufferData(a, b, c);
 			//console.log(b);
 			//console.log("__My_buffer",__My_buffer);
 			}
