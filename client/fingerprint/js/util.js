@@ -18,11 +18,11 @@ var __ActiveBuffer_frag = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
 
+my_glbufferData = gl.bufferData;
 
 rewrite = function (gl){
-  my_glbufferData = gl.bufferData;
-  gl.bufferData = function (a, b, c){
-   if (a == gl.ELEMENT_ARRAY_BUFFER){
+    gl.bufferData = function (a, b, c){
+    if (a == gl.ELEMENT_ARRAY_BUFFER){
      __My_index = b;
      __My_index_flag = 1;
    }
