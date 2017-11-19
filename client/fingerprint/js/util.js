@@ -18,7 +18,7 @@ var __ActiveBuffer_frag = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
 
-my_glbufferData = gl.bufferData;
+//my_glbufferData = gl.bufferData;
 
 rewrite = function (gl){
     gl.bufferData = function (a, b, c){
@@ -82,7 +82,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   return gl;
 }
 
