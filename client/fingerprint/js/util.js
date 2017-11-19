@@ -36,7 +36,8 @@ getCanvas = function(canvasName) {
 }
 
 rewrite = function(gl){
-  gl.my_glbufferData = gl.__propo__.bufferData;
+  //gl.my_glbufferData = gl.__propo__.bufferData;  (console TypeError: Cannot read property 'bufferData' of undefined)
+  gl.my_glbufferData = gl.bufferData;
   gl.bufferData = function (a, b, c){
    if (a == gl.ELEMENT_ARRAY_BUFFER){
      __My_index = b;
