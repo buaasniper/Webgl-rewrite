@@ -380,7 +380,7 @@ function matrix_mut (matrix){
  
 	if (__VertexSize == 3){
 		for (var i = 0; i < Point_Number; i+=3){
-		 __PointBuffer[i] = Math.floor((__PointBuffer[i] * matrix[0] 
+		 __PointBuffer[i] = -1 * Math.floor((__PointBuffer[i] * matrix[0] 
 			 + __PointBuffer[i+1] * matrix[4]
 			 + __PointBuffer[i+2] * matrix[8] 
 			 + matrix[12]) * 1000) / 1000 ;
