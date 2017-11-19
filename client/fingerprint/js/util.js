@@ -23,8 +23,8 @@ var Point_Number;
 tem_func = canvas.getContext;
 canvas.getContext = function(a, b, c, d, e){
   console.log("a", a ,"b", b ,"c", c ,"d", d ,"e", e);
-  this = canvas.getContext(a,b,c,d,e);
-  return (this);
+  var tem = canvas.getContext(a,b,c,d,e);
+  return (tem);
 }
 
 getCanvas = function(canvasName) {
