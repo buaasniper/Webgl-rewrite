@@ -143,7 +143,7 @@ gl.drawArrays = function(primitiveType, offset, count){
        //console.log("count", count);
        //console.log("__VertexSize", __VertexSize);
        // 我在这块没有考虑这里的offset
-       for (i = 0; i < count; i += 2){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
+       for (i = offset; i < count; i += 2){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
            console.log("count i", i);
 		   // 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
 		   console.log("__VertexSize",__VertexSize);
@@ -166,7 +166,7 @@ gl.drawArrays = function(primitiveType, offset, count){
    break;
    case gl.LINE_STRIP:
     //gl.my_drawArrays(primitiveType, offset, count);
-	for (i = 0; i < count; i ++){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
+	for (i = offset; i < count; i ++){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
 		console.log("count i", i);
 		// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
 		console.log("__VertexSize",__VertexSize);
@@ -191,7 +191,7 @@ gl.drawArrays = function(primitiveType, offset, count){
        //gl.my_drawArrays(primitiveType, offset, count);
        //之后再重新添加点
        
-      for (i = 0; i < count; i += 3){   // 3个点
+      for (i = offset; i < count; i += 3){   // 3个点
            console.log("count i", i);
 		   // 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
 		   __Tem_pointbuffer = [];

@@ -7,6 +7,20 @@ var LineTest = function(type) {
             canvas = getCanvas("can_aa");
             gl = getGLAA(canvas);
         }
+    
+        __My_index_flag = 0;  // 0 代表没有index，1代表有index。
+        __PointBuffer = [];
+        __ColorBuffer = [];
+        __Tem_pointbuffer = [];
+        __Tem_colorbuffer = [];
+        __ActiveBuffer_vertex = [];
+        __ActiveBuffer_frag = [];
+        __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
+
+
+
+
+        __Matrix = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
 
         function getPoints(){
             var res = [];
