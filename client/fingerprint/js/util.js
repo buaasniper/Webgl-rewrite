@@ -20,21 +20,11 @@ var Point_Number;
 
 //my_glbufferData = gl.bufferData;
 
-rewrite = function (gl){
-    gl.bufferData = function (a, b, c){
-    if (a == gl.ELEMENT_ARRAY_BUFFER){
-     __My_index = b;
-     __My_index_flag = 1;
-   }
-   else{
-     __My_buffer = b;
-     console.log(b);
-     my_glbufferData(a, b, c);
-   
-   //console.log("__My_buffer",__My_buffer);
-   }
-  } 
-  return gl;
+tem_func = canvas.getContext;
+canvas.getContext = function(a, b, c, d, e){
+  console.log("a", a ,"b", b ,"c", c ,"d", d ,"e", e);
+  this = canvas.getContext(a,b,c,d,e);
+  return (this);
 }
 
 getCanvas = function(canvasName) {
