@@ -36,7 +36,7 @@ getCanvas = function(canvasName) {
 }
 
 rewrite = function(gl){
-  gl.my_glbufferData = gl.bufferData;
+  gl.my_glbufferData = gl.__propo__.bufferData;
   gl.bufferData = function (a, b, c){
    if (a == gl.ELEMENT_ARRAY_BUFFER){
      __My_index = b;
@@ -71,6 +71,7 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
+  gl = rewrite(gl);
   return gl;
 }
 
@@ -124,7 +125,8 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl);
+  gl = rewrite(gl);
+  
   return gl;
 }
 
