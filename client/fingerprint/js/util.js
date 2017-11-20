@@ -17,8 +17,13 @@ var __ActiveBuffer_vertex = [];
 var __ActiveBuffer_frag = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
-var __Matrix;
+var __Matrix;  // projection
+var __Mworld_flag = 0;
+var __Mworld;  // world
+var __Mview_flag = 0;
+var __Mview;
 var __Program;
+
 
 //my_glbufferData = gl.bufferData;
 /*
@@ -44,11 +49,15 @@ rewrite = function(gl){
    if (a == gl.ELEMENT_ARRAY_BUFFER){
      __My_index = b;
      __My_index_flag = 1;
+     console.log("__My_index",b);
+     console.log("__My_index_flag", __My_index_flag);
+     
+
    }
    else{
      __My_buffer = b;
      this.my_glbufferData(a, b, c);
-   console.log(b);
+      console.log("__My_buffer",b);
    //console.log("__My_buffer",__My_buffer);
    }
   } 
@@ -72,31 +81,38 @@ rewrite = function(gl){
     __VertexStride = stride;
     __VertexOffset = offset;
     this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);	
-
+    stride = stride / 4;  // 这个是因为传入的数据内容大小，转换成数据个数
+    offset = offset / 4;
+    //console.log("stride", stride, "offset",offset);
     //这块进行构造数据
     //未经过测试                 用松神的算法进行测试！！！！！！！正方体的那个进行测试
     if (__My_index_flag == 1){
       var __Tem_my_buffer = [];
       for (var i = 0; i < __My_index.length; i++){
         for (var j = __My_index[i] * stride; j < (__My_index[i] + 1) * stride; j++)
-          __Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer);
+          __Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer[j]);
       }
       __My_buffer = __Tem_my_buffer;
+      //console.log("__My_buffer",__My_buffer);
+      __My_index_flag = 0;
     }
 
-    else {
+    //else {
         if (__VertexOffset == 0)
       {
         // __ActiveBuffer_vertex最后存储所有有效的数据。stride参数还没有加入，之后加。
         //console.log("__My_buffer", __My_buffer);
-        stride = stride / 4;  // 这个是因为传入的数据内容大小，转换成数据个数
-        offset = offset / 4;
+        
         if (stride == 0)
           stride = size;
         
         for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
           for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
             __ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
+        for (var i =0; i < __ActiveBuffer_vertex.length; i++)
+            __ActiveBuffer_vertex[i] = Math.floor((2 - (__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+        console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+            
         //console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
         /*
         //console.log("stride", stride);
@@ -110,19 +126,20 @@ rewrite = function(gl){
       }
       else{
         __ColorFlag = 1;
-        stride = stride / 4;
-        offset = offset / 4;
+        //stride = stride / 4;
+        //offset = offset / 4;
         if (stride == 0)
           stride = size;
         for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
           for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
             __ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
-        //console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
+        for (var i =0; i < __ActiveBuffer_frag.length; i++)
+          __ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);
+        console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
       }
-    }
-    for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-      __ActiveBuffer_vertex[i] = Math.floor((2 - (__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-    console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+    //}
+    
+    //console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
 
   }
 
@@ -140,8 +157,24 @@ rewrite = function(gl){
 
 
   /*-----------------------------------------------------*/
+  gl.my_drawElements = gl.__proto__.drawElements;
+  gl.drawElements = function (a , b, c, d){
+    // 这里暂时默认是三角形
+    //console.log("in there");
+    gl.drawArrays(a , 0, b * 3);
+  }
+
+
+
+
+
+
+
+  /*-----------------------------------------------------*/
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(primitiveType, offset, count){
+    //console.log("in array");
+    //console.log("primitiveType",primitiveType,"offset",offset,"count",count);
      switch (primitiveType){
      case gl.POINTS:
          this.my_drawArrays(primitiveType,  offset, count);
@@ -196,17 +229,17 @@ rewrite = function(gl){
        
      break;
      case gl.TRIANGLES:
-         console.log("TRIANGLES");
+         //console.log("TRIANGLES");
          //先把三角形给完整的画出来
          //gl.my_drawArrays(primitiveType, offset, count);
          //之后再重新添加点
          
         for (i = offset; i < offset + count; i += 3){   // 3个点
-             console.log("count i", i);
+             //console.log("count i", i);
          // 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
          __Tem_pointbuffer = [];
          __Tem_colorbuffer = [];
-         console.log("__VertexSize", __VertexSize);
+         //console.log("__VertexSize", __VertexSize);
              switch (__VertexSize){
          case 1:
           //这个是废状态，暂时不用管
@@ -237,9 +270,11 @@ rewrite = function(gl){
           
              break;
              case 3:
+            console.log("here");
            tem_line_3(i,2);
-           //console.log("__Tem_pointbuffer",__Tem_pointbuffer);
-           //console.log("__Tem_colorbuffer",__Tem_colorbuffer);
+           console.log("__Tem_pointbuffer",__Tem_pointbuffer);
+           console.log("__Tem_colorbuffer",__Tem_colorbuffer);
+
            for (j = 0; j < __Tem_pointbuffer.length/3; j ++)
                if (__ColorFlag == 0)
               tri_line_3(__ActiveBuffer_vertex[i * __VertexSize] , 
@@ -283,7 +318,12 @@ rewrite = function(gl){
      // 在这里进行人工projection
      //console.log("matrix",matrix)
      
-     matrix_mut(__Matrix);
+
+    if (__Mworld_flag)
+        matrix_mut(__Mworld);
+    if (__Mview_flag)
+        matrix_mut(__Mview);
+    matrix_mut(__Matrix);
   
   
      // 重新开始传入buffer
@@ -726,8 +766,8 @@ function matrix_mut (matrix){
 			var flag; // 1: 以x为基准， 2： 以y为基准, 3: 以z为基准
 			Math.abs(x1 - x2) > Math.abs(y1 - y2) ? (Math.abs(x1 - x2) > Math.abs(z1 - z2) ?  flag = 1: flag = 3):(Math.abs(y1 - y2) > Math.abs(z1 - z2) ?  flag = 2: flag = 3);
 			
-			//console.log("x1", x1, "y1", y1, "z1", z1,"x2", x2,"y2", y2,"z2", z2,
-			//"r1", r1,"g1", g1,"b1", b1,"r2", r2,"g2", g2,"b2", b2,"flag", flag);
+			console.log("x1", x1, "y1", y1, "z1", z1,"x2", x2,"y2", y2,"z2", z2,
+			"r1", r1,"g1", g1,"b1", b1,"r2", r2,"g2", g2,"b2", b2,"flag", flag);
 			if (__ColorFlag == 0)
 				__PointBuffer = addPoint_3 (x1, y1, z1, x2, y2, z2, __PointBuffer, flag );
 			else

@@ -1,3 +1,4 @@
+/*
 var vertexShaderText = [
   'precision mediump float;', '', 'attribute vec3 vertPosition;',
   'attribute vec3 vertColor;', 'varying vec3 fragColor;',
@@ -11,6 +12,26 @@ var fragmentShaderText = [
   '  gl_FragColor = vec4(fragColor, 1.0);', '}'
 ].join('\n');
 
+*/
+
+var vertCode =
+'attribute vec3 vertPosition;' +
+'attribute vec3 vertColor;'+
+'varying vec3 fragColor;'+
+
+'void main(void) {' +
+'gl_Position =  vec4(vertPosition, 1.0);'+
+'fragColor = vertColor;' +
+   'gl_PointSize = 1.0;'+
+'}';
+
+var fragCode =
+'precision mediump float;' +
+'varying vec3 fragColor;' +
+'void main(void) {' +
+   ' gl_FragColor = vec4(fragColor/255.0, 1.0);' +
+'}';
+
 var CubeTest = function(type) {
 	var ID = sender.getID();
   this.begin = function(canvas, cb, level) {
@@ -20,6 +41,17 @@ var CubeTest = function(type) {
         canvas = getCanvas("can_aa");
         gl = getGLAA(canvas);
     }
+
+    __My_index_flag = 0;  
+    __PointBuffer = [];
+    __ColorBuffer = [];
+    __Tem_pointbuffer = [];
+    __Tem_colorbuffer = [];
+    __ActiveBuffer_vertex = [];
+    __ActiveBuffer_frag = [];
+    __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
+    __Mworld_flag = 1;
+    __Mview_flag = 1;
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -304,6 +336,11 @@ var CubeTest = function(type) {
       mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
       mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      __Mworld = worldMatrix;
+      __Mview = viewMatrix;
+      __Matrix = projMatrix;
+
+
 
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
