@@ -23,6 +23,8 @@ var __Mworld;  // world
 var __Mview_flag = 0;
 var __Mview;
 var __Program;
+var __x_add; // x,y值的补偿值
+var __y_add;
 
 
 //my_glbufferData = gl.bufferData;
@@ -42,7 +44,62 @@ getCanvas = function(canvasName) {
   return canvas = $('#' + canvasName)[0];
 }
 
+error_comp = function(gl){
+	var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+	var flag = 0;
+	for (var x_r = -1.0; x_r <= 1.0;x_r += 0.1){
+		for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){
+			var x = x_r;
+			var y = y_r;
+			//这块的尺寸我不太清楚处理
+			x = x / 256;
+			y = y / 256;
+			x *= 2;
+			y *= 2;
+			x --;
+			y --;
+			//x *= -1;
+			y *= -1;
+			console.log("x", x, "y", y);
+			var vertices = [x, y , 0.0, 0.5, 0.5, 0.5];
+			/*
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+			gl.useProgram(shaderProgram);
+			gl.drawArrays(gl.POINTS, 0,1);
+			*/
+			// 这块是有bug的，只考虑了第二种情况
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 3,__VertexType, __VertexNomalize, 6 * Float32Array.BYTES_PER_ELEMENT , 0);	
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, 6 * Float32Array.BYTES_PER_ELEMENT , 3 * Float32Array.BYTES_PER_ELEMENT);		
+			gl.useProgram(__Program);
+			this.my_drawArrays(gl.POINTS, 0, 1);
+
+
+			gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			for (var i = 0; i < pixels.length; i++)
+				if ((pixels[i] > 0) && (pixels[i] < 255)){
+					flag = 1;
+					console.log("xxxxxxxxxxx", x, "yyyyyyyyyyyyyyy", y);
+				}
+			if (flag == 1)
+				break;
+		}
+		if (flag == 1)
+				break;
+	}
+}
+
 rewrite = function(gl){
+
+  
+
+
+
+
+
   //gl.my_glbufferData = gl.__propo__.bufferData;  (console TypeError: Cannot read property 'bufferData' of undefined)
   gl.my_glbufferData = gl.__proto__.bufferData;
   gl.bufferData = function (a, b, c){
@@ -318,6 +375,57 @@ rewrite = function(gl){
      // 在这里进行人工projection
      //console.log("matrix",matrix)
      
+	// 在这里计算误差补偿
+	//error_comp(gl);
+	var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+	var flag = 0;
+	for (var x_r = -1.0; x_r <= 1.0;x_r += 0.1){
+		for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){
+			var x = x_r;
+			var y = y_r;
+			//这块的尺寸我不太清楚处理
+			x = x / 256;
+			y = y / 256;
+			x *= 2;
+			y *= 2;
+			x --;
+			y --;
+			//x *= -1;
+			y *= -1;
+			//console.log("x", x, "y", y);
+			var vertices = [x, y , 0.0];
+			/*
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+			gl.useProgram(shaderProgram);
+			gl.drawArrays(gl.POINTS, 0,1);
+			*/
+			// 这块是有bug的，只考虑了第二种情况
+			var new_vertex_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 3,__VertexType, __VertexNomalize, 3 * Float32Array.BYTES_PER_ELEMENT , 0);	
+			//gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, 6 * Float32Array.BYTES_PER_ELEMENT , 3 * Float32Array.BYTES_PER_ELEMENT);		
+			gl.useProgram(__Program);
+			this.my_drawArrays(gl.POINTS, 0, 1);
+
+
+			gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			for (var i = 0; i < pixels.length; i++)
+				if ((pixels[i] > 0) && (pixels[i] < 255)){
+					flag = 1;
+					__x_add = Math.round(x * 20)/ 20;
+					__y_add = Math.round(y * 20)/ 20;
+					console.log("xxxxxxxxxxx", __x_add, "yyyyyyyyyyyyyyy", __y_add);
+				}
+			if (flag == 1)
+				break;
+		}
+		if (flag == 1)
+				break;
+	}
+
 
     if (__Mworld_flag)
         matrix_mut(__Mworld);
@@ -325,7 +433,11 @@ rewrite = function(gl){
         matrix_mut(__Mview);
     matrix_mut(__Matrix);
   
-  
+
+
+
+
+
      // 重新开始传入buffer
      if (__ColorFlag == 0){
       var new_vertex_buffer = gl.createBuffer();

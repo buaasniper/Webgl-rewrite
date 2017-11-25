@@ -78,7 +78,7 @@ var LineTest = function(type) {
 
                 // Fragment shader source code
                 var fragCode = 'void main(void) {' +
-                    'gl_FragColor = vec4(1, 1, 1, 1.0);' +
+                    'gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);' +
                         '}';
                     // Create fragment shader object
                     var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
