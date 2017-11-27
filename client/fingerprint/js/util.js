@@ -44,6 +44,8 @@ getCanvas = function(canvasName) {
   return canvas = $('#' + canvasName)[0];
 }
 
+
+/*
 error_comp = function(gl){
 	var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 	var flag = 0;
@@ -68,7 +70,7 @@ error_comp = function(gl){
 			gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
 			gl.useProgram(shaderProgram);
 			gl.drawArrays(gl.POINTS, 0,1);
-			*/
+			
 			// 这块是有bug的，只考虑了第二种情况
 			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -91,15 +93,11 @@ error_comp = function(gl){
 				break;
 	}
 }
+*/
+
+
 
 rewrite = function(gl){
-
-  
-
-
-
-
-
   //gl.my_glbufferData = gl.__propo__.bufferData;  (console TypeError: Cannot read property 'bufferData' of undefined)
   gl.my_glbufferData = gl.__proto__.bufferData;
   gl.bufferData = function (a, b, c){
@@ -169,7 +167,11 @@ rewrite = function(gl){
         for (var i =0; i < __ActiveBuffer_vertex.length; i++)
             __ActiveBuffer_vertex[i] = Math.floor((2 - (__ActiveBuffer_vertex[i] + 1)) * 256 /2);
         console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
-            
+		
+		// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
+
+
+
         //console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
         /*
         //console.log("stride", stride);
@@ -230,6 +232,7 @@ rewrite = function(gl){
   /*-----------------------------------------------------*/
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(primitiveType, offset, count){
+	__PointBuffer = [];
     //console.log("in array");
     //console.log("primitiveType",primitiveType,"offset",offset,"count",count);
      switch (primitiveType){
@@ -370,7 +373,8 @@ rewrite = function(gl){
      
      // 数据传递到__PointBuffer, 开始在这里进行画图
      Point_Number = __PointBuffer.length;
-     console.log("Point_Number", Point_Number);
+	 console.log("Point_Number", Point_Number);
+	 console.log("__PointBuffer",__PointBuffer);
   
      // 在这里进行人工projection
      //console.log("matrix",matrix)
@@ -380,7 +384,7 @@ rewrite = function(gl){
 	var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 	var flag = 0;
 	for (var x_r = -1.0; x_r <= 1.0;x_r += 0.1){
-		for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){
+		for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){	
 			var x = x_r;
 			var y = y_r;
 			//这块的尺寸我不太清楚处理
@@ -419,10 +423,10 @@ rewrite = function(gl){
 					__y_add = Math.round(y * 20)/ 20;
 					console.log("xxxxxxxxxxx", __x_add, "yyyyyyyyyyyyyyy", __y_add);
 				}
+				if (flag == 1)
+					break;
+			}
 			if (flag == 1)
-				break;
-		}
-		if (flag == 1)
 				break;
 	}
 
@@ -525,21 +529,21 @@ var my_m4 = {
 function matrix_mut (matrix){
 	if (__VertexSize == 2){
 		for (var i = 0; i < Point_Number; i+=2){
-			__PointBuffer[i] = Math.floor((__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) * 1000) / 1000 ;
-			__PointBuffer[i + 1] = Math.floor((__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) * 1000) / 1000 ;
+			__PointBuffer[i] = (__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) ;
+			__PointBuffer[i + 1] = (__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) ;
 		}
 	}
  
 	if (__VertexSize == 3){
 		for (var i = 0; i < Point_Number; i+=3){
-		 __PointBuffer[i] = -1 * Math.floor((__PointBuffer[i] * matrix[0] 
+		 __PointBuffer[i] =  (__PointBuffer[i] * matrix[0] 
 			 + __PointBuffer[i+1] * matrix[4]
 			 + __PointBuffer[i+2] * matrix[8] 
-			 + matrix[12]) * 1000) / 1000 ;
-		 __PointBuffer[i + 1] = Math.floor((__PointBuffer[i] * matrix[1] 
+			 + matrix[12]) ;
+		 __PointBuffer[i + 1] = -1 * (__PointBuffer[i] * matrix[1] 
 			 + __PointBuffer[i+1] * matrix[5]
 			 + __PointBuffer[i+2] * matrix[9] 
-			 + matrix[13]) * 1000) / 1000 ;	
+			 + matrix[13]) ;	
 		 __PointBuffer[i + 2] = Math.floor((__PointBuffer[i] * matrix[2] 
 			 + __PointBuffer[i+1] * matrix[6]
 			 + __PointBuffer[i+2] * matrix[10] 
@@ -929,8 +933,8 @@ function matrix_mut (matrix){
 					}
 				}			
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(i + 0.5);
-					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)) + 0.5 );
+					__PointBuffer = __PointBuffer.concat(i);
+					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)));
 					if (__ColorFlag == 1){
 						__ColorBuffer = __ColorBuffer.concat(Math.floor(r1 + (r2 - r1) / (x2 - x1 ) * (i- x1)));
 						__ColorBuffer = __ColorBuffer.concat(Math.floor(g1 + (g2 - g1) / (x2 - x1 ) * (i- x1)));
@@ -973,8 +977,8 @@ function matrix_mut (matrix){
 				for (var i = y1; i <= y2; i++){
 					//console.log("x2 - x1", x2 - x1);
 					//console.log("y2 - y1 + 1",y2 - y1 + 1);
-					__PointBuffer = __PointBuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1))+ 0.5 );
-					__PointBuffer = __PointBuffer.concat(i + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1)));
+					__PointBuffer = __PointBuffer.concat(i);
 					if (__ColorFlag == 1){
 						__ColorBuffer = __ColorBuffer.concat(Math.floor(r1 + (r2 - r1) / (y2 - y1 ) * (i- y1)));
 						__ColorBuffer = __ColorBuffer.concat(Math.floor(g1 + (g2 - g1) / (y2 - y1 ) * (i- y1)));
@@ -1015,8 +1019,8 @@ function matrix_mut (matrix){
 					}
 				}			
 				for (var i = x1; i <= x2; i++){
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)) + 0.5 );
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(i);
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)) );
 					if (__ColorFlag == 1){
 						console.log("in the loop");
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(r1 + (r2 - r1) / (x2 - x1 ) * (i- x1)));
@@ -1059,8 +1063,8 @@ function matrix_mut (matrix){
 				for (var i = y1; i <= y2; i++){
 					//console.log("x2 - x1", x2 - x1);
 					//console.log("y2 - y1 + 1",y2 - y1 + 1);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1))+ 0.5 );
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1)));
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(i );
 					if (__ColorFlag == 1){
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(r1 + (r2 - r1) / (y2 - y1 ) * (i- y1)));
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(g1 + (g2 - g1) / (y2 - y1 ) * (i- y1)));
@@ -1112,9 +1116,9 @@ function matrix_mut (matrix){
 					}
 				}
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(i + 0.5);
-					__PointBuffer = __PointBuffer.concat(Math.floor( y1 + (y2 - y1) / (x2 - x1 ) * (i - x1))+ 0.5 );
-					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1)) + 0.5) ;
+					__PointBuffer = __PointBuffer.concat(i );
+					__PointBuffer = __PointBuffer.concat(Math.floor( y1 + (y2 - y1) / (x2 - x1 ) * (i - x1)));
+					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1))) ;
 					//__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1))) ;
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
@@ -1151,9 +1155,9 @@ function matrix_mut (matrix){
 				//console.log("x1", x1, "y1", y1,"x2", x2,"y2", y2,"z1", z1,"z2", z2);
 				//console.log("flag",flag);
 				for (var i = y1; i <= y2; i++){
-					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1) * (i - y1))+ 0.5);
-					__PointBuffer = __PointBuffer.concat(i + 0.5);
-					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - y1)) + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1) * (i - y1)));
+					__PointBuffer = __PointBuffer.concat(i);
+					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - y1)));
 					//__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - x1)));
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
@@ -1188,9 +1192,9 @@ function matrix_mut (matrix){
 					}
 				}
 				for (var i = z1; i <= z2; i++){
-					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (z2 - z1 ) * (i - z1)) + 0.5);
-					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (z2 - z1 ) * (i - z1)) + 0.5);
-					__PointBuffer = __PointBuffer.concat(i + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (z2 - z1 ) * (i - z1)) );
+					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (z2 - z1 ) * (i - z1)) );
+					__PointBuffer = __PointBuffer.concat(i );
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
 						__ColorBuffer = __ColorBuffer.concat(Math.floor(r1 + (r2 - r1) / (z2 - z1 ) * (i - z1)));
@@ -1239,9 +1243,9 @@ function matrix_mut (matrix){
 					}
 				}
 				for (var i = x1; i <= x2; i++){
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor( y1 + (y2 - y1) / (x2 - x1 ) * (i - x1))+ 0.5 );
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1)) + 0.5) ;
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(i );
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor( y1 + (y2 - y1) / (x2 - x1 ) * (i - x1)) );
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1)) ) ;
 					//__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1))) ;
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
@@ -1280,9 +1284,9 @@ function matrix_mut (matrix){
 				//console.log("flag",flag);
 				
 				for (var i = y1; i <= y2; i++){
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1) * (i - y1))+ 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - y1)) + 0.5);
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1) * (i - y1)));
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(i);
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - y1)) );
 					//__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - x1)));
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
@@ -1328,9 +1332,9 @@ function matrix_mut (matrix){
 					}
 				}
 				for (var i = z1; i <= z2; i++){
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(x1 + (x2 - x1)/ (z2 - z1 ) * (i - z1)) + 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(y1 + (y2 - y1) / (z2 - z1 ) * (i - z1)) + 0.5);
-					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(x1 + (x2 - x1)/ (z2 - z1 ) * (i - z1)) );
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(y1 + (y2 - y1) / (z2 - z1 ) * (i - z1)) );
+					__Tem_pointbuffer = __Tem_pointbuffer.concat(i );
 					// 这个公式在之后还要进行变换
 					if (__ColorFlag == 1){
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(r1 + (r2 - r1) / (z2 - z1 ) * (i - z1)));
