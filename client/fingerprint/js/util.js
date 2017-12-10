@@ -30,6 +30,7 @@ var __Program;
 var __x_add; // x,y值的补偿值
 var __y_add;
 var __Error_flag;  // 判断是否进行了误差计算
+var Active_Number;
 
 
 getCanvas = function(canvasName) {
@@ -47,16 +48,19 @@ rewrite = function(gl){
 			__My_index = b;
 			__My_index_flag = 1;
 			this.my_glbufferData(a, b, c);
+			//console.log("__My_index", b);
 		}
 		else{
 			__My_buffer = b;
 			this.my_glbufferData(a, b, c);
+			//console.log("__My_buffer", b);
 		}
 	} 
 
 	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
 	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
 		// 在这里无法智能的判断位置和颜色
+		//console.log("进入");
 		if (offset == 0){
 			__VertexPositionAttributeLocation1 = positionAttributeLocation;
 			__VertexSize = size;
@@ -84,6 +88,7 @@ rewrite = function(gl){
 			}
 			__My_buffer = __Tem_my_buffer;
 			__My_index_flag = 0;
+			//console.log("重新赴值__My_buffer", __My_buffer);
 		}
 
 		// 这是一个合法的写法，stride等于0，即位没有总长就是数据的长度
@@ -116,18 +121,24 @@ rewrite = function(gl){
 			for (var i =0; i < __ActiveBuffer_frag.length; i++)
 				__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
 		}
+		//console.log("完成");
 	}
+	
+
 
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function(a){
 		__Program = a;
 		this.my_useProgram(a);
+		console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+		console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
 	}
 
 	gl.my_drawElements = gl.__proto__.drawElements;
 	gl.drawElements = function (a , b, c, d){
 	  // 这里暂时默认是三角形
-	  gl.drawArrays(a , 0, b * 3);
+	  gl.drawArrays(a , 0, b);
+	  //console.log("my_drawElements  b * 3", b * 3);
 	}
 
 
@@ -135,16 +146,50 @@ rewrite = function(gl){
 	gl.my_drawArrays = gl.__proto__.drawArrays;
 	gl.drawArrays = function(primitiveType, offset, count){
 		// 在这里转换值
-		var Active_Number = __ActiveBuffer_vertex.length;
+		//var tt = __ActiveBuffer_vertex;
+		//console.log("原来的", __ActiveBuffer_vertex);
+		
+		Active_Number = __ActiveBuffer_vertex.length;
+		console.log("Active_Number", Active_Number);
+		
+		var t1 = new Float32Array(16);
+		var t2 = new Float32Array(16);
+		mat4.identity(t1);
+		mat4.identity(t2);
+		mat4.mul(t1, __Matrix0, __Mview);
+		mat4.mul(t2, t1, __Mworld);
+		matrix_mut_active(t2);
+		console.log("乘完结果", __ActiveBuffer_vertex);
+	/*	
 		if (__Mworld_flag)
 			matrix_mut_active(__Mworld);
+		console.log("__Mworld",__Mworld);
+		console.log("world  __ActiveBuffer_vertex",__ActiveBuffer_vertex);
 		if (__Mview_flag)
 			matrix_mut_active(__Mview);
+		console.log("__Mview", __Mview);
+		console.log("view __ActiveBuffer_vertex",__ActiveBuffer_vertex);
 		if (__Mpro_flag)
 			matrix_mut_active(__Matrix0);
+		console.log("__Matrix0", __Matrix0);
+		console.log("pro  __ActiveBuffer_vertex",__ActiveBuffer_vertex);
+
+		
+		__ActiveBuffer_vertex = tt;
+		console.log("原来的", __ActiveBuffer_vertex);
+		
+		var t = my_m4.multiply(__Matrix0, __Mview);
+		t = my_m4.multiply(t, __Mworld);
+		matrix_mut_active(t);
+		console.log("ttttttttttttttttttttttttttttt", __ActiveBuffer_vertex);
+*/
+
+/*
 		for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 			__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-		 
+		console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+*/		 
+		
 		__PointBuffer = [];
 		__ColorBuffer = [];
 
@@ -154,6 +199,7 @@ rewrite = function(gl){
 				for (var i = offset; i < offset + count; i += 3){
 					switch (__VertexSize){
 						case 3:
+							console.log("开始画图");
 							tri_3(i);
 						break;
 					}
@@ -216,9 +262,8 @@ rewrite = function(gl){
 			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
 			console.log("=====================================");
 		}
-
-
 	}
+	return gl;
 }
 
 
@@ -263,7 +308,7 @@ function matrix_mut_active (matrix){
 			 + __ActiveBuffer_vertex[i+1] * matrix[4]
 			 + __ActiveBuffer_vertex[i+2] * matrix[8] 
 			 + matrix[12]) ;
-			 __ActiveBuffer_vertex[i + 1] = -1 * (__ActiveBuffer_vertex[i] * matrix[1] 
+			 __ActiveBuffer_vertex[i + 1] = (__ActiveBuffer_vertex[i] * matrix[1] 
 			 + __ActiveBuffer_vertex[i+1] * matrix[5]
 			 + __ActiveBuffer_vertex[i+2] * matrix[9] 
 			 + matrix[13]) ;	
@@ -303,6 +348,7 @@ function tri_3(i){
 	var x_max = max(x1, x2, x3);
 	var y_min = min(y1, y2, y3);
 	var y_max = max(y1, y2, y3);
+
 	for (var i = x_min; i <= x_max; i++){
 		for (var j = y_min; j <= y_max; j++){
 			if (judgment(i, j, x1, y1, x2, y2, x3, y3)){
@@ -375,7 +421,60 @@ var my_m4 = {
       0, 0, 2 / depth, 0,
       -1, 1, 0, 1,
       ];
-    }
+	},
+	
+	multiply: function(a, b) {
+		var a00 = a[0 * 4 + 0];
+		var a01 = a[0 * 4 + 1];
+		var a02 = a[0 * 4 + 2];
+		var a03 = a[0 * 4 + 3];
+		var a10 = a[1 * 4 + 0];
+		var a11 = a[1 * 4 + 1];
+		var a12 = a[1 * 4 + 2];
+		var a13 = a[1 * 4 + 3];
+		var a20 = a[2 * 4 + 0];
+		var a21 = a[2 * 4 + 1];
+		var a22 = a[2 * 4 + 2];
+		var a23 = a[2 * 4 + 3];
+		var a30 = a[3 * 4 + 0];
+		var a31 = a[3 * 4 + 1];
+		var a32 = a[3 * 4 + 2];
+		var a33 = a[3 * 4 + 3];
+		var b00 = b[0 * 4 + 0];
+		var b01 = b[0 * 4 + 1];
+		var b02 = b[0 * 4 + 2];
+		var b03 = b[0 * 4 + 3];
+		var b10 = b[1 * 4 + 0];
+		var b11 = b[1 * 4 + 1];
+		var b12 = b[1 * 4 + 2];
+		var b13 = b[1 * 4 + 3];
+		var b20 = b[2 * 4 + 0];
+		var b21 = b[2 * 4 + 1];
+		var b22 = b[2 * 4 + 2];
+		var b23 = b[2 * 4 + 3];
+		var b30 = b[3 * 4 + 0];
+		var b31 = b[3 * 4 + 1];
+		var b32 = b[3 * 4 + 2];
+		var b33 = b[3 * 4 + 3];
+		return [
+		  b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
+		  b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
+		  b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
+		  b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
+		  b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
+		  b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
+		  b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
+		  b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
+		  b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
+		  b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
+		  b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
+		  b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
+		  b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
+		  b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
+		  b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
+		  b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33,
+		];
+	  }
     };
   
   
@@ -412,7 +511,7 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   return gl;
 }
 
@@ -466,7 +565,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   
   return gl;
 }
@@ -508,3 +607,19 @@ var loadJSONResource = function(url, callback, caller) {
     }
   }, caller);
 };
+
+/*
+-2.4142   	0.0000   	0.0000   	0.0000   
+0.0000   	2.4142   	0.0000   	0.0000   
+0.0000   	0.0000   	1.0002   	1.0000   
+0.0000   	0.0000   	4.8010   	5.0000   
+
+-1.4041   	0.0000   	-0.8136   	-0.8134   
+-0.4618   	2.3464   	0.1368   	0.1368   
+-1.9084   	-0.5678   	0.5654   	0.5653   
+0.0000   	0.0000   	4.8010   	5.0000   
+
+
+
+
+*/

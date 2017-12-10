@@ -1,4 +1,4 @@
-/*
+
 var vertexShaderText = [
   'precision mediump float;', '', 'attribute vec3 vertPosition;',
   'attribute vec3 vertColor;', 'varying vec3 fragColor;',
@@ -12,8 +12,8 @@ var fragmentShaderText = [
   '  gl_FragColor = vec4(fragColor, 1.0);', '}'
 ].join('\n');
 
-*/
 
+/*
 var vertCode =
 'attribute vec3 vertPosition;' +
 'attribute vec3 vertColor;'+
@@ -30,7 +30,7 @@ var fragCode =
 'varying vec3 fragColor;' +
 'void main(void) {' +
    ' gl_FragColor = vec4(fragColor, 1.0);' +
-'}';
+'}';*/
 
 var CubeTest = function(type) {
 	var ID = sender.getID();
@@ -337,6 +337,9 @@ var CubeTest = function(type) {
       mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
       mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      console.log("worldMatrix", worldMatrix);
+      console.log("viewMatrix", viewMatrix);
+      console.log("projMatrix", projMatrix);
       __Mworld = worldMatrix;
       __Mview = viewMatrix;
       __Matrix0 = projMatrix;
