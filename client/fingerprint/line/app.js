@@ -16,6 +16,7 @@ var LineTest = function(type) {
         __ActiveBuffer_vertex = [];
         __ActiveBuffer_frag = [];
         __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
+        __Error_flag = 0;
 
 
 

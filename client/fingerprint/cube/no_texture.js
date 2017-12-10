@@ -29,7 +29,7 @@ var fragCode =
 'precision mediump float;' +
 'varying vec3 fragColor;' +
 'void main(void) {' +
-   ' gl_FragColor = vec4(fragColor/255.0, 1.0);' +
+   ' gl_FragColor = vec4(fragColor, 1.0);' +
 '}';
 
 var CubeTest = function(type) {
@@ -49,9 +49,10 @@ var CubeTest = function(type) {
     __Tem_colorbuffer = [];
     __ActiveBuffer_vertex = [];
     __ActiveBuffer_frag = [];
-    __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
+    __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
     __Mworld_flag = 1;
     __Mview_flag = 1;
+    __Mpro_flag = 1;
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -338,7 +339,8 @@ var CubeTest = function(type) {
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
       __Mworld = worldMatrix;
       __Mview = viewMatrix;
-      __Matrix = projMatrix;
+      __Matrix0 = projMatrix;
+      __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
 
 
 

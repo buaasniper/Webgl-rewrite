@@ -10,6 +10,7 @@ var __VertexNomalize;
 var __VertexStride;
 var __VertexOffset;
 var __PointBuffer = [];
+var __Test_pointBuffer = [];
 var __ColorBuffer = [];
 var __Tem_pointbuffer = [];
 var __Tem_colorbuffer = [];
@@ -17,6 +18,7 @@ var __ActiveBuffer_vertex = [];
 var __ActiveBuffer_frag = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
+var Test_Point_number;
 var __Matrix;  // projection
 var __Mworld_flag = 0;
 var __Mworld;  // world
@@ -25,6 +27,7 @@ var __Mview;
 var __Program;
 var __x_add; // x,y值的补偿值
 var __y_add;
+var __Error_flag;  // 判断是否进行了误差计算
 
 
 //my_glbufferData = gl.bufferData;
@@ -165,7 +168,7 @@ rewrite = function(gl){
           for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
             __ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
         for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-            __ActiveBuffer_vertex[i] = Math.floor((2 - (__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+            __ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
         console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
 		
 		// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
@@ -381,54 +384,49 @@ rewrite = function(gl){
      
 	// 在这里计算误差补偿
 	//error_comp(gl);
-	var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-	var flag = 0;
-	for (var x_r = -1.0; x_r <= 1.0;x_r += 0.1){
-		for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){	
-			var x = x_r;
-			var y = y_r;
-			//这块的尺寸我不太清楚处理
-			x = x / 256;
-			y = y / 256;
-			x *= 2;
-			y *= 2;
-			x --;
-			y --;
-			//x *= -1;
-			y *= -1;
-			//console.log("x", x, "y", y);
-			var vertices = [x, y , 0.0];
-			/*
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
-			gl.useProgram(shaderProgram);
-			gl.drawArrays(gl.POINTS, 0,1);
-			*/
-			// 这块是有bug的，只考虑了第二种情况
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 3,__VertexType, __VertexNomalize, 3 * Float32Array.BYTES_PER_ELEMENT , 0);	
-			//gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, 6 * Float32Array.BYTES_PER_ELEMENT , 3 * Float32Array.BYTES_PER_ELEMENT);		
-			gl.useProgram(__Program);
-			this.my_drawArrays(gl.POINTS, 0, 1);
-
-
-			gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-			for (var i = 0; i < pixels.length; i++)
-				if ((pixels[i] > 0) && (pixels[i] < 255)){
+	console.log("__Error_flag",__Error_flag);
+	if (__Error_flag == 0){
+		var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+		var flag = 0;
+		//var test_point_number = 3;
+		Test_Point_number = 3;
+		for (var x = -1.0; x <= 1.0; x += 1.0){
+			for (var y = -1.0; y <= 1.0; y += 1.0){
+				__Test_pointBuffer = [x,y,0];
+				test_matrix_mut(__Matrix);
+				var new_vertex_buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__Test_pointBuffer), gl.STATIC_DRAW);
+				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 3, gl.FLOAT, false, 0, 0);
+				//gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
+				//gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);
+				gl.useProgram(__Program);
+				gl.my_drawArrays(gl.POINTS, 0,1);
+				gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+				if (pixels[0] != 0){
+					__x_add = x;
+					__y_add = y;
+					console.log("补偿值计算");
+					console.log("x", x, "y",y);
 					flag = 1;
-					__x_add = Math.round(x * 20)/ 20;
-					__y_add = Math.round(y * 20)/ 20;
-					console.log("xxxxxxxxxxx", __x_add, "yyyyyyyyyyyyyyy", __y_add);
+					__Error_flag = 1;
 				}
 				if (flag == 1)
 					break;
 			}
 			if (flag == 1)
 				break;
+		}
+
 	}
+
+	// 修正值
+
+	for (var i = 0; i < Point_Number; i += __VertexSize){
+		__PointBuffer[i] += __x_add;
+		__PointBuffer[i+1] += __y_add;
+	}
+	console.log("修正后__PointBuffer",__PointBuffer);
 
 
     if (__Mworld_flag)
@@ -437,7 +435,7 @@ rewrite = function(gl){
         matrix_mut(__Mview);
     matrix_mut(__Matrix);
   
-
+	
 
 
 
@@ -451,7 +449,8 @@ rewrite = function(gl){
       gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);		
       gl.useProgram(__Program);
       gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-      this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+	  this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+	  console.log("=====================================");
   
      }
      else{
@@ -487,7 +486,8 @@ rewrite = function(gl){
       gl.useProgram(__Program);
       //gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
       //gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-      this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+	  this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+	  console.log("=====================================");
   
      }
      
@@ -551,6 +551,38 @@ function matrix_mut (matrix){
 		}
 	}
    }
+
+
+
+   function test_matrix_mut (matrix){
+	if (__VertexSize == 2){
+		for (var i = 0; i < Test_Point_number; i+=2){
+			__Test_pointBuffer[i] = (__Test_pointBuffer[i] * matrix[0] + __Test_pointBuffer[i+1] * matrix[3] + matrix[6]) ;
+			__Test_pointBuffer[i + 1] = (__Test_pointBuffer[i] * matrix[1] + __Test_pointBuffer[i+1] * matrix[4] + matrix[7]) ;
+		}
+	}
+ 
+	if (__VertexSize == 3){
+		for (var i = 0; i < Test_Point_number; i+=3){
+			__Test_pointBuffer[i] =  __Test_pointBuffer[i] * matrix[0] 
+			 + __Test_pointBuffer[i+1] * matrix[4]
+			 + __Test_pointBuffer[i+2] * matrix[8] 
+			 + matrix[12] ;
+			 __Test_pointBuffer[i + 1] = -1 * (__Test_pointBuffer[i] * matrix[1] 
+			 + __Test_pointBuffer[i+1] * matrix[5]
+			 + __Test_pointBuffer[i+2] * matrix[9] 
+			 + matrix[13]) ;	
+			 __Test_pointBuffer[i + 2] = __Test_pointBuffer[i] * matrix[2] 
+			 + __Test_pointBuffer[i+1] * matrix[6]
+			 + __Test_pointBuffer[i+2] * matrix[10] 
+				+ matrix[14];
+		}
+	}
+   }
+
+
+
+
 
 //var n = 3 * 8;
 //gl.drawArrays(gl.TRIANGLES, 0, n);	
