@@ -264,6 +264,8 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
+    /*
+    var boxIndices = [8, 9, 10];*/
 
     var boxVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
@@ -311,7 +313,10 @@ var CubeTest = function(type) {
     mat4.lookAt(viewMatrix, [ 0, 0, -5 ], [ 0, 0, 0 ], [ 0, 1, 0 ]);
     mat4.perspective(projMatrix, glMatrix.toRadian(45),
                      canvas.width / canvas.height, 0.1, 1000.0);
-
+    //mat4.transpose(viewMatrix, viewMatrix);
+    //mat4.transpose(projMatrix, projMatrix);
+    console.log("viewMatrix", viewMatrix);
+    console.log("projMatrix", projMatrix);
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
     gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -336,14 +341,20 @@ var CubeTest = function(type) {
       mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
       mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
       mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
-      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+      //mat4.transpose(worldMatrix, worldMatrix);
       console.log("worldMatrix", worldMatrix);
-      console.log("viewMatrix", viewMatrix);
-      console.log("projMatrix", projMatrix);
-      __Mworld = worldMatrix;
-      __Mview = viewMatrix;
-      __Matrix0 = projMatrix;
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+      
+
+      mat4.copy(__Mworld, worldMatrix);
+      mat4.copy(__Mview,viewMatrix);
+      mat4.copy(__Matrix0,projMatrix);
       __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
+      console.log("__Mworld", __Mworld);
+      console.log("__Mview", __Mview);
+      console.log("__Matrix0", __Matrix0);
 
 
 
@@ -359,3 +370,5 @@ var CubeTest = function(type) {
     requestAnimationFrame(loop);
   };
 };
+
+

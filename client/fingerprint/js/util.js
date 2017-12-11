@@ -16,16 +16,17 @@ var __Tem_pointbuffer = [];
 var __Tem_colorbuffer = [];
 var __ActiveBuffer_vertex = [];
 var __ActiveBuffer_frag = [];
+var __Tem_Buffer = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
 var Point_Number;
 var Test_Point_number;
 var __Mpro_flag = 0;
-var __Matrix0;  // projection
-var __Matrix1;
+var __Matrix0 = new Float32Array(16);  // projection
+var __Matrix1 = new Float32Array(16);
 var __Mworld_flag = 0;
-var __Mworld;  // world
+var __Mworld = new Float32Array(16);  // world
 var __Mview_flag = 0;
-var __Mview;
+var __Mview = new Float32Array(16);
 var __Program;
 var __x_add; // x,y值的补偿值
 var __y_add;
@@ -151,14 +152,23 @@ rewrite = function(gl){
 		
 		Active_Number = __ActiveBuffer_vertex.length;
 		console.log("Active_Number", Active_Number);
-		
+		mat4.transpose(__Mworld, __Mworld);
+		mat4.transpose(__Mview, __Mview);
+		mat4.transpose(__Matrix0, __Matrix0);
+		console.log("翻转完毕！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
+		console.log("__Mworld", __Mworld);
+		console.log("__Mview", __Mview);
+		console.log("__Matrix0", __Matrix0);
 		var t1 = new Float32Array(16);
 		var t2 = new Float32Array(16);
 		mat4.identity(t1);
 		mat4.identity(t2);
-		mat4.mul(t1, __Matrix0, __Mview);
+		mat4.mul(t1, __Matrix0);
 		mat4.mul(t2, t1, __Mworld);
+		console.log("t2", t2);
 		matrix_mut_active(t2);
+		console.log("长度", __Tem_Buffer.length);
+		console.log("结果", __Tem_Buffer);
 		console.log("乘完结果", __ActiveBuffer_vertex);
 	/*	
 		if (__Mworld_flag)
@@ -297,22 +307,22 @@ function matrix_mut (matrix){
 function matrix_mut_active (matrix){
 	if (__VertexSize == 2){
 		for (var i = 0; i < Active_Number; i+=2){
-			__ActiveBuffer_vertex[i] = (__ActiveBuffer_vertex[i] * matrix[0] + __ActiveBuffer_vertex[i+1] * matrix[3] + matrix[6]) ;
-			__ActiveBuffer_vertex[i + 1] = (__ActiveBuffer_vertex[i] * matrix[1] + __ActiveBuffer_vertex[i+1] * matrix[4] + matrix[7]) ;
+			__Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[0] + __ActiveBuffer_vertex[i+1] * matrix[3] + matrix[6]) ;
+			__Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[1] + __ActiveBuffer_vertex[i+1] * matrix[4] + matrix[7]) ;
 		}
 	}
  
 	if (__VertexSize == 3){
 		for (var i = 0; i < Active_Number; i+=3){
-			__ActiveBuffer_vertex[i] =  (__ActiveBuffer_vertex[i] * matrix[0] 
+			__Tem_Buffer =  __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[0] 
 			 + __ActiveBuffer_vertex[i+1] * matrix[4]
 			 + __ActiveBuffer_vertex[i+2] * matrix[8] 
 			 + matrix[12]) ;
-			 __ActiveBuffer_vertex[i + 1] = (__ActiveBuffer_vertex[i] * matrix[1] 
+			 __Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[1] 
 			 + __ActiveBuffer_vertex[i+1] * matrix[5]
 			 + __ActiveBuffer_vertex[i+2] * matrix[9] 
 			 + matrix[13]) ;	
-			 __ActiveBuffer_vertex[i + 2] = (__ActiveBuffer_vertex[i] * matrix[2] 
+			 __Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[2] 
 			 + __ActiveBuffer_vertex[i+1] * matrix[6]
 			 + __ActiveBuffer_vertex[i+2] * matrix[10] 
 				+ matrix[14]);
@@ -511,7 +521,7 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl);
+  gl = rewrite(gl);
   return gl;
 }
 
@@ -565,7 +575,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl);
+  gl = rewrite(gl);
   
   return gl;
 }
