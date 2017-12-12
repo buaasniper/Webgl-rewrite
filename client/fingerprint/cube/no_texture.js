@@ -1,10 +1,10 @@
-
+/*
 var vertexShaderText = [
   'precision mediump float;', '', 'attribute vec3 vertPosition;',
-  'attribute vec3 vertColor;', 'varying vec3 fragColor;',
-  'uniform mat4 mWorld;', 'uniform mat4 mView;', 'uniform mat4 mProj;', '',
+  'attribute vec3 vertColor;', 'varying vec3 fragColor;', '',
   'void main()', '{', '  fragColor = vertColor;',
-  '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);', '}'
+  '  gl_Position = vec4(vertPosition, 1.0);', 
+  'gl_PointSize = 1.0;', '}'
 ].join('\n');
 
 
@@ -12,9 +12,9 @@ var fragmentShaderText = [
   'precision mediump float;', '', 'varying vec3 fragColor;', 'void main()', '{',
   '  gl_FragColor = vec4(fragColor, 1.0);', '}'
 ].join('\n');
+*/
 
 
-/*
 var vertCode =
 'attribute vec3 vertPosition;' +
 'attribute vec3 vertColor;'+
@@ -30,8 +30,8 @@ var fragCode =
 'precision mediump float;' +
 'varying vec3 fragColor;' +
 'void main(void) {' +
-   ' gl_FragColor = vec4(fragColor, 1.0);' +
-'}';*/
+   ' gl_FragColor = vec4(fragColor , 1.0);' +
+'}';
 
 var CubeTest = function(type) {
 	var ID = sender.getID();
@@ -68,8 +68,8 @@ var CubeTest = function(type) {
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    gl.shaderSource(vertexShader, vertexShaderText);
-    gl.shaderSource(fragmentShader, fragmentShaderText);
+    gl.shaderSource(vertexShader, vertCode);
+    gl.shaderSource(fragmentShader, fragCode);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -181,7 +181,7 @@ var CubeTest = function(type) {
       1.0,-1.0,-1.0,     0.8,0.4,0.2,
     ];
 */
-/*
+
     var boxIndices = [
       // Top
       0, 1, 2, 0, 2, 3,
@@ -201,8 +201,8 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
-    */
-    var boxIndices = [8, 9, 10];
+    /*
+    var boxIndices = [8, 9, 10];*/
 
     var boxVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
@@ -239,9 +239,9 @@ var CubeTest = function(type) {
     // Tell OpenGL state machine which program should be active.
     gl.useProgram(program);
 
-    var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
-    var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
-    var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
+    //var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+    //var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+    //var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 
     var worldMatrix = new Float32Array(16);
     var viewMatrix = new Float32Array(16);
@@ -261,9 +261,9 @@ var CubeTest = function(type) {
     //console.log("worldMatrix", worldMatrix);
     //console.log("viewMatrix", viewMatrix);
     //console.log("projMatrix", projMatrix);
-    gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-    gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-    gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+    //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+    //gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+    //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
     var xRotationMatrix = new Float32Array(16);
     var yRotationMatrix = new Float32Array(16);
@@ -301,7 +301,7 @@ var CubeTest = function(type) {
       mat4.identity(worldMatrix);
       console.log("最终结果", worldMatrix);
       */
-      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
       __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
       //console.log("__Mworld", __Mworld);
       //console.log("__Mview", __Mview);

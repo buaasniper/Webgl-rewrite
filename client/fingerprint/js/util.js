@@ -151,8 +151,8 @@ rewrite = function(gl){
 		console.log("传入的转换矩阵", __Mworld);
 		__ActiveBuffer_vertex = my_m4.vec_max_mul(__ActiveBuffer_vertex, __Mworld);
 		console.log("处理后点的数据", __ActiveBuffer_vertex);
+		// 这一段就是测试用的
 		
-
 
 		for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 			__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
@@ -169,6 +169,7 @@ rewrite = function(gl){
 					switch (__VertexSize){
 						case 3:
 							console.log("开始画图");
+							//console.log("i的数值", i);
 							//console.log("__ColorFlag",__ColorFlag)
 							tri_3(i);
 						break;
@@ -179,20 +180,15 @@ rewrite = function(gl){
 
 		// 在这里重新将值转化回来
 		//matrix_mut(__Matrix1);
-		__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
+		//__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
 		for (var i = 0; i < __PointBuffer.length; i++){
-			__PointBuffer[i] = Math.floor(__PointBuffer[i] * 1000)/ 1000;
+			__PointBuffer[i] = __PointBuffer[i] / 128 - 1;
 		}
 			
-
-
-
-
-
 		// 数据传递到__PointBuffer, 开始在这里进行画图
 		Point_Number = __PointBuffer.length;
-		console.log("Point_Number", Point_Number);
-		console.log("转化完成的__PointBuffer",__PointBuffer);	
+		//console.log("Point_Number", Point_Number);
+		//console.log("转化完成的__PointBuffer",__PointBuffer);	
 		// 这个一会会进行修改
 		
 		if (__ColorFlag == 0){
@@ -226,11 +222,21 @@ rewrite = function(gl){
 			  }
 				
 			}
+		
+			
 			console.log("result_buffer",result_buffer);
+			
+			
 			var new_vertex_buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
 			console.log("__VertexSize",__VertexSize);
+
+			
+
+
+
+
 			//var new_frag_buffer = gl.createBuffer();
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
 			//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
@@ -242,6 +248,8 @@ rewrite = function(gl){
 			gl.my_useProgram(__Program);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
+
+
 			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
 			console.log("画点的数量", Point_Number/__VertexSize);
 			console.log("=====================================");
@@ -249,37 +257,6 @@ rewrite = function(gl){
 	}
 	return gl;
 }
-
-
-function matrix_mut (matrix){
-	if (__VertexSize == 2){
-		for (var i = 0; i < Point_Number; i+=2){
-			__PointBuffer[i] = (__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) ;
-			__PointBuffer[i + 1] = (__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) ;
-		}
-	}
- 
-	if (__VertexSize == 3){
-		for (var i = 0; i < Point_Number; i+=3){
-		 __PointBuffer[i] =  (__PointBuffer[i] * matrix[0] 
-			 + __PointBuffer[i+1] * matrix[4]
-			 + __PointBuffer[i+2] * matrix[8] 
-			 + matrix[12]) ;
-		 __PointBuffer[i + 1] = -1 * (__PointBuffer[i] * matrix[1] 
-			 + __PointBuffer[i+1] * matrix[5]
-			 + __PointBuffer[i+2] * matrix[9] 
-			 + matrix[13]) ;	
-		 __PointBuffer[i + 2] = (__PointBuffer[i] * matrix[2] 
-			 + __PointBuffer[i+1] * matrix[6]
-			 + __PointBuffer[i+2] * matrix[10] 
-				+ matrix[14]);
-		}
-	}
-}
-
-
-
-
 
 function tri_3(i){
 	var x1 = __ActiveBuffer_vertex[i * __VertexSize];
@@ -302,16 +279,33 @@ function tri_3(i){
 		var g3 = __ActiveBuffer_frag[i * 3 + 7];
 		var b3 = __ActiveBuffer_frag[i * 3 + 8];
 	}
+	console.log("三个点的坐标",x1, y1, x2, y2, x3, y3);
 	//这块假设把matrix已经弄完了
 	var x_min = min(x1, x2, x3);
 	var x_max = max(x1, x2, x3);
 	var y_min = min(y1, y2, y3);
 	var y_max = max(y1, y2, y3);
+	console.log("x的范围区间", x_min, x_max);
+	console.log("y的范围区间", y_min, y_max);
+	if (x1 == x_min) x1--;
+	if (x1 == x_max) x1++;
+	if (x2 == x_min) x2--;
+	if (x2 == x_max) x2++;
+	if (x3 == x_min) x3--;
+	if (x3 == x_max) x3++;
+	if (y1 == y_min) y1--;
+	if (y1 == y_max) y1++;
+	if (y2 == y_min) y2--;
+	if (y2 == y_max) y2++;
+	if (y3 == y_min) y3--;
+	if (y3 == y_max) y3++;
+		
 
 	for (var i = x_min; i <= x_max; i++){
 		for (var j = y_min; j <= y_max; j++){
 			if (judgment(i, j, x1, y1, x2, y2, x3, y3)){
 				//在这里面计算z值，然后输入进去
+				//console.log("符合输入的值", i , j);
 				var A = (y3 - y1)*(z3 - z1) - (z2 -z1)*(y3 - y1);
 				var B = (x3 - x1)*(z2 - z1) - (x2 - x1)*(z3 - z1);
 				var C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
@@ -322,13 +316,17 @@ function tri_3(i){
 				__PointBuffer = __PointBuffer.concat(k);
 				if (__ColorFlag == 1){
 					//console.log("进入颜色计算");
-					var dis_1 = Math.sqrt((x1 - i)*(x1 - i)+(y1 - j)*(y1 - j));
-					var dis_2 = Math.sqrt((x2 - i)*(x2 - i)+(y2 - j)*(y2 - j));
-					var dis_3 = Math.sqrt((x3 - i)*(x3 - i)+(y3 - j)*(y3 - j));
+					var dis_1 = Math.pow(0.9, Math.sqrt((x1 - i)*(x1 - i)+(y1 - j)*(y1 - j)));
+					var dis_2 = Math.pow(0.9, Math.sqrt((x2 - i)*(x2 - i)+(y2 - j)*(y2 - j)));
+					var dis_3 = Math.pow(0.9, Math.sqrt((x3 - i)*(x3 - i)+(y3 - j)*(y3 - j)));
+					var dis_mun = dis_1 + dis_2 + dis_3;
+					var wei_1 = dis_1 / dis_mun;
+					var wei_2 = dis_2 / dis_mun;
+					var wei_3 = dis_3 / dis_mun;
 					// 颜色这块的转换需要弄明白
-					var r = Math.floor((1 / Math.exp(dis_1)) * r1 + (1 / Math.exp(dis_2)) * r2 + (1 / Math.exp(dis_3)) * r3);
-					var g = Math.floor((1 / Math.exp(dis_1)) * g1 + (1 / Math.exp(dis_2)) * g2 + (1 / Math.exp(dis_3)) * g3);
-					var b = Math.floor((1 / Math.exp(dis_1)) * b1 + (1 / Math.exp(dis_2)) * b2 + (1 / Math.exp(dis_3)) * b3);
+					var r = Math.floor(wei_1 * r1 + wei_2 * r2 + wei_3 * r3);
+					var g = Math.floor(wei_1 * g1 + wei_2 * g2 + wei_3 * g3);
+					var b = Math.floor(wei_1 * b1 + wei_2 * b2 + wei_3 * b3);
 					__ColorBuffer = __ColorBuffer.concat(r);
 					__ColorBuffer = __ColorBuffer.concat(g);
 					__ColorBuffer =__ColorBuffer.concat(b);
@@ -345,30 +343,29 @@ function max(x,y,z){
 	return x;
 }
 
+
+
 function min(x,y,z){
 	x < y ? x = x : x = y;
 	x < z ? x = x : x = z;
 	return x;
 }
 
-function judgment(i, j, x1, y1, x2, y2, x3, y3){
-	// 在这里我们把新的点记为0
-	var t_10 = (j - y1) / (i - x1);
-	var t_12 = (y2 - y1) / (x2 - x1);
-	var t_13 = (y3 - y1) / (x3 - x1);
-	var t_20 = (j - y2) / (i - x2);
-	var t_21 = (y1 - y2) / (x1 - x2);
-	var t_23 = (y3 - y2) / (x3 - x2);
-	var t_30 = (j - y3) / (i - x3);
-	var t_31 = (y1 - y3) / (x1 - x3);
-	var t_32 = (y2 - y3) / (x2 - x3);
-	if ((t_10 - t_12) * (t_10 - t_13) > 0)
-		return false;
-	if ((t_20 - t_21) * (t_20 - t_23) > 0)
-		return false;
-	if ((t_10 - t_31) * (t_30 - t_32) > 0)
-		return false;
-	return true;
+function PinAB (  x0,  y0,  x1,  y1,  x2,  y2)
+{
+  var Kb, Kc;
+  Kb = x0*y1 - x1*y0;
+  Kc = x0*y2 - x2*y0;
+  if  ( ((0 > Kb) && (0 < Kc)) || ((0 < Kb) && (0 > Kc)) ) return 1;
+  return 0;
+}
+
+function judgment(x0, y0, x1, y1, x2, y2, x3, y3){
+	if ( PinAB ( x0 - x1, y0 -y1, x2 - x1, y2 - y1, x3 - x1, y3 - y1) &&
+	PinAB ( x0 - x2, y0 -y2, x3 - x2, y3 - y2, x1 - x2, y1 - y2) &&
+	PinAB ( x0 - x3, y0 -y3, x2 - x3, y2 - y3, x1 - x3, y1 - y3) )  
+		return true;
+	return false;
 }
 
 var my_m4 = {
