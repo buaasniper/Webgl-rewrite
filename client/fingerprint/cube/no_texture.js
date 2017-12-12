@@ -292,7 +292,7 @@ var CubeTest = function(type) {
       mat4.mul(__Mview, __Mview, __Matrix0);
       //console.log("第一次计算", __Mview);
       mat4.mul(__Mworld, __Mworld, __Mview);
-      console.log("传入的矩阵", __Mworld);
+      //console.log("传入的矩阵", __Mworld);
       /*
       console.log("第二次计算", __Mworld);
       mat4.copy(worldMatrix, __Mworld);

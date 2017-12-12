@@ -131,8 +131,8 @@ rewrite = function(gl){
 	gl.useProgram = function(a){
 		__Program = a;
 		this.my_useProgram(a);
-		console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
-		console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
+		//console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+		//console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
 	}
 
 	gl.my_drawElements = gl.__proto__.drawElements;
@@ -147,10 +147,10 @@ rewrite = function(gl){
 	gl.my_drawArrays = gl.__proto__.drawArrays;
 	gl.drawArrays = function(primitiveType, offset, count){
 		//在这里进行点数据的转换
-		console.log("原始点的数据", __ActiveBuffer_vertex);
-		console.log("传入的转换矩阵", __Mworld);
+		//console.log("原始点的数据", __ActiveBuffer_vertex);
+		//console.log("传入的转换矩阵", __Mworld);
 		__ActiveBuffer_vertex = my_m4.vec_max_mul(__ActiveBuffer_vertex, __Mworld);
-		console.log("处理后点的数据", __ActiveBuffer_vertex);
+		//console.log("处理后点的数据", __ActiveBuffer_vertex);
 		// 这一段就是测试用的
 		
 
@@ -200,7 +200,7 @@ rewrite = function(gl){
 			gl.useProgram(__Program);
 			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
-			console.log("=====================================");
+			//console.log("=====================================");
 		
 		}else{
 			for (var i = 0; i < __ColorBuffer.length; i++){
@@ -279,14 +279,14 @@ function tri_3(i){
 		var g3 = __ActiveBuffer_frag[i * 3 + 7];
 		var b3 = __ActiveBuffer_frag[i * 3 + 8];
 	}
-	console.log("三个点的坐标",x1, y1, x2, y2, x3, y3);
+	//console.log("三个点的坐标",x1, y1, x2, y2, x3, y3);
 	//这块假设把matrix已经弄完了
 	var x_min = min(x1, x2, x3);
 	var x_max = max(x1, x2, x3);
 	var y_min = min(y1, y2, y3);
 	var y_max = max(y1, y2, y3);
-	console.log("x的范围区间", x_min, x_max);
-	console.log("y的范围区间", y_min, y_max);
+	//console.log("x的范围区间", x_min, x_max);
+	//console.log("y的范围区间", y_min, y_max);
 	if (x1 == x_min) x1--;
 	if (x1 == x_max) x1++;
 	if (x2 == x_min) x2--;
