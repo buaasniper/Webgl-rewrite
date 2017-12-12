@@ -146,60 +146,19 @@ rewrite = function(gl){
 
 	gl.my_drawArrays = gl.__proto__.drawArrays;
 	gl.drawArrays = function(primitiveType, offset, count){
-		// 在这里转换值
-		//var tt = __ActiveBuffer_vertex;
-		//console.log("原来的", __ActiveBuffer_vertex);
+		//在这里进行点数据的转换
+		console.log("原始点的数据", __ActiveBuffer_vertex);
+		console.log("传入的转换矩阵", __Mworld);
+		__ActiveBuffer_vertex = my_m4.vec_max_mul(__ActiveBuffer_vertex, __Mworld);
+		console.log("处理后点的数据", __ActiveBuffer_vertex);
 		
-		Active_Number = __ActiveBuffer_vertex.length;
-		console.log("Active_Number", Active_Number);
-		mat4.transpose(__Mworld, __Mworld);
-		mat4.transpose(__Mview, __Mview);
-		mat4.transpose(__Matrix0, __Matrix0);
-		console.log("翻转完毕！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
-		console.log("__Mworld", __Mworld);
-		console.log("__Mview", __Mview);
-		console.log("__Matrix0", __Matrix0);
-		var t1 = new Float32Array(16);
-		var t2 = new Float32Array(16);
-		mat4.identity(t1);
-		mat4.identity(t2);
-		mat4.mul(t1, __Matrix0);
-		mat4.mul(t2, t1, __Mworld);
-		console.log("t2", t2);
-		matrix_mut_active(t2);
-		console.log("长度", __Tem_Buffer.length);
-		console.log("结果", __Tem_Buffer);
-		console.log("乘完结果", __ActiveBuffer_vertex);
-	/*	
-		if (__Mworld_flag)
-			matrix_mut_active(__Mworld);
-		console.log("__Mworld",__Mworld);
-		console.log("world  __ActiveBuffer_vertex",__ActiveBuffer_vertex);
-		if (__Mview_flag)
-			matrix_mut_active(__Mview);
-		console.log("__Mview", __Mview);
-		console.log("view __ActiveBuffer_vertex",__ActiveBuffer_vertex);
-		if (__Mpro_flag)
-			matrix_mut_active(__Matrix0);
-		console.log("__Matrix0", __Matrix0);
-		console.log("pro  __ActiveBuffer_vertex",__ActiveBuffer_vertex);
 
-		
-		__ActiveBuffer_vertex = tt;
-		console.log("原来的", __ActiveBuffer_vertex);
-		
-		var t = my_m4.multiply(__Matrix0, __Mview);
-		t = my_m4.multiply(t, __Mworld);
-		matrix_mut_active(t);
-		console.log("ttttttttttttttttttttttttttttt", __ActiveBuffer_vertex);
-*/
 
-/*
 		for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 			__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-		console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
-*/		 
+		console.log("转化成pixel的位置",__ActiveBuffer_vertex);		 
 		
+
 		__PointBuffer = [];
 		__ColorBuffer = [];
 
@@ -210,6 +169,7 @@ rewrite = function(gl){
 					switch (__VertexSize){
 						case 3:
 							console.log("开始画图");
+							//console.log("__ColorFlag",__ColorFlag)
 							tri_3(i);
 						break;
 					}
@@ -218,11 +178,21 @@ rewrite = function(gl){
 		}
 
 		// 在这里重新将值转化回来
-		matrix_mut(__Matrix1);
+		//matrix_mut(__Matrix1);
+		__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
+		for (var i = 0; i < __PointBuffer.length; i++){
+			__PointBuffer[i] = Math.floor(__PointBuffer[i] * 1000)/ 1000;
+		}
+			
+
+
+
+
+
 		// 数据传递到__PointBuffer, 开始在这里进行画图
 		Point_Number = __PointBuffer.length;
 		console.log("Point_Number", Point_Number);
-		console.log("__PointBuffer",__PointBuffer);	
+		console.log("转化完成的__PointBuffer",__PointBuffer);	
 		// 这个一会会进行修改
 		
 		if (__ColorFlag == 0){
@@ -237,6 +207,9 @@ rewrite = function(gl){
 			console.log("=====================================");
 		
 		}else{
+			for (var i = 0; i < __ColorBuffer.length; i++){
+				__ColorBuffer[i] = __ColorBuffer[i] / 255.0;
+			}
 			console.log("__PointBuffer",__PointBuffer);
 			console.log("__ColorBuffer",__ColorBuffer);
 			var result_buffer = [];
@@ -266,10 +239,11 @@ rewrite = function(gl){
 			//console.log("__VertexPositionAttributeLocation2",__VertexPositionAttributeLocation2);
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);		
-			gl.useProgram(__Program);
+			gl.my_useProgram(__Program);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
 			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+			console.log("画点的数量", Point_Number/__VertexSize);
 			console.log("=====================================");
 		}
 	}
@@ -304,31 +278,6 @@ function matrix_mut (matrix){
 }
 
 
-function matrix_mut_active (matrix){
-	if (__VertexSize == 2){
-		for (var i = 0; i < Active_Number; i+=2){
-			__Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[0] + __ActiveBuffer_vertex[i+1] * matrix[3] + matrix[6]) ;
-			__Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[1] + __ActiveBuffer_vertex[i+1] * matrix[4] + matrix[7]) ;
-		}
-	}
- 
-	if (__VertexSize == 3){
-		for (var i = 0; i < Active_Number; i+=3){
-			__Tem_Buffer =  __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[0] 
-			 + __ActiveBuffer_vertex[i+1] * matrix[4]
-			 + __ActiveBuffer_vertex[i+2] * matrix[8] 
-			 + matrix[12]) ;
-			 __Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[1] 
-			 + __ActiveBuffer_vertex[i+1] * matrix[5]
-			 + __ActiveBuffer_vertex[i+2] * matrix[9] 
-			 + matrix[13]) ;	
-			 __Tem_Buffer = __Tem_Buffer.concat(__ActiveBuffer_vertex[i] * matrix[2] 
-			 + __ActiveBuffer_vertex[i+1] * matrix[6]
-			 + __ActiveBuffer_vertex[i+2] * matrix[10] 
-				+ matrix[14]);
-		}
-	}
-}
 
 
 
@@ -371,17 +320,18 @@ function tri_3(i){
 				__PointBuffer = __PointBuffer.concat(i);
 				__PointBuffer = __PointBuffer.concat(j);
 				__PointBuffer = __PointBuffer.concat(k);
-				if (__ColorBuffer == 1){
+				if (__ColorFlag == 1){
+					//console.log("进入颜色计算");
 					var dis_1 = Math.sqrt((x1 - i)*(x1 - i)+(y1 - j)*(y1 - j));
 					var dis_2 = Math.sqrt((x2 - i)*(x2 - i)+(y2 - j)*(y2 - j));
 					var dis_3 = Math.sqrt((x3 - i)*(x3 - i)+(y3 - j)*(y3 - j));
 					// 颜色这块的转换需要弄明白
-					var r = Math.floor((1 / exp(dis_1)) * r1 + (1 / exp(dis_2)) * r2 + (1 / exp(dis_3)) * r3);
-					var g = Math.floor((1 / exp(dis_1)) * g1 + (1 / exp(dis_2)) * g2 + (1 / exp(dis_3)) * g3);
-					var b = Math.floor((1 / exp(dis_1)) * b1 + (1 / exp(dis_2)) * b2 + (1 / exp(dis_3)) * b3);
-					__ColorBuffer.concat(r);
-					__ColorBuffer.concat(g);
-					__ColorBuffer.concat(b);
+					var r = Math.floor((1 / Math.exp(dis_1)) * r1 + (1 / Math.exp(dis_2)) * r2 + (1 / Math.exp(dis_3)) * r3);
+					var g = Math.floor((1 / Math.exp(dis_1)) * g1 + (1 / Math.exp(dis_2)) * g2 + (1 / Math.exp(dis_3)) * g3);
+					var b = Math.floor((1 / Math.exp(dis_1)) * b1 + (1 / Math.exp(dis_2)) * b2 + (1 / Math.exp(dis_3)) * b3);
+					__ColorBuffer = __ColorBuffer.concat(r);
+					__ColorBuffer = __ColorBuffer.concat(g);
+					__ColorBuffer =__ColorBuffer.concat(b);
 				}
 			}
 		}
@@ -431,6 +381,37 @@ var my_m4 = {
       0, 0, 2 / depth, 0,
       -1, 1, 0, 1,
       ];
+	},
+
+	vec_max_mul: function(a,b){
+		var result = [];
+		// 这个系数是我确定的，这个之后再确认
+		var number = 0.1 * 1.5;
+		var b00 = b[0 * 4 + 0];
+		var b01 = b[0 * 4 + 1];
+		var b02 = b[0 * 4 + 2];
+		var b03 = b[0 * 4 + 3];
+		var b10 = b[1 * 4 + 0];
+		var b11 = b[1 * 4 + 1];
+		var b12 = b[1 * 4 + 2];
+		var b13 = b[1 * 4 + 3];
+		var b20 = b[2 * 4 + 0];
+		var b21 = b[2 * 4 + 1];
+		var b22 = b[2 * 4 + 2];
+		var b23 = b[2 * 4 + 3];
+		var b30 = b[3 * 4 + 0];
+		var b31 = b[3 * 4 + 1];
+		var b32 = b[3 * 4 + 2];
+		var b33 = b[3 * 4 + 3];
+		//console.log(b00,b01,b02);
+		for (var i = 0; i < a.length; i += 3){
+			result = result.concat((a[i] * b00 + a[i+1] * b01 + a[i+2] * b02 + b03) * number);
+			result = result.concat((a[i] * b10 + a[i+1] * b11 + a[i+2] * b12 + b13) * number);
+			result = result.concat((a[i] * b20 + a[i+1] * b21 + a[i+2] * b22 + b23) * number);
+		}
+		//console.log("result", result);
+		return result;
+
 	},
 	
 	multiply: function(a, b) {
@@ -504,7 +485,8 @@ var my_m4 = {
 
 
 
-getGLAA = function(canvas) {
+
+	getGLAA = function(canvas) {
   var gl = null;
   for (var i = 0; i < 4; ++i) {
     gl = canvas.getContext(
@@ -521,7 +503,7 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl);
+  gl = rewrite(gl);
   return gl;
 }
 
@@ -536,36 +518,6 @@ getGL = function(canvas) {
           willReadFrequently : false,
           depth: true
         });
-      /*  
-    function my_gl(canvas, i){
-
-        my_glbufferData = this.bufferData;
-        this.bufferData = function (a, b, c){
-        if (a == gl.ELEMENT_ARRAY_BUFFER){
-          console.log("b",b);
-          __My_index = b;
-          __My_index_flag = 1;
-        }
-        else{
-          __My_buffer = b;
-          my_glbufferData(a, b, c);
-        //console.log(b);
-        //console.log("__My_buffer",__My_buffer);
-        }
-        } 
-
-
-
-        return canvas.getContext(
-        [ "webgl", "experimental-webgl", "moz-webgl", "webkit-3d" ][i], {
-          antialias : false,
-          preserveDrawingBuffer : true,
-          willReadFrequently : false,
-          depth: true
-        });
-    }
-    gl = my_gl(canvas, i);
-    */
     if (gl)
       break;
   }
@@ -575,7 +527,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl);
+  gl = rewrite(gl);
   
   return gl;
 }
@@ -618,18 +570,3 @@ var loadJSONResource = function(url, callback, caller) {
   }, caller);
 };
 
-/*
--2.4142   	0.0000   	0.0000   	0.0000   
-0.0000   	2.4142   	0.0000   	0.0000   
-0.0000   	0.0000   	1.0002   	1.0000   
-0.0000   	0.0000   	4.8010   	5.0000   
-
--1.4041   	0.0000   	-0.8136   	-0.8134   
--0.4618   	2.3464   	0.1368   	0.1368   
--1.9084   	-0.5678   	0.5654   	0.5653   
-0.0000   	0.0000   	4.8010   	5.0000   
-
-
-
-
-*/

@@ -102,7 +102,7 @@ var CubeTest = function(type) {
     //
     // Create buffer
     //
-    /*
+   
     var boxVertices = [
       // X, Y, Z           R, G, B
       // Top
@@ -141,7 +141,7 @@ var CubeTest = function(type) {
       1.0,-1.0,1.0,      0.6,0.6,0.5,
       1.0,-1.0,-1.0,     0.8,0.4,0.2,
     ];
-    */
+ /*    
     var boxVertices = [
       // X, Y, Z           R, G, B
       // Top
@@ -180,7 +180,7 @@ var CubeTest = function(type) {
       1.0,-1.0,1.0,      0.6,0.6,0.5,
       1.0,-1.0,-1.0,     0.8,0.4,0.2,
     ];
-
+*/
 /*
     var boxIndices = [
       // Top
@@ -258,9 +258,9 @@ var CubeTest = function(type) {
     mat4.identity(worldMatrix);
     mat4.identity(viewMatrix);
     mat4.identity(projMatrix);
-    console.log("worldMatrix", worldMatrix);
-    console.log("viewMatrix", viewMatrix);
-    console.log("projMatrix", projMatrix);
+    //console.log("worldMatrix", worldMatrix);
+    //console.log("viewMatrix", viewMatrix);
+    //console.log("projMatrix", projMatrix);
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
     gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -290,14 +290,17 @@ var CubeTest = function(type) {
       mat4.transpose(__Mview, __Mview);
       mat4.transpose(__Matrix0, __Matrix0);
       mat4.mul(__Mview, __Mview, __Matrix0);
-      console.log("第一次计算", __Mview);
+      //console.log("第一次计算", __Mview);
       mat4.mul(__Mworld, __Mworld, __Mview);
+      console.log("传入的矩阵", __Mworld);
+      /*
       console.log("第二次计算", __Mworld);
       mat4.copy(worldMatrix, __Mworld);
-      console.log("转置之前", __Mworld);
+      console.log("转置之前", __Mworld);     
       mat4.transpose(worldMatrix, worldMatrix);
       mat4.identity(worldMatrix);
       console.log("最终结果", worldMatrix);
+      */
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
       __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
       //console.log("__Mworld", __Mworld);
