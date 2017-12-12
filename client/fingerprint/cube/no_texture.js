@@ -7,6 +7,7 @@ var vertexShaderText = [
   '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);', '}'
 ].join('\n');
 
+
 var fragmentShaderText = [
   'precision mediump float;', '', 'varying vec3 fragColor;', 'void main()', '{',
   '  gl_FragColor = vec4(fragColor, 1.0);', '}'
@@ -244,7 +245,7 @@ var CubeTest = function(type) {
       0.4,
       0.2,
     ];
-
+/*
     var boxIndices = [
       // Top
       0, 1, 2, 0, 2, 3,
@@ -264,8 +265,8 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
-    /*
-    var boxIndices = [8, 9, 10];*/
+    */
+    var boxIndices = [8, 9, 10];
 
     var boxVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
@@ -315,6 +316,13 @@ var CubeTest = function(type) {
                      canvas.width / canvas.height, 0.1, 1000.0);
     //mat4.transpose(viewMatrix, viewMatrix);
     //mat4.transpose(projMatrix, projMatrix);
+    mat4.copy(__Mworld, worldMatrix);
+    mat4.copy(__Mview,viewMatrix);
+    mat4.copy(__Matrix0,projMatrix);
+    mat4.identity(worldMatrix);
+    mat4.identity(viewMatrix);
+    mat4.identity(projMatrix);
+    console.log("worldMatrix", worldMatrix);
     console.log("viewMatrix", viewMatrix);
     console.log("projMatrix", projMatrix);
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
@@ -341,16 +349,22 @@ var CubeTest = function(type) {
       mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
       mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
       mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
-
-      //mat4.transpose(worldMatrix, worldMatrix);
-      console.log("worldMatrix", worldMatrix);
+      mat4.copy(__Mworld, worldMatrix);
+      mat4.transpose(__Mworld, __Mworld);
+      mat4.transpose(__Mview, __Mview);
+      mat4.transpose(__Matrix0, __Matrix0);
+      mat4.mul(__Mview, __Mview, __Matrix0);
+      console.log("第一次计算", __Mview);
+      mat4.mul(__Mworld, __Mworld, __Mview);
+      console.log("第二次计算", __Mworld);
+      mat4.copy(worldMatrix, __Mworld);
+      mat4.transpose(worldMatrix, worldMatrix);
+      console.log("最终结果", worldMatrix);
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
       
 
-      mat4.copy(__Mworld, worldMatrix);
-      mat4.copy(__Mview,viewMatrix);
-      mat4.copy(__Matrix0,projMatrix);
+      
       __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
       console.log("__Mworld", __Mworld);
       console.log("__Mview", __Mview);

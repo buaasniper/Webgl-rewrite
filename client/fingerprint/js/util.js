@@ -521,7 +521,7 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   return gl;
 }
 
@@ -575,7 +575,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   
   return gl;
 }
