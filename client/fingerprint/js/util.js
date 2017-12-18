@@ -32,6 +32,7 @@ var __x_add; // x,y值的补偿值
 var __y_add;
 var __Error_flag;  // 判断是否进行了误差计算
 var Active_Number;
+var __Drawnumber = 1; //判断这个canvas是第几次用draw函数
 
 
 getCanvas = function(canvasName) {
@@ -74,7 +75,7 @@ rewrite = function(gl){
 		__VertexNomalize = normalize;
 		__VertexStride = stride;
 		__VertexOffset = offset;
-		this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
+		//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
 
 		// 这个是因为传入的数据内容大小，转换成数据个数
 		stride = stride / 4;  
@@ -119,8 +120,9 @@ rewrite = function(gl){
 				for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
 				__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
 			// 将float系统转换成int系统
-			for (var i =0; i < __ActiveBuffer_frag.length; i++)
-				__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
+			// 颜色不进行转换
+			//for (var i =0; i < __ActiveBuffer_frag.length; i++)
+			//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
 		}
 		//console.log("完成");
 	}
@@ -155,10 +157,29 @@ rewrite = function(gl){
 		
 
 		for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-			__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-		console.log("转化成pixel的位置",__ActiveBuffer_vertex);		 
+			if (i % 3 != 2)
+				__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+		console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
+		console.log("颜色的计算",__ActiveBuffer_frag);	 
 		
-
+		var canvas_buffer = [-1.0, -1.0, 
+			1.0, -1.0, 
+		 -1.0,  1.0, 
+		 -1.0,  1.0,
+			1.0, -1.0, 
+			1.0,  1.0]; 
+		var new_vertex_buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_useProgram(__Program);
+		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		var traingles_fra_loc = gl.getUniformLocation(__Program, "tri_color");
+		gl.uniform3fv(traingles_vex_loc, __ActiveBuffer_vertex);
+		gl.uniform3fv(traingles_fra_loc, __ActiveBuffer_frag);
+		this.my_drawArrays(gl.TRIANGLES, 0, 6);
+		
+		/*
 		__PointBuffer = [];
 		__ColorBuffer = [];
 
@@ -171,7 +192,7 @@ rewrite = function(gl){
 							console.log("开始画图");
 							//console.log("i的数值", i);
 							//console.log("__ColorFlag",__ColorFlag)
-							tri_3(i);
+							//tri_3(i);
 						break;
 					}
 				}
@@ -254,6 +275,7 @@ rewrite = function(gl){
 			console.log("画点的数量", Point_Number/__VertexSize);
 			console.log("=====================================");
 		}
+		*/
 	}
 	return gl;
 }

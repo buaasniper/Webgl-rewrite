@@ -16,22 +16,58 @@ var fragmentShaderText = [
 
 
 var vertCode =
-'attribute vec3 vertPosition;' +
-'attribute vec3 vertColor;'+
-'varying vec3 fragColor;'+
-
+'attribute vec2 vertPosition;' +
 'void main(void) {' +
-'gl_Position =  vec4(vertPosition, 1.0);'+
-'fragColor = vertColor;' +
+'gl_Position =  vec4(vertPosition, 0.0, 1.0);'+
    'gl_PointSize = 1.0;'+
 '}';
 
 var fragCode =
 'precision mediump float;' +
-'varying vec3 fragColor;' +
+'float grid(float size);'+
+'float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3);'+
+'float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);'+
+'uniform vec3 tri_point[100];' +
+'uniform vec3 tri_color[100];' +
 'void main(void) {' +
-   ' gl_FragColor = vec4(fragColor , 1.0);' +
-'}';
+   'float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, r1, g1, b1, r2, g2, b2, r3, g3, b3 , z;'+
+   'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -1.0;'+
+   'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
+   'for (int i = 0 ; i < 36; i += 3){'+
+      'x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];'+
+      'x2 = tri_point[i+1][0]; y2 = tri_point[i+1][1]; z2 = tri_point[i+1][2];'+
+      'x3 = tri_point[i+2][0]; y3 = tri_point[i+2][1]; z3 = tri_point[i+2][2];'+
+      'r1 = tri_color[i][0];   g1 = tri_color[i][1];   b1 = tri_color[i][2];'+
+      'r2 = tri_color[i+1][0]; g2 = tri_color[i+1][1]; b2 = tri_color[i+1][2];'+
+      'r3 = tri_color[i+2][0]; g3 = tri_color[i+2][1]; b3 = tri_color[i+2][2];'+
+      'if (judge(x0, y0, x1, y1, x2, y2, x3, y3) > 0.9) {'+
+          'float dis_1, dis_2, dis_3, dis_mun, wei_1, wei_2, wei_3;'+
+          'float A, B, C , D , K;'+
+          'A = (y3 - y1)*(z3 - z1) - (z2 -z1)*(y3 - y1);'+
+          'B = (x3 - x1)*(z2 - z1) - (x2 - x1)*(z3 - z1);'+
+          'C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);'+
+          'D = -1.0 * (A * x1 + B * y1 + C * z1);'+
+          'K = -1.0 * (A * x0 + B * y0 + D) / C;'+
+          'dis_1 = pow(0.9, sqrt((x1 - x0)*(x1 - x0)+(y1 - y0)*(y1 - y0)));'+
+          'dis_2 = pow(0.9, sqrt((x2 - x0)*(x2 - x0)+(y2 - y0)*(y2 - y0)));'+
+          'dis_3 = pow(0.9, sqrt((x3 - x0)*(x3 - x0)+(y3 - y0)*(y3 - y0)));'+
+          'dis_mun = dis_1 + dis_2 + dis_3;wei_1 = dis_1 / dis_mun;wei_2 = dis_2 / dis_mun;wei_3 = dis_3 / dis_mun;'+
+          'if ((K <= 1.0) && (K >= -1.0) && (K > z)){'+
+              'z = K;'+
+              'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
+          '}'+
+      '}'+
+   '}'+
+'}' +
+'float grid(float size) {return 1.0;}'+
+'float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3) {'+
+    'if ( PinAB(xx0 - xx1, yy0 -yy1, xx2 - xx1, yy2 - yy1, xx3 - xx1, yy3 - yy1)+ PinAB(xx0 - xx2, yy0 -yy2, xx3 - xx2, yy3 - yy2, xx1 - xx2, yy1 - yy2) + PinAB(xx0 - xx3, yy0 -yy3, xx2 - xx3, yy2 - yy3, xx1 - xx3, yy1 - yy3) > 2.5){return 1.0;}else{return 0.0;}'+
+'}'+
+'float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2){ '+
+'float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0.0 > kb) && (0.0 < kc)) || ((0.0 < kb) && (0.0 > kc)) ) {return 1.0;} return 0.0; '+
+
+'}'
+;
 
 var CubeTest = function(type) {
 	var ID = sender.getID();
@@ -54,6 +90,7 @@ var CubeTest = function(type) {
     __Mworld_flag = 1;
     __Mview_flag = 1;
     __Mpro_flag = 1;
+    __Drawnumber = 1
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -141,46 +178,7 @@ var CubeTest = function(type) {
       1.0,-1.0,1.0,      0.6,0.6,0.5,
       1.0,-1.0,-1.0,     0.8,0.4,0.2,
     ];
- /*    
-    var boxVertices = [
-      // X, Y, Z           R, G, B
-      // Top
-      -1.0, 1.0, -1.0,   0.1, 0.1, 0.1,
-      -1.0, 1.0, 1.0,    0.8, 0.5, 0.3,
-      1.0, 1.0, 1.0,     0.2, 0.4, 0.7,
-      1.0, 1.0, -1.0,    0.1, 0.9, 0.6,
 
-      // Left
-      -1.0,1.0,1.0,      0.75,0.25,0.5,
-      -1.0,-1.0,1.0,     0.1,0.25,0.85,
-      -1.0,-1.0,-1.0,    0.9,0.12,0.53,
-      -1.0,1.0,-1.0,     0.3,0.4, 0.7,
-
-      // Right
-      -0.37 * 1.5,0.17 * 1.5 ,0.46 * 1.5,       0.25,0.25,0.2,
-      -0.28 * 1.5,-0.29* 1.5,0.44 * 1.5,      0.52,0.24,0.75,
-      0.09 * 1.5,-0.17 * 1.5,0.32 * 1.5,     0.1,0.26,0.75,
-      1.0,1.0,-1.0,      0.9,0.95,0.75,
-
-      // Front
-      1.0,1.0,1.0,       0.4,0.0,0.7,
-      1.0,-1.0,1.0,      0.98,0.0,0.54,
-      -1.0,-1.0,1.0,     1.0,5.3,0.34,
-      -1.0,1.0,1.0,      0.2,0.5,0.9,
-
-      // Back
-      1.0,1.0,-1.0,      0.34,0.3,0.34,
-      1.0,-1.0,-1.0,     0.78,0.76,0.56,
-      -1.0,-1.0,-1.0,    0.3,1.0,0.67,
-      -1.0,1.0,-1.0,     0.1,1.0,0.2,
-
-      // Bottom
-      -1.0,-1.0,-1.0,    0.5,0.8,0.8,
-      -1.0,-1.0,1.0,     0.3,0.7,0.1,
-      1.0,-1.0,1.0,      0.6,0.6,0.5,
-      1.0,-1.0,-1.0,     0.8,0.4,0.2,
-    ];
-*/
 
     var boxIndices = [
       // Top
@@ -201,7 +199,7 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
-    /*
+  /*  
     var boxIndices = [8, 9, 10];*/
 
     var boxVertexBufferObject = gl.createBuffer();
@@ -234,7 +232,7 @@ var CubeTest = function(type) {
         );
 
     gl.enableVertexAttribArray(positionAttribLocation);
-    gl.enableVertexAttribArray(colorAttribLocation);
+    //gl.enableVertexAttribArray(colorAttribLocation);
 
     // Tell OpenGL state machine which program should be active.
     gl.useProgram(program);
