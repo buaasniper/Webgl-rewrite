@@ -1,8 +1,11 @@
-var ServerConnector = function() {
-  this.address = "lab.songli.io";
-  this.clientid = "Not Set";
+var ServerConnector = function(clientid, num_test) {
+  this.address = "http://lab.songli.io/sjcollect";
+  this.clientid = clientid;
+  this.num_test = num_test;
+  this.finished_test = 0;
+  this.pictures = {};
 
-  this.storePicture = function(dataURL, id) {
+  this.storePicture = function(dataURL) {
     var xhttp = new XMLHttpRequest();
     var url = this.address + "/pictures";
     var data = "imageBase64=" + encodeURIComponent(dataURL); 
@@ -19,25 +22,43 @@ var ServerConnector = function() {
 
   // input the update data in dict format 
   // send the dict to address
-  //update one feature asynchronously to the server
-  this.updateFeatures = function(features){
+  this.sendToServer = function(){
     //
     // include the clientid as one of the feature list
     // extract this information later from the server part
     //
-    features['clientid'] = this.clientid;
-    console.log(features);
+    this.clientid = clientid;
+    var readyToSend = {};
+    readyToSend['clientid'] = this.clientid;
+    readyToSend['pichashes'] = "";
+    for (var key in this.pictures) {
+      readyToSend['pichashes'] += key + '_' + this.pictures[key] + ',';
+    }
     var xhttp = new XMLHttpRequest();
-    var url = ip_address + "/updateFeatures";
-    var data = JSON.stringify(features) 
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var data = JSON.parse(this.responseText);
-          console.log(data);
-        }
-      };
+    var url = this.address + "/receive";
+    var data = JSON.stringify(readyToSend);
+    console.log(data);
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(data);
+      }
+    };
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(data);
+  }
+
+  // send everything back to server here
+  // we send the pictures to server
+  
+
+  // update the picture
+  this.updatePicture = function(pic_id, dataURL) {
+    this.storePicture(dataURL);
+    this.pictures[pic_id] = dataURL;
+    this.finished_test ++;
+    if (this.finished_test >= this.num_test) {
+      this.sendToServer();
+    }
   }
 }
