@@ -13,8 +13,8 @@ var fragmentShaderText = [
   '  gl_FragColor = vec4(fragColor, 1.0);', '}'
 ].join('\n');
 */
-
-
+var image_id = 0;
+var serverConnector = new ServerConnector('123', 2);
 var vertCode =
 'attribute vec2 vertPosition;' +
 'void main(void) {' +
@@ -311,10 +311,11 @@ var CubeTest = function(type) {
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
       gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
       if (count == 20) {
-        sender.getData(gl, ID);
+        dataURL = canvas.toDataURL('image/png', 1.0);
+        serverConnector.updatePicture(ID, dataURL);
         cancelAnimationFrame(frame);
-        cb(level);
       }
+      
     };
     requestAnimationFrame(loop);
   };
