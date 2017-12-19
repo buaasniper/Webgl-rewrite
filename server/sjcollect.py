@@ -8,6 +8,7 @@ import json
 import hashlib
 from flaskext.mysql import MySQL
 import ConfigParser
+import re
 from PIL import Image
 import base64
 import cStringIO
@@ -74,10 +75,11 @@ def doInsert(values):
     values['agent'] = agent
     values['IP'] = IP
     clientid = values['clientid']
+    pichashes = values['pichashes']
     # create a new record in features table
-    sql_str = "INSERT INTO maintable (clientid, IP, agent) VALUES ('{}', '{}', '{}')".format(clientid, IP, agent)
+    sql_str = "INSERT INTO maintable (clientid, IP, agent, pichashes) VALUES ('{}', '{}', '{}', '{}')".format(clientid, IP, agent, pichashes)
     run_sql(sql_str)
-    res = doUpdateFeatures(values['clientid'], values)
+    # res = doUpdateFeatures(values['clientid'], values)
     return flask.jsonify({'finished': values['clientid']}) 
 
 @app.route("/pictures", methods=['POST'])

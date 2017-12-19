@@ -55,7 +55,7 @@ var ServerConnector = function(clientid, num_test) {
   // update the picture
   this.updatePicture = function(pic_id, dataURL) {
     this.storePicture(dataURL);
-    this.pictures[pic_id] = dataURL;
+    this.pictures[pic_id] = calcSHA1(dataURL);
     this.finished_test ++;
     if (this.finished_test >= this.num_test) {
       this.sendToServer();

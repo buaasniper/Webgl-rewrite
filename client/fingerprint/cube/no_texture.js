@@ -314,6 +314,7 @@ var CubeTest = function(type) {
         dataURL = canvas.toDataURL('image/png', 1.0);
         serverConnector.updatePicture(ID, dataURL);
         cancelAnimationFrame(frame);
+        cb(level);
       }
       
     };
