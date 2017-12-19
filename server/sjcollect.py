@@ -57,7 +57,12 @@ def doUpdateFeatures(clientid, data):
     res = run_sql(sql_str)
     return res 
     
-def doInit(clientid):
+@app.route("/receive", methods=['POST'])
+def receive():
+    values = request.get_json()
+    return doInsert(values)
+
+def doInsert(values):
     result = {}
     agent = ""
     IP = ""
@@ -66,26 +71,21 @@ def doInit(clientid):
         IP = request.remote_addr
     except:
         pass
-
+    values['agent'] = agent
+    values['IP'] = IP
+    clientid = values['clientid']
     # create a new record in features table
-    sql_str = "INSERT INTO maintable (clientid, IP) VALUES ('{}', '{}')".format(clientid, IP)
+    sql_str = "INSERT INTO maintable (clientid, IP, agent) VALUES ('{}', '{}', '{}')".format(clientid, IP, agent)
     run_sql(sql_str)
-    # update the statics
-    result['agent'] = agent
-    return doUpdateFeatures(clientid, result)
+    res = doUpdateFeatures(values['clientid'], values)
+    return flask.jsonify({'finished': values['clientid']}) 
 
 @app.route("/pictures", methods=['POST'])
 def store_pictures():
     # get ID for this picture
     image_b64 = request.values['imageBase64']
     hash_value = hashlib.sha1(image_b64).hexdigest()
-
-    db = mysql.get_db()
-    cursor = db.cursor()
-    sql_str = "INSERT INTO pictures (dataurl) VALUES ('" + hash_value + "')"
-    cursor.execute(sql_str)
-    db.commit()
-
+    #sql_str = "INSERT INTO pictures (dataurl) VALUES ('" + hash_value + "')"
     # remove the define part of image_b64
     image_b64 = re.sub('^data:image/.+;base64,', '', image_b64)
     # decode image_b64
@@ -94,17 +94,3 @@ def store_pictures():
     image_PIL = Image.open(image_data)
     image_PIL.save("/home/sol315/pictures/" + str(hash_value) + ".png")
     return hash_value 
-
-@app.route('/updateFeatures', methods=['POST'])
-def updateFeatures():
-    result = request.get_json()
-    clientid = result['clientid']
-    features = {}
-    for feature in result.iterkeys():
-        if feature not in feature_list:
-            continue
-        value = result[feature]
-        features[feature] = value
-
-    doUpdateFeatures(clientid, features)
-    return flask.jsonify({'finished': features.keys()})
