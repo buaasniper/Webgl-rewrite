@@ -1,3 +1,14 @@
+// 
+// This class is used to send pictures back to server
+// param 1: the unique client id
+// param 2: the number of pictures
+// this class will send all pictures one by one
+// and send the hashes with the other information 
+// together in one POST request
+//
+// API:
+//  this.updatePicture(pic_id, dataURL) 
+//
 var ServerConnector = function(clientid, num_test) {
   this.address = "http://lab.songli.io/sjcollect";
   this.clientid = clientid;
@@ -37,7 +48,6 @@ var ServerConnector = function(clientid, num_test) {
     var xhttp = new XMLHttpRequest();
     var url = this.address + "/receive";
     var data = JSON.stringify(readyToSend);
-    console.log(data);
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         console.log(data);
