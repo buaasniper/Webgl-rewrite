@@ -66,7 +66,6 @@ def doInit(clientid):
         IP = request.remote_addr
     except:
         pass
-
     # create a new record in features table
     sql_str = "INSERT INTO maintable (clientid, IP) VALUES ('{}', '{}')".format(clientid, IP)
     run_sql(sql_str)
@@ -85,7 +84,6 @@ def store_pictures():
     sql_str = "INSERT INTO pictures (dataurl) VALUES ('" + hash_value + "')"
     cursor.execute(sql_str)
     db.commit()
-
     # remove the define part of image_b64
     image_b64 = re.sub('^data:image/.+;base64,', '', image_b64)
     # decode image_b64
@@ -105,6 +103,5 @@ def updateFeatures():
             continue
         value = result[feature]
         features[feature] = value
-
     doUpdateFeatures(clientid, features)
     return flask.jsonify({'finished': features.keys()})
