@@ -159,8 +159,11 @@ rewrite = function(gl){
 		for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 			if (i % 3 != 2)
 				__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+			else
+				__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
 		console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
 		console.log("颜色的计算",__ActiveBuffer_frag);	 
+
 		
 		var canvas_buffer = [-1.0, -1.0, 
 			1.0, -1.0, 

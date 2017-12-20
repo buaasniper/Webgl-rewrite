@@ -31,7 +31,7 @@ var fragCode =
 'uniform vec3 tri_color[100];' +
 'void main(void) {' +
    'float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, r1, g1, b1, r2, g2, b2, r3, g3, b3 , z;'+
-   'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -1.0;'+
+   'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;'+
    'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
    'for (int i = 0 ; i < 36; i += 3){'+
       'x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];'+
@@ -48,11 +48,10 @@ var fragCode =
           'C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);'+
           'D = -1.0 * (A * x1 + B * y1 + C * z1);'+
           'K = -1.0 * (A * x0 + B * y0 + D) / C;'+
-          'dis_1 = pow(0.9, sqrt((x1 - x0)*(x1 - x0)+(y1 - y0)*(y1 - y0)));'+
-          'dis_2 = pow(0.9, sqrt((x2 - x0)*(x2 - x0)+(y2 - y0)*(y2 - y0)));'+
-          'dis_3 = pow(0.9, sqrt((x3 - x0)*(x3 - x0)+(y3 - y0)*(y3 - y0)));'+
-          'dis_mun = dis_1 + dis_2 + dis_3;wei_1 = dis_1 / dis_mun;wei_2 = dis_2 / dis_mun;wei_3 = dis_3 / dis_mun;'+
-          'if ((K <= 1.0) && (K >= -1.0) && (K > z)){'+
+          'wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);'+
+          'wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);'+
+          'wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);'+
+          'if ((C > 0.0) && (K <= 2.0) && (K >= -2.0) && (K > z)){'+
               'z = K;'+
               'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
           '}'+
@@ -146,7 +145,7 @@ var CubeTest = function(type) {
       -1.0, 1.0, -1.0,   0.1, 0.1, 0.1,
       -1.0, 1.0, 1.0,    0.8, 0.5, 0.3,
       1.0, 1.0, 1.0,     0.2, 0.4, 0.7,
-      1.0, 1.0, -1.0,    0.1, 0.9, 0.6,
+      1.0, 1.0, -1.0,    0.1, 1.0, 0.6,
 
       // Left
       -1.0,1.0,1.0,      0.75,0.25,0.5,
@@ -155,7 +154,7 @@ var CubeTest = function(type) {
       -1.0,1.0,-1.0,     0.3,0.4, 0.7,
 
       // Right
-      1.0,1.0,1.0,       0.25,0.25,0.2,
+      1.0,1.0,1.0,       1.0,0.25,0.2,
       1.0,-1.0,1.0,      0.52,0.24,0.75,
       1.0,-1.0,-1.0,     0.1,0.26,0.75,
       1.0,1.0,-1.0,      0.9,0.95,0.75,
@@ -199,9 +198,9 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
-  /*  
-    var boxIndices = [8, 9, 10];*/
+/*  
 
+    var boxIndices = [0, 1, 2, 0, 2, 3,3]; */ 
     var boxVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
