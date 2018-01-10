@@ -24758,7 +24758,7 @@ THREE.ShaderLib[ 'physical' ] = {
 
 THREE.WebGLRenderer = function ( parameters , useExtensions) {
 	var _useExtensions = typeof useExtensions !== 'undefined' ?  useExtensions : true;
-	console.log( 'THREE.WebGLRenderer', THREE.REVISION );
+	//console.log( 'THREE.WebGLRenderer', THREE.REVISION );
 
 	parameters = parameters || {};
 

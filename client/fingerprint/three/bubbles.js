@@ -56,20 +56,23 @@ var BubbleTest = function() {
       fragmentShader : shader.fragmentShader
     });
 
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < 100; i++) {
 
       var mesh = new THREE.Mesh(geometry, material);
 
       mesh.position.x = Math.random() * 10000 - 5000;
       mesh.position.y = Math.random() * 10000 - 5000;
       mesh.position.z = Math.random() * 10000 - 5000;
-
+      console.log (" mesh.position.x", mesh.position.x);
+      console.log("mesh.position.y", mesh.position.y);
+      console.log("mesh.position.z", mesh.position.z);
       mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
 
       scene.add(mesh);
-
+      //console.log ("mesh", mesh);
       spheres.push(mesh);
     }
+    console.log("point value", i * 3);
 
     scene.matrixAutoUpdate = false;
   }
@@ -102,11 +105,12 @@ var BubbleTest = function() {
 
         sphere.position.x = 5000 * Math.cos(timer + i);
         sphere.position.y = 5000 * Math.sin(timer + i * 1.1);
+        
       }
-
+      console.log("spheres.length",spheres.length)
       renderer.render(scene, camera);
 
-      if (count == 1) {
+      if (count == 5) {
         cancelAnimationFrame(frame);
         sender.getData(renderer.getContext(), ID);
         cb(value);
