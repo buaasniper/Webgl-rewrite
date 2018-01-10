@@ -249,8 +249,10 @@ rewrite = function(gl){
 		
 		var t1 = [];
 		var t2 = [];
+		var t3 = [];
+		var t4 = [];
 	
-		for (var i = 570; i <1026; i++){
+		for (var i = 990; i <1026; i++){
 			t1 = t1.concat(tri_result[i * 3]);
 			t1 = t1.concat(tri_result[i * 3 + 1]);
 			t1 = t1.concat(tri_result[i * 3 + 2]);
@@ -258,7 +260,18 @@ rewrite = function(gl){
 			t2 = t2.concat(tri_texture[i * 2 + 1]); 
 			t2 = t2.concat(tri_texture[i * 2 + 2]); 
 		}
-
+/*
+		for (var i = 0; i < 1026; i ++){
+			if ((tri_result[i * 3] < 128) && (tri_result[i * 3 + 1] < 128) && (tri_result[i * 3 + 2] < 128)){
+				t1 = t1.concat(tri_result[i * 3]);
+				t1 = t1.concat(tri_result[i * 3 + 1]);
+				t1 = t1.concat(tri_result[i * 3 + 2]);
+				t2 = t2.concat(tri_texture[i * 2]); 
+				t2 = t2.concat(tri_texture[i * 2 + 1]); 
+				t2 = t2.concat(tri_texture[i * 2 + 2]); 
+			}
+		}
+*/
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
@@ -270,10 +283,36 @@ rewrite = function(gl){
 		gl.uniform2fv(traingles_text_loc, t2);
 		console.log("更改过了");
 		this.my_drawArrays(gl.TRIANGLES, 0, 6);
-
-
+		console.log("this.my_drawArrays",this.my_drawArrays);
+		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
+		
+	
 		var t1 = [];
 		var t2 = [];
+		for (var i = 160; i <670; i++){
+			t1 = t1.concat(tri_result[i * 3]);
+			t1 = t1.concat(tri_result[i * 3 + 1]);
+			t1 = t1.concat(tri_result[i * 3 + 2]);
+			t2 = t2.concat(tri_texture[i * 2]); 
+			t2 = t2.concat(tri_texture[i * 2 + 1]); 
+			t2 = t2.concat(tri_texture[i * 2 + 2]); 
+		}
+
+		//var new_vertex_buffer = gl.createBuffer();
+		//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+		//gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		//gl.my_useProgram(__Program);
+		//var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		//var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		gl.uniform3fv(traingles_vex_loc, t1);
+		gl.uniform2fv(traingles_text_loc, t2);
+		console.log("更改过了，第二次");
+		this.my_drawArrays(gl.TRIANGLES, 0, 6);
+		console.log("this.my_drawArrays",this.my_drawArrays);
+		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
+
+		
 	/*
 		for (var i = 0; i < 510; i++){
 			t1 = t1.concat(tri_result[i * 3]);
