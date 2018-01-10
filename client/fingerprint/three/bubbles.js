@@ -106,7 +106,7 @@ var BubbleTest = function() {
 
       renderer.render(scene, camera);
 
-      if (count == 10) {
+      if (count == 1) {
         cancelAnimationFrame(frame);
         sender.getData(renderer.getContext(), ID);
         cb(value);

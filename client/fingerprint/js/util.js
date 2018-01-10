@@ -282,7 +282,7 @@ rewrite = function(gl){
 		gl.uniform3fv(traingles_vex_loc, t1);
 		gl.uniform2fv(traingles_text_loc, t2);
 		console.log("更改过了");
-		this.my_drawArrays(gl.TRIANGLES, 0, 6);
+		//this.my_drawArrays(gl.TRIANGLES, 0, 6);
 		console.log("this.my_drawArrays",this.my_drawArrays);
 		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 		
@@ -678,7 +678,7 @@ var my_m4 = {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   return gl;
 }
 
@@ -702,7 +702,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  //gl = rewrite(gl);
   
   return gl;
 }
