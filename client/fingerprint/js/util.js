@@ -535,7 +535,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	var left_number = 0;
 	var right_number = 0;
 
-	console.log("中间点", mid);
+	//console.log("中间点", mid);
 	for (var i = 0; i < tri_number; i++){
 		if (!((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid) && (tri_result[i * 9 + 6] >= mid))){
 			
