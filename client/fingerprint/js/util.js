@@ -486,42 +486,10 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 	var mid = Math.floor((left + right) / 2);
 	var left_number = 0;
 	var right_number = 0;
-	var rest = 0;
-	var x = [0 ,0 , 0, 0, 0, 0];
-	var y = [0 ,0 , 0, 0, 0, 0];
-	var z = [0 ,0 , 0, 0, 0, 0];
-	var tx = [0 ,0 , 0, 0, 0, 0];
-	var ty = [0 ,0 , 0, 0, 0, 0];
-
-	function fz(a , b , c) { 
-		x[c] = mid;
-		var rate = (x[c] - x[a]) / (x[b] - x[a]);
-		y[c] = Math.floor(y[a] + (y[b] - y[a]) * rate);
-		z[c] = z[a] + (z[b] - z[a]) * rate; 
-		tx[c] = tx[a] + (tx[b] - tx[a]) * rate; 
-		ty[c] = ty[a] + (ty[b] - ty[a]) * rate; 
-		return;
-	}
 
 	console.log("中间点", mid);
 	for (var i = 0; i < tri_number; i++){
-		x[1] = tri_result[i * 9];
-		y[1] = tri_result[i * 9 + 1];
-		z[1] = tri_result[i * 9 + 2];
-		x[2] = tri_result[i * 9 + 3];
-		y[2] = tri_result[i * 9 + 4];
-		z[2] = tri_result[i * 9 + 5];
-		x[3] = tri_result[i * 9 + 6];
-		y[3] = tri_result[i * 9 + 7];
-		z[3] = tri_result[i * 9 + 8];
-
-		tx[1] = tri_texture[i * 6];
-		ty[1] = tri_texture[i * 6 + 1];
-		tx[2] = tri_texture[i * 6 + 2];
-		ty[2] = tri_texture[i * 6 + 3];
-		tx[3] = tri_texture[i * 6 + 4];
-		ty[3] = tri_texture[i * 6 + 5];
-		if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid) && (tri_result[i * 9 + 6] <= mid)){
+		if (!((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid) && (tri_result[i * 9 + 6] >= mid))){
 			
 			left_number ++;
 			
@@ -531,7 +499,7 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_texture = left_texture.concat(tri_texture[i * 6 + j]);
 			
 		}		
-		else if ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid) && (tri_result[i * 9 + 6] >= mid)){
+		if (!((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid) && (tri_result[i * 9 + 6] <= mid))){
 			
 			right_number ++;
 			
@@ -541,215 +509,57 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_texture = right_texture.concat(tri_texture[i * 6 + j]);
 			
 		}
-		else if (((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)) || ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid))){
-			fz(1, 3, 4);
-			fz(2, 3, 5);
-			/*
-			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)){
-				left_result = left_result.concat(x[1], y[1], z[1]);
-				left_result = left_result.concat(x[2], y[2], z[2]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[2], y[2], z[2]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-
-				left_texture = left_texture.concat(tx[1], ty[1]);
-				left_texture = left_texture.concat(tx[2], ty[2]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-				left_texture = left_texture.concat(tx[2], ty[2]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-
-				left_number += 2;
-
-				right_result = right_result.concat(x[3], y[3], z[3]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-
-				right_texture = right_texture.concat(tx[3], ty[3]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-
-				right_number ++;
-			}else{
-				right_result = right_result.concat(x[1], y[1], z[1]);
-				right_result = right_result.concat(x[2], y[2], z[2]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[2], y[2], z[2]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-
-				right_texture = right_texture.concat(tx[1], ty[1]);
-				right_texture = right_texture.concat(tx[2], ty[2]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[2], ty[2]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-
-				right_number += 2;
-
-				left_result = left_result.concat(x[3], y[3], z[3]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-
-				left_texture = left_texture.concat(tx[3], ty[3]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-
-				left_number ++;
-			}*/
-			rest ++;
-		}
-		else if (((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 6] <= mid)) || ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 6] >= mid))){
-			
-			fz(1, 2, 4);
-			fz(2, 3, 5);
-			console.log("x", x);
-			console.log("y", y);
-			console.log("z", z);
-			console.log("tx",tx);
-			console.log("ty",ty);
-			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 6] <= mid)){
-				left_result = left_result.concat(x[1], y[1], z[1]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-				left_result = left_result.concat(x[3], y[3], z[3]);
-				left_result = left_result.concat(x[1], y[1], z[1]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-
-				left_texture = left_texture.concat(tx[1], ty[1]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-				left_texture = left_texture.concat(tx[3], ty[3]);
-				left_texture = left_texture.concat(tx[1], ty[1]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-
-				left_number += 2;
-
-				right_result = right_result.concat(x[2], y[2], z[2]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-
-				right_texture = right_texture.concat(tx[2], ty[2]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-
-				right_number ++;
-			}else{
-				right_result = right_result.concat(x[1], y[1], z[1]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-				right_result = right_result.concat(x[3], y[4], z[3]);
-				right_result = right_result.concat(x[1], y[1], z[1]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-
-				right_texture = right_texture.concat(tx[1], ty[1]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-				right_texture = right_texture.concat(tx[3], ty[3]);
-				right_texture = right_texture.concat(tx[1], ty[1]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-
-				right_number += 2;
-
-				left_result = left_result.concat(x[2], y[2], z[2]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-
-				left_texture = left_texture.concat(tx[2], ty[2]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-
-				left_number ++;
-			}
-			
-			
-			rest ++;
-		}
-		else if (((tri_result[i * 9 + 6] <= mid) && (tri_result[i * 9 + 3] <= mid)) || ((tri_result[i * 9 + 6] >= mid) && (tri_result[i * 9 + 3] >= mid))){
-			fz(1, 2, 4);
-			fz(1, 3, 5);
-			if ((tri_result[i * 9 + 6] <= mid) && (tri_result[i * 9 + 3] <= mid)){
-				left_result = left_result.concat(x[2], y[2], z[2]);
-				left_result = left_result.concat(x[3], y[3], z[3]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[3], y[3], z[3]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-
-				left_texture = left_texture.concat(tx[2], ty[2]);
-				left_texture = left_texture.concat(tx[3], ty[3]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-				left_texture = left_texture.concat(tx[3], ty[3]);
-				left_texture = left_texture.concat(tx[5], ty[5]);
-				left_texture = left_texture.concat(tx[4], ty[4]);
-
-				left_number += 2;
-
-				right_result = right_result.concat(x[1], y[1], z[1]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-
-				right_texture = right_texture.concat(tx[1], ty[1]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-
-				right_number ++;
-			}else{
-				right_result = right_result.concat(x[2], y[2], z[2]);
-				right_result = right_result.concat(x[3], y[3], z[3]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[3], y[3], z[3]);
-				right_result = right_result.concat(x[5], y[5], z[5]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-
-				right_texture = right_texture.concat(tx[2], ty[2]);
-				right_texture = right_texture.concat(tx[3], ty[3]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-				right_texture = right_texture.concat(tx[3], ty[3]);
-				right_texture = right_texture.concat(tx[5], ty[5]);
-				right_texture = right_texture.concat(tx[4], ty[4]);
-
-				right_number += 2;
-
-				left_result = left_result.concat(x[1], y[1], z[1]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[5], y[5], z[5]);
-
-				left_texture = left_texture.concat(tx[1], ty[1]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[5], y[5]);
-
-				left_number ++;
-			}
-			rest ++;
-		}
 	}
-	var right_canvas_buffer = [
-		-1.0, -1.0, 
-		1.0, -1.0, 
-	 	-1.0,  1.0, 
-	 	-1.0,  1.0,
-		1.0, -1.0, 
-		1.0,  1.0]; 
-	var new_vertex_buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-	gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-	gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-	gl.my_useProgram(__Program);
-	var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-	var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-	gl.uniform3fv(traingles_vex_loc, right_result);
-	gl.uniform2fv(traingles_text_loc, right_texture);
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
-	console.log("三角形数量", tri_number);
-	console.log("进入左边", left_number);
-	console.log("进入右边",right_number);
-	console.log("其余的", rest);
-	console.log("进入函数", left);
-	console.log("进入函数", right);
-	console.log("进入函数", tri_result);
-	console.log("进入函数", tri_texture);
+	if (left_number <= 168){
+		var right_canvas_buffer = [
+			left * 2 / 255 - 1.0, -1.0, 
+			mid * 2 / 255 - 1, -1.0, 
+			left * 2 / 255 - 1.,  1.0, 
+			left * 2 / 255 - 1.,  1.0,
+			mid * 2 / 255 - 1, -1.0, 
+			mid * 2 / 255 - 1,  1.0]; 
+		var new_vertex_buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_useProgram(__Program);
+		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		gl.uniform3fv(traingles_vex_loc, left_result);
+		gl.uniform2fv(traingles_text_loc, left_texture);
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+	}
+	else
+		devide_draw(left, mid, left_result, left_texture, gl);
+
+
+	
+	if (right_number <= 168){
+		var right_canvas_buffer = [
+			mid * 2 / 255 - 1.0, -1.0, 
+			right * 2 / 255 - 1, -1.0, 
+			mid * 2 / 255 - 1.,  1.0, 
+			mid * 2 / 255 - 1.,  1.0,
+			right * 2 / 255 - 1, -1.0, 
+			right * 2 / 255 - 1,  1.0]; 
+		var new_vertex_buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_useProgram(__Program);
+		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		gl.uniform3fv(traingles_vex_loc, right_result);
+		gl.uniform2fv(traingles_text_loc, right_texture);
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+	}
+	else
+		devide_draw(mid, right, right_result, right_texture, gl);
+
+	
+	
+
 	return;
 }
 
