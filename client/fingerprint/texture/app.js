@@ -31,13 +31,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var gl = getGL(canvas);
       var WebGL = true;
       
-      __My_index_flag = 0;  
-      __PointBuffer = [];
-      __ColorBuffer = [];
-      __Tem_pointbuffer = [];
-      __Tem_colorbuffer = [];
-      __ActiveBuffer_vertex = [];
-      __ActiveBuffer_frag = [];
+      
       __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
       __Mworld_flag = 1;
       __Mview_flag = 1;

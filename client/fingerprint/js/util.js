@@ -1,6 +1,7 @@
 // Load a text resource from a file over the network
 var __My_buffer;
 var __My_buffer_Texture;
+var __My_buffer_normal;
 var __My_buffer_flag;
 var __My_index;
 var __My_index_flag = 0;  // 0 代表没有index，1代表有index。
@@ -20,6 +21,7 @@ var __Tem_colorbuffer = [];
 var __ActiveBuffer_vertex = [];
 var __ActiveBuffer_vertex_result = [];
 var __ActiveBuffer_vertex_texture = [];
+var __ActiveBuffer_vertex_normal = [];
 var __ActiveBuffer_frag = [];
 var __Tem_Buffer = [];
 var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
@@ -51,7 +53,18 @@ getCanvas = function(canvasName) {
 }
 
 rewrite = function(gl){
+			
+			__My_index_flag = 0;  
+      __PointBuffer = [];
+      __ColorBuffer = [];
+      __Tem_pointbuffer = [];
+      __Tem_colorbuffer = [];
+      __ActiveBuffer_vertex = [];
+      __ActiveBuffer_frag = [];
+      
+
 	__My_buffer_flag = 1;
+	//去判断这个是一个是那么状态
 	gl.my_glbufferData = gl.__proto__.bufferData;
 	gl.bufferData = function (a, b, c){
 		if (a == gl.ELEMENT_ARRAY_BUFFER){
@@ -62,12 +75,15 @@ rewrite = function(gl){
 		else{
 			if (__My_buffer_flag == 1){
 				__My_buffer = b;
-				
-				__My_buffer_flag = 2;
+				__My_buffer_flag++;
+			}
+			else if (__My_buffer_flag == 2){
+				__My_buffer_Texture = b;
+				__My_buffer_flag++;
 			}
 			else{
-				__My_buffer_Texture = b;
-				
+				__My_buffer_normal = b;
+				__My_buffer_flag++;
 			}
 			
 			this.my_glbufferData(a, b, c);
@@ -94,7 +110,7 @@ rewrite = function(gl){
 		__VertexNomalize = normalize;
 		__VertexStride = stride;
 		__VertexOffset = offset;
-		//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
+		this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
 
 		// 这个是因为传入的数据内容大小，转换成数据个数
 		stride = stride / 4;  
@@ -120,6 +136,18 @@ rewrite = function(gl){
 					__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer_Texture[j]);
 			}
 			__My_buffer_Texture = __Tem_my_buffer;
+
+
+			// 确认这一块出现了向量这个新的参数
+			if (__My_buffer_flag == 4){
+				__Tem_my_buffer = [];
+				for (var i = 0; i < __My_index.length; i++){
+					for (var j = __My_index[i] * 3; j < (__My_index[i] + 1) * 3; j++)
+						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer_normal[j]);
+				}
+				__My_buffer_normal = __Tem_my_buffer;
+			}
+
 			__My_index_flag = 0;
 			//console.log("重新赴值__My_buffer", __My_buffer);
 		}
@@ -130,6 +158,9 @@ rewrite = function(gl){
 
 		__ActiveBuffer_vertex = __My_buffer;
 		__ActiveBuffer_vertex_texture = __My_buffer_Texture;
+		if (__My_buffer_flag == 4)
+			__ActiveBuffer_vertex_normal = __My_buffer_normal;
+
 		
 		//将数据分到位置和颜色
 		/*
@@ -163,6 +194,7 @@ rewrite = function(gl){
 		//console.log("完成");
 		console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
 		console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
+		console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
 	}
 	
 
@@ -241,6 +273,7 @@ rewrite = function(gl){
 		//在这里判断是否是猴子的正面
 		var tri_result= [];
 		var tri_texture = [];
+		var tri_normal = [];
 		var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
 		console.log("__My_index.length",__My_index.length);
 		for (var i = 0; i < __My_index.length; i+= 3){
@@ -271,13 +304,26 @@ rewrite = function(gl){
 				tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 4]);
 				tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 5]);
 
+				if (__My_buffer_flag == 4){
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 1]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 2]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 3]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 4]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 5]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 6]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 7]);
+					tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 8]);
+				}
+
 			}
 		}
 		console.log("tri_result",tri_result);
 		console.log("tri_texture",tri_texture);
+		console.log("tri_normal",tri_normal);
 
 
-		devide_draw(0, 255, tri_result, tri_texture, gl);
+		devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 		
 
 
@@ -477,11 +523,13 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 	return gl;
 }
 
-function devide_draw(left, right, tri_result, tri_texture, gl){
+function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	var left_result = [];
 	var left_texture = [];
+	var left_normal = [];
 	var right_result = [];
 	var right_texture = [];
+	var right_normal = [];
 	var tri_number = tri_result.length / 9;
 	var mid = Math.floor((left + right) / 2);
 	var left_number = 0;
@@ -497,6 +545,10 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_result =  left_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				left_texture = left_texture.concat(tri_texture[i * 6 + j]);
+			if (__My_buffer_flag == 4){
+				for (var j = 0; j < 9; j++)
+					left_normal =  left_normal.concat(tri_normal[i * 9 + j]);
+			}
 			
 		}		
 		if (!((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid) && (tri_result[i * 9 + 6] <= mid))){
@@ -507,10 +559,14 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_result = right_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				right_texture = right_texture.concat(tri_texture[i * 6 + j]);
+			if (__My_buffer_flag == 4){
+					for (var j = 0; j < 9; j++)
+						right_normal =  right_normal.concat(tri_normal[i * 9 + j]);
+				}
 			
 		}
 	}
-	if (left_number <= 168){
+	if (left_number <= 111){
 		var right_canvas_buffer = [
 			left * 2 / 255 - 1.0, -1.0, 
 			mid * 2 / 255 - 1, -1.0, 
@@ -527,15 +583,19 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
 		gl.uniform3fv(traingles_vex_loc, left_result);
 		gl.uniform2fv(traingles_text_loc, left_texture);
+		if (__My_buffer_flag == 4){
+			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
+			gl.uniform3fv(traingles_nor_loc, left_normal);
+		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 	}
 	else
-		devide_draw(left, mid, left_result, left_texture, gl);
+		devide_draw(left, mid, left_result, left_texture, left_normal, gl);
 
 
 	
-	if (right_number <= 168){
+	if (right_number <= 111){
 		var right_canvas_buffer = [
 			mid * 2 / 255 - 1.0, -1.0, 
 			right * 2 / 255 - 1, -1.0, 
@@ -552,10 +612,14 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
 		gl.uniform3fv(traingles_vex_loc, right_result);
 		gl.uniform2fv(traingles_text_loc, right_texture);
+		if (__My_buffer_flag == 4){
+			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
+			gl.uniform3fv(traingles_nor_loc, right_normal);
+		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 	else
-		devide_draw(mid, right, right_result, right_texture, gl);
+		devide_draw(mid, right, right_result, right_texture, right_normal, gl);
 
 	
 	

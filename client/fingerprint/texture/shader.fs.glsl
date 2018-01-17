@@ -1,8 +1,8 @@
 precision mediump float;
 float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3);
 float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
-uniform vec3 tri_point[510];
-uniform vec2 text_point[510];
+uniform vec3 tri_point[333];
+uniform vec2 text_point[333];
 uniform sampler2D sampler;
 
 void main()
