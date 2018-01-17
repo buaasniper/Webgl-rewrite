@@ -230,7 +230,7 @@
       
       this.testList.push(new LineTest('aa'));
       this.testList.push(new TextureTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.texture));*/
-      //this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
+      this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
       
       /*this.testList.push(new SimpleLightTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.susanNormals, this.texture));
       this.testList.push(new SimpleLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
@@ -239,7 +239,7 @@
       this.testList.push(new TransparentTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
       this.testList.push(new LightingTest());
       this.testList.push(new ClippingTest());*/
-      this.testList.push(new BubbleTest());
+      //this.testList.push(new BubbleTest());
       //this.testList.push(new CompressedTextureTest());
       //this.testList.push(new ShadowTest());
       

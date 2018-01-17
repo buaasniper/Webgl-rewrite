@@ -524,24 +524,27 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 		if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid) && (tri_result[i * 9 + 6] <= mid)){
 			
 			left_number ++;
+			
 			for (var j = 0; j < 9; j++)
 				left_result =  left_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				left_texture = left_texture.concat(tri_texture[i * 6 + j]);
-				
+			
 		}		
 		else if ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid) && (tri_result[i * 9 + 6] >= mid)){
 			
 			right_number ++;
+			
 			for (var j = 0; j < 9; j++)
 				right_result = right_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				right_texture = right_texture.concat(tri_texture[i * 6 + j]);
-				
+			
 		}
 		else if (((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)) || ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid))){
 			fz(1, 3, 4);
 			fz(2, 3, 5);
+			/*
 			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)){
 				left_result = left_result.concat(x[1], y[1], z[1]);
 				left_result = left_result.concat(x[2], y[2], z[2]);
@@ -550,12 +553,12 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_result = left_result.concat(x[2], y[2], z[2]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
 
-				left_texture = left_texture.concat(x[1], y[1]);
-				left_texture = left_texture.concat(x[2], y[2]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[2], y[2]);
-				left_texture = left_texture.concat(x[5], y[5]);
+				left_texture = left_texture.concat(tx[1], ty[1]);
+				left_texture = left_texture.concat(tx[2], ty[2]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
+				left_texture = left_texture.concat(tx[2], ty[2]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
 
 				left_number += 2;
 
@@ -563,9 +566,9 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_result = right_result.concat(x[4], y[4], z[4]);
 				right_result = right_result.concat(x[5], y[5], z[5]);
 
-				right_texture = right_texture.concat(x[3], y[3]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[5], y[5]);
+				right_texture = right_texture.concat(tx[3], ty[3]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
 
 				right_number ++;
 			}else{
@@ -576,12 +579,12 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_result = right_result.concat(x[2], y[2], z[2]);
 				right_result = right_result.concat(x[5], y[5], z[5]);
 
-				right_texture = right_texture.concat(x[1], y[1]);
-				right_texture = right_texture.concat(x[2], y[2]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[2], y[2]);
-				right_texture = right_texture.concat(x[5], y[5]);
+				right_texture = right_texture.concat(tx[1], ty[1]);
+				right_texture = right_texture.concat(tx[2], ty[2]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[2], ty[2]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
 
 				right_number += 2;
 
@@ -589,18 +592,24 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_result = left_result.concat(x[4], y[4], z[4]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
 
-				left_texture = left_texture.concat(x[3], y[3]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[5], y[5]);
+				left_texture = left_texture.concat(tx[3], ty[3]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
 
 				left_number ++;
-			}
+			}*/
 			rest ++;
 		}
 		else if (((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 6] <= mid)) || ((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 6] >= mid))){
+			
 			fz(1, 2, 4);
 			fz(2, 3, 5);
-			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)){
+			console.log("x", x);
+			console.log("y", y);
+			console.log("z", z);
+			console.log("tx",tx);
+			console.log("ty",ty);
+			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 6] <= mid)){
 				left_result = left_result.concat(x[1], y[1], z[1]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
 				left_result = left_result.concat(x[3], y[3], z[3]);
@@ -608,12 +617,12 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_result = left_result.concat(x[4], y[4], z[4]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
 
-				left_texture = left_texture.concat(x[1], y[1]);
-				left_texture = left_texture.concat(x[5], y[5]);
-				left_texture = left_texture.concat(x[3], y[3]);
-				left_texture = left_texture.concat(x[1], y[1]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[5], y[5]);
+				left_texture = left_texture.concat(tx[1], ty[1]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
+				left_texture = left_texture.concat(tx[3], ty[3]);
+				left_texture = left_texture.concat(tx[1], ty[1]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
 
 				left_number += 2;
 
@@ -621,9 +630,9 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_result = right_result.concat(x[5], y[5], z[5]);
 				right_result = right_result.concat(x[4], y[4], z[4]);
 
-				right_texture = right_texture.concat(x[2], y[2]);
-				right_texture = right_texture.concat(x[5], y[5]);
-				right_texture = right_texture.concat(x[4], y[4]);
+				right_texture = right_texture.concat(tx[2], ty[2]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
 
 				right_number ++;
 			}else{
@@ -634,12 +643,12 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				right_result = right_result.concat(x[4], y[4], z[4]);
 				right_result = right_result.concat(x[5], y[5], z[5]);
 
-				right_texture = right_texture.concat(x[1], y[1]);
-				right_texture = right_texture.concat(x[5], y[5]);
-				right_texture = right_texture.concat(x[3], y[3]);
-				right_texture = right_texture.concat(x[1], y[1]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[5], y[5]);
+				right_texture = right_texture.concat(tx[1], ty[1]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
+				right_texture = right_texture.concat(tx[3], ty[3]);
+				right_texture = right_texture.concat(tx[1], ty[1]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
 
 				right_number += 2;
 
@@ -647,70 +656,72 @@ function devide_draw(left, right, tri_result, tri_texture, gl){
 				left_result = left_result.concat(x[5], y[5], z[5]);
 				left_result = left_result.concat(x[4], y[4], z[4]);
 
-				left_texture = left_texture.concat(x[2], y[2]);
-				left_texture = left_texture.concat(x[5], y[5]);
-				left_texture = left_texture.concat(x[4], y[4]);
+				left_texture = left_texture.concat(tx[2], ty[2]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
 
 				left_number ++;
 			}
+			
+			
 			rest ++;
 		}
 		else if (((tri_result[i * 9 + 6] <= mid) && (tri_result[i * 9 + 3] <= mid)) || ((tri_result[i * 9 + 6] >= mid) && (tri_result[i * 9 + 3] >= mid))){
-			fz(1, 3, 4);
-			fz(2, 3, 5);/*
-			if ((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid)){
-				left_result = left_result.concat(x[1], y[1], z[1]);
+			fz(1, 2, 4);
+			fz(1, 3, 5);
+			if ((tri_result[i * 9 + 6] <= mid) && (tri_result[i * 9 + 3] <= mid)){
 				left_result = left_result.concat(x[2], y[2], z[2]);
+				left_result = left_result.concat(x[3], y[3], z[3]);
 				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[4], y[4], z[4]);
-				left_result = left_result.concat(x[2], y[2], z[2]);
+				left_result = left_result.concat(x[3], y[3], z[3]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
+				left_result = left_result.concat(x[4], y[4], z[4]);
 
-				left_texture = left_texture.concat(x[1], y[1]);
-				left_texture = left_texture.concat(x[2], y[2]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[4], y[4]);
-				left_texture = left_texture.concat(x[2], y[2]);
-				left_texture = left_texture.concat(x[5], y[5]);
+				left_texture = left_texture.concat(tx[2], ty[2]);
+				left_texture = left_texture.concat(tx[3], ty[3]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
+				left_texture = left_texture.concat(tx[3], ty[3]);
+				left_texture = left_texture.concat(tx[5], ty[5]);
+				left_texture = left_texture.concat(tx[4], ty[4]);
 
 				left_number += 2;
 
-				right_result = right_result.concat(x[3], y[3], z[3]);
+				right_result = right_result.concat(x[1], y[1], z[1]);
 				right_result = right_result.concat(x[4], y[4], z[4]);
 				right_result = right_result.concat(x[5], y[5], z[5]);
 
-				right_texture = right_texture.concat(x[3], y[3]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[5], y[5]);
+				right_texture = right_texture.concat(tx[1], ty[1]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
 
 				right_number ++;
 			}else{
-				right_result = right_result.concat(x[1], y[1], z[1]);
 				right_result = right_result.concat(x[2], y[2], z[2]);
+				right_result = right_result.concat(x[3], y[3], z[3]);
 				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[4], y[4], z[4]);
-				right_result = right_result.concat(x[2], y[2], z[2]);
+				right_result = right_result.concat(x[3], y[3], z[3]);
 				right_result = right_result.concat(x[5], y[5], z[5]);
+				right_result = right_result.concat(x[4], y[4], z[4]);
 
-				right_texture = right_texture.concat(x[1], y[1]);
-				right_texture = right_texture.concat(x[2], y[2]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[4], y[4]);
-				right_texture = right_texture.concat(x[2], y[2]);
-				right_texture = right_texture.concat(x[5], y[5]);
+				right_texture = right_texture.concat(tx[2], ty[2]);
+				right_texture = right_texture.concat(tx[3], ty[3]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
+				right_texture = right_texture.concat(tx[3], ty[3]);
+				right_texture = right_texture.concat(tx[5], ty[5]);
+				right_texture = right_texture.concat(tx[4], ty[4]);
 
 				right_number += 2;
 
-				left_result = left_result.concat(x[3], y[3], z[3]);
+				left_result = left_result.concat(x[1], y[1], z[1]);
 				left_result = left_result.concat(x[4], y[4], z[4]);
 				left_result = left_result.concat(x[5], y[5], z[5]);
 
-				left_texture = left_texture.concat(x[3], y[3]);
+				left_texture = left_texture.concat(tx[1], ty[1]);
 				left_texture = left_texture.concat(x[4], y[4]);
 				left_texture = left_texture.concat(x[5], y[5]);
 
 				left_number ++;
-			}*/
+			}
 			rest ++;
 		}
 	}

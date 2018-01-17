@@ -89,6 +89,21 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         return;
       }
 
+      __Program_1 = gl.createProgram();
+      gl.attachShader(__Program_1, vertexShader);
+      gl.attachShader(__Program_1, fragmentShader);
+      gl.linkProgram(__Program_1);
+      if (!gl.getProgramParameter(__Program_1, gl.LINK_STATUS)) {
+        console.error('ERROR linking program!', gl.getProgramInfoLog(program));
+        return;
+      }
+      gl.validateProgram(__Program_1);
+      if (!gl.getProgramParameter(__Program_1, gl.VALIDATE_STATUS)) {
+        console.error('ERROR validating program!',
+                      gl.getProgramInfoLog(__Program_1));
+        return;
+      }
+
       //
       // Create buffer
       //
@@ -96,6 +111,10 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var allVertices = parent.vertices;
       var allIndices = parent.indices;
       var allTexCoords = parent.texCoords;
+      console.log("allVertices", allVertices);
+      console.log("allIndices", allIndices);
+      console.log("allTexCoords", allTexCoords);
+
 
       var allPosVertexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, allPosVertexBufferObject);
@@ -139,13 +158,13 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
           gl.FALSE,
           2 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
           0);
-      //gl.enableVertexAttribArray(texCoordAttribLocation);
+      gl.enableVertexAttribArray(texCoordAttribLocation);
 
       //
       // Create texture
       //
-      var tex = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, tex);
+      __tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, __tex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -214,9 +233,10 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.bindTexture(gl.TEXTURE_2D, __tex);
         gl.activeTexture(gl.TEXTURE0);
-        gl.drawElements(gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
+
+        AAA(gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
         if (count == 50) {
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
