@@ -590,8 +590,12 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 	}
-	else
+	else{
+		if (mid == right)
+			return;
 		devide_draw(left, mid, left_result, left_texture, left_normal, gl);
+	}
+		
 
 
 	
@@ -618,8 +622,12 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
-	else
+	else{
+		if (mid == left)
+			return;
 		devide_draw(mid, right, right_result, right_texture, right_normal, gl);
+	}
+		
 
 	
 	
