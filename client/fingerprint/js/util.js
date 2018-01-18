@@ -42,6 +42,7 @@ var __Error_flag;  // 判断是否进行了误差计算
 var Active_Number;
 var __Drawnumber = 1; //判断这个canvas是第几次用draw函数
 var __tex;
+var __texture_flag;
 
 
 getCanvas = function(canvasName) {
@@ -53,7 +54,7 @@ getCanvas = function(canvasName) {
 }
 
 rewrite = function(gl){
-			
+			__texture_flag = 1;
 			__My_index_flag = 0;  
       __PointBuffer = [];
       __ColorBuffer = [];
@@ -67,6 +68,21 @@ rewrite = function(gl){
 	//去判断这个是一个是那么状态
 	gl.my_glbufferData = gl.__proto__.bufferData;
 	gl.bufferData = function (a, b, c){
+		if (__texture_flag == 0){
+			if (a == gl.ELEMENT_ARRAY_BUFFER){
+				__My_index = b;
+				__My_index_flag = 1;
+				this.my_glbufferData(a, b, c);
+				//console.log("__My_index", b);
+			}
+			else{
+				__My_buffer = b;
+				this.my_glbufferData(a, b, c);
+				//console.log("__My_buffer", b);
+			}
+			return;
+		}
+
 		if (a == gl.ELEMENT_ARRAY_BUFFER){
 			__My_index = b;
 			__My_index_flag = 1;
@@ -93,6 +109,77 @@ rewrite = function(gl){
 
 	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
 	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
+		if (__texture_flag == 0){
+				// 在这里无法智能的判断位置和颜色
+			//console.log("进入");
+			
+			if (offset == 0){
+				__VertexPositionAttributeLocation1 = positionAttributeLocation;
+				__VertexSize = size;
+			}
+			else{
+				__VertexPositionAttributeLocation2 = positionAttributeLocation;
+			}
+
+			__VertexType = type;
+			__VertexNomalize = normalize;
+			__VertexStride = stride;
+			__VertexOffset = offset;
+			//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
+
+			// 这个是因为传入的数据内容大小，转换成数据个数
+			stride = stride / 4;  
+			offset = offset / 4;
+
+			// 重新重构数据
+			if (__My_index_flag == 1){
+				var __Tem_my_buffer = [];
+				for (var i = 0; i < __My_index.length; i++){
+					for (var j = __My_index[i] * stride; j < (__My_index[i] + 1) * stride; j++)
+						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer[j]);
+				}
+				__My_buffer = __Tem_my_buffer;
+				__My_index_flag = 0;
+				//console.log("重新赴值__My_buffer", __My_buffer);
+			}
+
+			// 这是一个合法的写法，stride等于0，即位没有总长就是数据的长度
+			if (stride == 0)
+			stride = size;
+
+			//将数据分到位置和颜色
+			if (__VertexOffset == 0){	
+				// 将数据处理出来
+				for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+					for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
+					__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
+				// 将float系统转换成int系统
+				// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
+
+				// 在这里vertex是原始数据， 不进行转化
+
+				//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
+				//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+				
+			}
+			else{
+				// 判断以后要用颜色
+				__ColorFlag = 1;
+				// 将数据处理出来
+				for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+					for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
+					__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
+				// 将float系统转换成int系统
+				// 颜色不进行转换
+				//for (var i =0; i < __ActiveBuffer_frag.length; i++)
+				//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
+			}
+			//console.log("完成");
+				return;
+		}
+
+
+
 		// 在这里无法智能的判断位置和颜色
 		//console.log("进入");
 		if (offset == 0){
@@ -218,6 +305,43 @@ rewrite = function(gl){
 
 	//gl.my_drawArrays = gl.__proto__.drawArrays;
 	BBB = function(primitiveType, offset, count){
+		if (__texture_flag == 0){
+				//在这里进行点数据的转换
+			//console.log("原始点的数据", __ActiveBuffer_vertex);
+			//console.log("传入的转换矩阵", __Mworld);
+			__ActiveBuffer_vertex = my_m4.vec_max_mul(__ActiveBuffer_vertex, __Mworld);
+			//console.log("处理后点的数据", __ActiveBuffer_vertex);
+			// 这一段就是测试用的
+			
+
+			for (var i =0; i < __ActiveBuffer_vertex.length; i++)
+				if (i % 3 != 2)
+					__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+				else
+					__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
+			console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
+			console.log("颜色的计算",__ActiveBuffer_frag);	 
+
+			
+			var canvas_buffer = [-1.0, -1.0, 
+				1.0, -1.0, 
+			-1.0,  1.0, 
+			-1.0,  1.0,
+				1.0, -1.0, 
+				1.0,  1.0]; 
+			var new_vertex_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+			gl.my_useProgram(__Program);
+			var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+			var traingles_fra_loc = gl.getUniformLocation(__Program, "tri_color");
+			gl.uniform3fv(traingles_vex_loc, __ActiveBuffer_vertex);
+			gl.uniform3fv(traingles_fra_loc, __ActiveBuffer_frag);
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			return;
+		}
+
 		console.log("在这里调用了draw");
 		//在这里进行点数据的转换
 		console.log("原始点的数据", __ActiveBuffer_vertex);

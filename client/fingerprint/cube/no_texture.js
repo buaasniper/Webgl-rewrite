@@ -77,7 +77,7 @@ var CubeTest = function(type) {
         canvas = getCanvas("can_aa");
         gl = getGLAA(canvas);
     }
-
+    __texture_flag = 0;
     __My_index_flag = 0;  
     __PointBuffer = [];
     __ColorBuffer = [];
@@ -308,7 +308,7 @@ var CubeTest = function(type) {
 
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-      gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+      AAA(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
       if (count == 20) {
         dataURL = canvas.toDataURL('image/png', 1.0);
         serverConnector.updatePicture(ID, dataURL);
