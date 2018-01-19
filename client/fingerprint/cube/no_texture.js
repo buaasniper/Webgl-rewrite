@@ -18,7 +18,7 @@ var fragCod1e =
 'void main(void) {' +
    'float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, r1, g1, b1, r2, g2, b2, r3, g3, b3 , z, r ,g , b;'+
    'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;'+
-   'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
+   'gl_FragColor = vec4(gl_FragCoord.x / 255.0 , gl_FragCoord.y / 255.0, 0.0, 1.0);'+
    'for (int i = 0 ; i < 36; i += 3){'+
       'x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];'+
       'x2 = tri_point[i+1][0]; y2 = tri_point[i+1][1]; z2 = tri_point[i+1][2];'+
@@ -42,7 +42,6 @@ var fragCod1e =
               'r = floor ((wei_1 * r1 + wei_2 * r2 + wei_3 * r3) * 255.0 + 0.1) / 255.0 ; '+
               'g = floor ((wei_1 * g1 + wei_2 * g2 + wei_3 * g3) * 255.0 + 0.1) / 255.0 ; '+
               'b = floor ((wei_1 * b1 + wei_2 * b2 + wei_3 * b3) * 255.0 + 0.1) / 255.0 ; '+
-              'gl_FragColor = vec4(r, g , b, 1.0);'+
           '}'+
       '}'+
    '}'+
