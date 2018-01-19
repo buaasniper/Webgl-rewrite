@@ -171,7 +171,7 @@ var LineTest = function(type) {
 
                     dataURL = canvas.toDataURL('image/png', 1.0);
                     console.log("Line test result:", calcSHA1(dataURL));
-                    console.log(dataURL);
+                    //console.log(dataURL);
                     sender.getData(gl, ID);
                     cb(level);
                 }

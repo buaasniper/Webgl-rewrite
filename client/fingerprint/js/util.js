@@ -279,9 +279,9 @@ rewrite = function(gl){
 		}
 		*/
 		//console.log("完成");
-		console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
-		console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
-		console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
+		//console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
+		//console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
+		//console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
 	}
 	
 
@@ -322,7 +322,7 @@ rewrite = function(gl){
 			}
 			for (var i = 3 * count; i < __ActiveBuffer_vertex.length; i++)
 				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[i]);
-			console.log(line_buffer);
+			//console.log(line_buffer);
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
 				-1.0,  1.0, 
@@ -355,8 +355,8 @@ rewrite = function(gl){
 					__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 				else
 					__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
-			console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
-			console.log("颜色的计算",__ActiveBuffer_frag);	 
+			//console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
+			//console.log("颜色的计算",__ActiveBuffer_frag);	 
 
 			
 			var canvas_buffer = [-1.0, -1.0, 

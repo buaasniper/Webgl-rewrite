@@ -306,7 +306,7 @@ var CubeTest = function(type) {
       if (count == 20) {
         dataURL = canvas.toDataURL('image/png', 1.0);
         console.log("cube test result:", calcSHA1(dataURL));
-        console.log(dataURL);
+        //console.log(dataURL);
         //window.open(dataURL);
         serverConnector.updatePicture(ID, dataURL);
         cancelAnimationFrame(frame);
