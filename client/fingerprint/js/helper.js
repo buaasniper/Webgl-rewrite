@@ -37,7 +37,7 @@ var ServerConnector = function(clientid, num_test) {
     var xhttp = new XMLHttpRequest();
     var url = this.address + "/receive";
     var data = JSON.stringify(readyToSend);
-    console.log(data);
+    //console.log(data);
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         console.log(data);

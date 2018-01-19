@@ -305,12 +305,14 @@ var CubeTest = function(type) {
       //console.log("__Matrix0", __Matrix0);
 
 
-
+      console.log("aaaaaaaaaaaa");
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
       AAA(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
       if (count == 20) {
         dataURL = canvas.toDataURL('image/png', 1.0);
+        console.log("cube test result:", calcSHA1(dataURL));
+        //console.log("aaaaa");
         serverConnector.updatePicture(ID, dataURL);
         cancelAnimationFrame(frame);
         cb(level);

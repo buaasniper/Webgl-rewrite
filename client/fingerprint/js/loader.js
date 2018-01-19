@@ -224,6 +224,7 @@
       
       this.testList.push(new CubeTest('normal'));
       this.testList.push(new CubeTest('aa'));
+      /*
       this.testList.push(new CameraTest());
       
       this.testList.push(new LineTest('normal'));
@@ -241,7 +242,7 @@
       this.testList.push(new ClippingTest());
       this.testList.push(new BubbleTest());
       this.testList.push(new CompressedTextureTest());
-      this.testList.push(new ShadowTest());
+      this.testList.push(new ShadowTest());*/
       
       this.asyncTests = [];
       //language detection is done by another js file
