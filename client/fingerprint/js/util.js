@@ -297,7 +297,6 @@ rewrite = function(gl){
 	//gl.my_drawElements = gl.__proto__.drawElements;
 	AAA = function (a , b, c, d){
 	  // 这里暂时默认是三角形
-	  console.log("FUCK!!!!!!!!!!");
 	  BBB(a , 0, b);
 	  //console.log("my_drawElements  b * 3", b * 3);
 	}
