@@ -197,7 +197,7 @@ rewrite = function(gl){
 		__VertexNomalize = normalize;
 		__VertexStride = stride;
 		__VertexOffset = offset;
-		this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
+		//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
 
 		// 这个是因为传入的数据内容大小，转换成数据个数
 		stride = stride / 4;  
@@ -378,15 +378,15 @@ rewrite = function(gl){
 			return;
 		}
 
-		console.log("在这里调用了draw");
+		//console.log("在这里调用了draw");
 		//在这里进行点数据的转换
-		console.log("原始点的数据", __ActiveBuffer_vertex);
-		console.log("传入的转换矩阵", __Mworld);
+		//console.log("原始点的数据", __ActiveBuffer_vertex);
+		//console.log("传入的转换矩阵", __Mworld);
 		__ActiveBuffer_vertex_result = my_m4.vec_max_mul(__ActiveBuffer_vertex, __Mworld);
 		//console.log("处理后点的数据", __ActiveBuffer_vertex);
 		// 这一段就是测试用的
 		
-		console.log("__Drawnumber",__Drawnumber);	
+		//console.log("__Drawnumber",__Drawnumber);	
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 				if (i % 3 != 2)
 					__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
@@ -395,7 +395,7 @@ rewrite = function(gl){
 			//console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
 			//console.log("颜色的计算",__ActiveBuffer_frag);	 
 
-		console.log("转化成pixel的位置",__ActiveBuffer_vertex_result);	
+		//console.log("转化成pixel的位置",__ActiveBuffer_vertex_result);	
 	
 		var canvas_buffer = [
 			0.0, -1.0, 
@@ -435,7 +435,7 @@ rewrite = function(gl){
 		var tri_texture = [];
 		var tri_normal = [];
 		var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
-		console.log("__My_index.length",__My_index.length);
+		//console.log("__My_index.length",__My_index.length);
 		for (var i = 0; i < __My_index.length; i+= 3){
 			x1 = __ActiveBuffer_vertex_result[i * 3];
 			y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
@@ -478,9 +478,9 @@ rewrite = function(gl){
 
 			}
 		}
-		console.log("tri_result",tri_result);
-		console.log("tri_texture",tri_texture);
-		console.log("tri_normal",tri_normal);
+		//console.log("tri_result",tri_result);
+		//console.log("tri_texture",tri_texture);
+		//console.log("tri_normal",tri_normal);
 
 
 		devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);

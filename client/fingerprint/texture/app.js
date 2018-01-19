@@ -105,29 +105,29 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var allVertices = parent.vertices;
       var allIndices = parent.indices;
       var allTexCoords = parent.texCoords;
-      console.log("allVertices", allVertices);
-      console.log("allIndices", allIndices);
-      console.log("allTexCoords", allTexCoords);
+      //console.log("allVertices", allVertices);
+      //console.log("allIndices", allIndices);
+      //console.log("allTexCoords", allTexCoords);
 
 
       var allPosVertexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, allPosVertexBufferObject);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(allVertices),
                     gl.STATIC_DRAW);
-      console.log("allVertices", allVertices);
+      //console.log("allVertices", allVertices);
 
       var allTexCoordVertexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, allTexCoordVertexBufferObject);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(allTexCoords),
                     gl.STATIC_DRAW);
-      console.log("allTexCoords", allTexCoords);
+      //console.log("allTexCoords", allTexCoords);
 
 
       var allIndexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, allIndexBufferObject);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(allIndices),
                     gl.STATIC_DRAW);
-      console.log("allIndices", allIndices);
+      //console.log("allIndices", allIndices);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, allPosVertexBufferObject);
       var positionAttribLocation =
@@ -152,7 +152,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
           gl.FALSE,
           2 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
           0);
-      gl.enableVertexAttribArray(texCoordAttribLocation);
+      //gl.enableVertexAttribArray(texCoordAttribLocation);
 
       //
       // Create texture
@@ -232,6 +232,8 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
 
         AAA(gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
         if (count == 50) {
+          dataURL = canvas.toDataURL('image/png', 1.0);
+          console.log("texture test result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();
