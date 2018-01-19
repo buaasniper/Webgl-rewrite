@@ -18,7 +18,7 @@ var fragCod1e =
 'void main(void) {' +
    'float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, r1, g1, b1, r2, g2, b2, r3, g3, b3 , z, r ,g , b;'+
    'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;'+
-   'gl_FragColor = vec4(gl_FragCoord.x / 255.0 / 2.0 + gl_FragCoord.y / 255.0 / 2.0 , gl_FragCoord.y / 255.0, 0.0, 1.0);'+
+   'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
    'for (int i = 0 ; i < 36; i += 3){'+
       'x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];'+
       'x2 = tri_point[i+1][0]; y2 = tri_point[i+1][1]; z2 = tri_point[i+1][2];'+
@@ -34,14 +34,15 @@ var fragCod1e =
           'C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);'+
           'D = -1.0 * (A * x1 + B * y1 + C * z1);'+
           'K = -1.0 * (A * x0 + B * y0 + D) / C;'+
-          'wei_1 = floor((x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 50.0) / 50.0;'+
-          'wei_2 = floor((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 50.0) / 50.0;'+
-          'wei_3 = floor((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 50.0) / 50.0;'+
+          'wei_1 = 0.2;'+
+          'wei_2 = 0.3;'+
+          'wei_3 = 0.4;'+
           'if ((C > 0.0) && (K <= 2.0) && (K >= -2.0) && (K > z)){'+
               'z = K;'+
-              'r = floor ((wei_1 * r1 + wei_2 * r2 + wei_3 * r3) * 255.0 + 0.1) / 255.0 ; '+
-              'g = floor ((wei_1 * g1 + wei_2 * g2 + wei_3 * g3) * 255.0 + 0.1) / 255.0 ; '+
-              'b = floor ((wei_1 * b1 + wei_2 * b2 + wei_3 * b3) * 255.0 + 0.1) / 255.0 ; '+
+              'r = wei_1 * r1 + wei_2 * r2 + wei_3 * r3 ; '+
+              'g = wei_1 * g1 + wei_2 * g2 + wei_3 * g3 ; '+
+              'b = wei_1 * b1 + wei_2 * b2 + wei_3 * b3 ; '+
+              'gl_FragColor = vec4(r, g , b, 1.0);'+
           '}'+
       '}'+
    '}'+
