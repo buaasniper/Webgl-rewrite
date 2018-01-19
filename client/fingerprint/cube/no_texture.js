@@ -56,7 +56,7 @@ var fragCod1e =
     'if (x - floor(x) > 0.499){return (floor(x) + 0.6) ;}else{return (floor(x) + 0.1);}'+
 '}'+
 'float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2){ '+
-'float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0.0 > kb) && (0.0 < kc)) || ((0.0 < kb) && (0.0 > kc)) ) {return 1.0;} return 0.0; '+
+'float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0.0001 > kb) && (-0.0001 < kc)) || ((-0.0001 < kb) && (0.0001 > kc)) ) {return 1.0;} return 0.0; '+
 
 '}'
 ;
