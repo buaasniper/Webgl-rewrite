@@ -39,9 +39,9 @@ var fragCod1e =
           'wei_3 = floor((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 50.0) / 50.0;'+
           'if ((C > 0.0) && (K <= 2.0) && (K >= -2.0) && (K > z)){'+
               'z = K;'+
-              'r = floor ((wei_1 * r1 + wei_2 * r2 + wei_3 * r3) * 255.0) / 255.0 ; '+
-              'g = floor ((wei_1 * g1 + wei_2 * g2 + wei_3 * g3) * 255.0) / 255.0 ; '+
-              'b = floor ((wei_1 * b1 + wei_2 * b2 + wei_3 * b3) * 255.0) / 255.0 ; '+
+              'r = floor ((wei_1 * r1 + wei_2 * r2 + wei_3 * r3) * 255.0 + 0.1) / 255.0 ; '+
+              'g = floor ((wei_1 * g1 + wei_2 * g2 + wei_3 * g3) * 255.0 + 0.1) / 255.0 ; '+
+              'b = floor ((wei_1 * b1 + wei_2 * b2 + wei_3 * b3) * 255.0 + 0.1) / 255.0 ; '+
               'gl_FragColor = vec4(r, g , b, 1.0);'+
           '}'+
       '}'+
