@@ -311,8 +311,9 @@ var CubeTest = function(type) {
       AAA(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
       if (count == 20) {
         dataURL = canvas.toDataURL('image/png', 1.0);
+        console.log("cube test result:", calcSHA1(dataURL));
         console.log(dataURL);
-        window.open(dataURL);
+        //window.open(dataURL);
         serverConnector.updatePicture(ID, dataURL);
         cancelAnimationFrame(frame);
         cb(level);
