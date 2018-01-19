@@ -223,7 +223,7 @@
       root.sender = sender = new Sender();
       
       this.testList.push(new CubeTest('normal'));
-      //this.testList.push(new CubeTest('aa'));
+      this.testList.push(new CubeTest('aa'));
       /*
       this.testList.push(new CameraTest());
       

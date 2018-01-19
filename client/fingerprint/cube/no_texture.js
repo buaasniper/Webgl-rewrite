@@ -1,18 +1,4 @@
-/*
-var vertexShaderText = [
-  'precision mediump float;', '', 'attribute vec3 vertPosition;',
-  'attribute vec3 vertColor;', 'varying vec3 fragColor;', '',
-  'void main()', '{', '  fragColor = vertColor;',
-  '  gl_Position = vec4(vertPosition, 1.0);', 
-  'gl_PointSize = 1.0;', '}'
-].join('\n');
 
-
-var fragmentShaderText = [
-  'precision mediump float;', '', 'varying vec3 fragColor;', 'void main()', '{',
-  '  gl_FragColor = vec4(fragColor, 1.0);', '}'
-].join('\n');
-*/
 var image_id = 0;
 var serverConnector = new ServerConnector('123', 2);
 var vertCode =
@@ -22,7 +8,7 @@ var vertCode =
    'gl_PointSize = 1.0;'+
 '}';
 
-var fragCode =
+var fragCod1e =
 'precision mediump float;' +
 'float grid(float size);'+
 'float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3);'+
@@ -53,7 +39,7 @@ var fragCode =
           'wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);'+
           'if ((C > 0.0) && (K <= 2.0) && (K >= -2.0) && (K > z)){'+
               'z = K;'+
-              'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
+              'gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);'+
           '}'+
       '}'+
    '}'+
@@ -68,6 +54,7 @@ var fragCode =
 '}'
 ;
 
+//'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
 var CubeTest = function(type) {
 	var ID = sender.getID();
   this.begin = function(canvas, cb, level) {
@@ -105,7 +92,7 @@ var CubeTest = function(type) {
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
     gl.shaderSource(vertexShader, vertCode);
-    gl.shaderSource(fragmentShader, fragCode);
+    gl.shaderSource(fragmentShader, fragCod1e);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -305,7 +292,7 @@ var CubeTest = function(type) {
       //console.log("__Matrix0", __Matrix0);
 
 
-      console.log("aaaaaaaaaaaa");
+      //console.log("aaaaaaaaaaaa");
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
       AAA(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);

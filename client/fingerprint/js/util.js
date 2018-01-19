@@ -297,6 +297,7 @@ rewrite = function(gl){
 	//gl.my_drawElements = gl.__proto__.drawElements;
 	AAA = function (a , b, c, d){
 	  // 这里暂时默认是三角形
+	  console.log("FUCK!!!!!!!!!!");
 	  BBB(a , 0, b);
 	  //console.log("my_drawElements  b * 3", b * 3);
 	}
@@ -306,6 +307,7 @@ rewrite = function(gl){
 	//gl.my_drawArrays = gl.__proto__.drawArrays;
 	BBB = function(primitiveType, offset, count){
 		if (__texture_flag == 0){
+			console.log("FUCK!!!!!!!!!!");
 				//在这里进行点数据的转换
 			//console.log("原始点的数据", __ActiveBuffer_vertex);
 			//console.log("传入的转换矩阵", __Mworld);
