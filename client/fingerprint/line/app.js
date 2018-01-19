@@ -63,9 +63,10 @@ var LineTest = function(type) {
         /*=================== Shaders ====================*/
 
         // Vertex shader source code
-        var vertCode = 'attribute vec3 coordinates;' +
+        var vertCode = 
+        'attribute vec2 coordinates;' +
             'void main(void) {' +
-                ' gl_Position = vec4(coordinates, 1.0);' +
+                ' gl_Position = vec4(coordinates, 0.0 , 1.0);' +
                 ' gl_PointSize = 1.0;'+
                     '}';
 
@@ -77,11 +78,31 @@ var LineTest = function(type) {
 
                 // Compile the vertex shader
                 gl.compileShader(vertShader);
+                if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
+                    console.error('ERROR compiling vertex shader!',
+                                  gl.getShaderInfoLog(vertShader));
+                    return;
+                  }
 
                 // Fragment shader source code
-                var fragCode = 'void main(void) {' +
-                    'gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);' +
-                        '}';
+                var fragCode =
+        'precision mediump float;' +
+        'float round(float x);'+
+        'uniform vec3 line_point[600];' +
+        'void main(void) {' +
+        'float x0, y0 , x1, y1, x2, y2, k, b, y;'+
+        'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; '+
+        'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
+        'for (int i = 0 ; i < 600; i += 2){'+
+            'x1 = line_point[i][0];   y1 = line_point[i][1];  '+
+            'x2 = line_point[i+1][0]; y2 = line_point[i+1][1]; '+
+            'if (((x1 - x0) * (x2 - x0) < 0.0001) && ((y1 - y0) * (y2 - y0) < 0.0001)){' +
+                'k = (y2 - y1)/ (x2 - x1); y = y1 + (x0 - x1) * k; if (abs(y0 - y) < 1.0) {gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);}'+
+            '}'+
+        
+   '}'+
+'}' 
+;
                     // Create fragment shader object
                     var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -90,6 +111,11 @@ var LineTest = function(type) {
 
                     // Compile the fragmentt shader
                     gl.compileShader(fragShader);
+                    if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
+                        console.error('ERROR compiling fragment shader!',
+                                      gl.getShaderInfoLog(fragShader));
+                        return;
+                      }
 
                     // Create a shader program object to store
                     // the combined shader program
@@ -137,8 +163,8 @@ var LineTest = function(type) {
 
                     // Draw the triangle
                     //gl.drawArrays(gl.LINES, 0, 256);
-                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
-                    gl.drawArrays(gl.LINES, 256, 6);
+                    BBB(gl.LINE_STRIP, 0, 256);
+                    //gl.drawArrays(gl.LINES, 256, 6);
 
 
                     //gl.drawArrays(gl.LINES, 0, 6);

@@ -305,8 +305,43 @@ rewrite = function(gl){
 
 	//gl.my_drawArrays = gl.__proto__.drawArrays;
 	BBB = function(primitiveType, offset, count){
+		if (primitiveType == gl.LINE_STRIP){
+			var line_buffer = [];
+			for (var i =0; i < __ActiveBuffer_vertex.length; i++)
+				if (i % 3 != 2)
+				__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+				else
+				__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
+			for (var i = 0; i < count - 1; i++){
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i]);
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i + 1]);
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i + 2]);
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i + 3]);
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i + 4]);
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[3 * i + 5]);
+			}
+			for (var i = 3 * count; i < __ActiveBuffer_vertex.length; i++)
+				line_buffer = line_buffer.concat(__ActiveBuffer_vertex[i]);
+			console.log(line_buffer);
+			var canvas_buffer = [-1.0, -1.0, 
+				1.0, -1.0, 
+				-1.0,  1.0, 
+				-1.0,  1.0,
+				1.0, -1.0, 
+				1.0,  1.0]; 
+			var new_vertex_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+			gl.my_useProgram(__Program);
+			var traingles_vex_loc = gl.getUniformLocation(__Program, "line_point");
+			gl.uniform3fv(traingles_vex_loc, line_buffer);
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			return;
+		}
+
 		if (__texture_flag == 0){
-			console.log("FUCK!!!!!!!!!!");
+			//console.log("FUCK!!!!!!!!!!");
 				//在这里进行点数据的转换
 			//console.log("原始点的数据", __ActiveBuffer_vertex);
 			//console.log("传入的转换矩阵", __Mworld);
@@ -326,8 +361,8 @@ rewrite = function(gl){
 			
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
-			-1.0,  1.0, 
-			-1.0,  1.0,
+				-1.0,  1.0, 
+				-1.0,  1.0,
 				1.0, -1.0, 
 				1.0,  1.0]; 
 			var new_vertex_buffer = gl.createBuffer();
