@@ -168,7 +168,7 @@ rewrite = function(gl){
 				// 将数据处理出来
 				for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
 					for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
-					__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
+					__ActiveBuffer_frag = __ActiveBuffer_frag.concat( Math.round(__My_buffer[j] * 1000) /1000);
 				// 将float系统转换成int系统
 				// 颜色不进行转换
 				//for (var i =0; i < __ActiveBuffer_frag.length; i++)
