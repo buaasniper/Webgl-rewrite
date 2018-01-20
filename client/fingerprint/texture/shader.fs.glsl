@@ -30,7 +30,7 @@ void main()
           z = K;
           tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/10000.0 * 255.0 + 0.1) / 255.0 ;
           ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/10000.0 * 255.0 + 0.1) / 255.0 ;
-          gl_FragColor = texture2D(sampler, vec2 (x1 / 255.0, y1 / 255.0));
+          gl_FragColor = texture2D(sampler, vec2 (x0 / 255.0, y0 / 255.0));
         }
       }
   }
