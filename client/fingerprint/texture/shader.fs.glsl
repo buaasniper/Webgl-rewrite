@@ -8,10 +8,12 @@ uniform sampler2D sampler;
 
 void main()
 {
-  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty;
+  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, j;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
+  j = 0.1;
   gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
   for (int i = 0 ; i < 510; i += 3){
+      j += 3.0;
       x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];
       x2 = tri_point[i+1][0]; y2 = tri_point[i+1][1]; z2 = tri_point[i+1][2];
       x3 = tri_point[i+2][0]; y3 = tri_point[i+2][1]; z3 = tri_point[i+2][2];
@@ -30,7 +32,8 @@ void main()
           z = K;
           tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/10000.0 * 255.0 + 0.1) / 255.0 ;
           ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/10000.0 * 255.0 + 0.1) / 255.0 ;
-          gl_FragColor = texture2D(sampler, vec2 (floor(round (x0)) / 255.0, floor (round (y0)) / 255.0));
+          //gl_FragColor = texture2D(sampler, vec2 (floor(round (x0)) / 255.0, floor (round (y0)) / 255.0));
+          gl_FragColor = vec4(floor(j)/ 255.0, floor(j) / 255.0, floor(j) / 255.0, 1.0);
         }
       }
   }
