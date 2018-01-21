@@ -8,7 +8,7 @@ uniform sampler2D sampler;
 
 void main()
 {
-  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, j;
+  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, j, weight1, weight2;
   vec4 color0, color1, color2, color3, color4, color5, color6;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
   j = 0.1;
@@ -50,9 +50,13 @@ void main()
           tx3 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
           ty3 = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
           color3 = texture2D(sampler, vec2 (tx3, ty3));
-          color4 = (ty * 255.0 - floor(ty * 255.0)) * color2 + (1.0 - (ty * 255.0 - floor(ty * 255.0))) * color0;
-          color5 = (ty * 255.0 - floor(ty * 255.0)) * color3 + (1.0 - (ty * 255.0 - floor(ty * 255.0))) * color1;
-          color6 = (tx * 255.0 - floor(tx * 255.0)) * color5 + (1.0 - (tx * 255.0 - floor(tx * 255.0))) * color4;
+          weight1 = round ((ty * 255.0 - floor(ty * 255.0))* 1000.0);
+          weight2 = 1000.0 - round ((ty * 255.0 - floor(ty * 255.0))* 1000.0);
+          color4 = floor((floor(weight1) * color2 + floor(weight2) * color0) / 1000.0 * 255.0 + 0.1) / 255.0;
+          color5 = floor((floor(weight1) * color3 + floor(weight2) * color1) / 1000.0 * 255.0 + 0.1) / 255.0;
+          weight1 = round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
+          weight2 = 1000.0 - round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
+          color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
           gl_FragColor = color6;
           
           //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
