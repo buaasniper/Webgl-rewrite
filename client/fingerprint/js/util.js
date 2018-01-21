@@ -478,8 +478,8 @@ rewrite = function(gl){
 
 			}
 		}
-		//console.log("tri_result",tri_result);
-		//console.log("tri_texture",tri_texture);
+		console.log("tri_result",tri_result);
+		console.log("tri_texture",tri_texture);
 		//console.log("tri_normal",tri_normal);
 
 
