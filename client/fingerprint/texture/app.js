@@ -267,3 +267,5 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
     }, this);
   };
 };
+
+
