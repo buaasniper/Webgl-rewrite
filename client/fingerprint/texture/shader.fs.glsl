@@ -9,6 +9,7 @@ uniform sampler2D sampler;
 void main()
 {
   float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, j;
+  vec4 color0, color1, color2, color3;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
   j = 0.1;
   gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -35,9 +36,20 @@ void main()
           z = K;
           //tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/1000.0 * 255.0 + 0.1) / 255.0 ;
           //ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/1000.0 * 255.0 + 0.1) / 255.0 ;
+          tx = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
+          ty = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 ) / 255.0;
+          color0 = texture2D(sampler, vec2 (tx, ty));
+          tx = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
+          ty = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 ) / 255.0;
+          color1 = texture2D(sampler, vec2 (tx, ty));
+          tx = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
+          ty = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
+          color2 = texture2D(sampler, vec2 (tx, ty));
           tx = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
           ty = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
-          gl_FragColor = texture2D(sampler, vec2 (tx, ty));
+          color3 = texture2D(sampler, vec2 (tx, ty));
+          gl_FragColor = (color0 + color1 + color2 + color3)/ 4.0;
+          //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
           //gl_FragColor = vec4(floor(j)/ 255.0, floor(j) / 255.0, floor(j) / 255.0, 1.0);
           //gl_FragColor = texture2D(sampler, vec2 (floor(j)/ 255.0, floor(j) / 255.0));
