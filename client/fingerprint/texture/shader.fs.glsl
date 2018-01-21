@@ -35,8 +35,8 @@ void main()
           z = K;
           //tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/1000.0 * 255.0 + 0.1) / 255.0 ;
           //ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/1000.0 * 255.0 + 0.1) / 255.0 ;
-          tx = wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0];
-          ty = wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1];
+          tx = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
+          ty = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 ) / 255.0;
           gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
           //gl_FragColor = vec4(floor(j)/ 255.0, floor(j) / 255.0, floor(j) / 255.0, 1.0);
