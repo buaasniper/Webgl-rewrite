@@ -60,7 +60,7 @@ void main()
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
           //gl_FragColor = vec4( w(x0) * w(y2) / 16384.0 - 0.5 , w(x2) * w(y3) / 16384.0 - 0.5, 0.0 , 1.0);
           
-          gl_FragColor = vec4( w( w ( w(x0) * w(y2) - 7333.0) / 16384.0 * 255.0) / 255.0 , w (w(w(x0) * w(y2) - 9217.0 ) / 16384.0 * 255.0)/ 255.0  , 0.0 , 1.0);
+          gl_FragColor = vec4( w( w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y2)) - 24576.0) / 49152.0 * 255.0) / 255.0 , w( w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) - 24576.0) / 49152.0 * 255.0) / 255.0   , 0.0 , 1.0);
 
           //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
