@@ -30,7 +30,7 @@ void main()
         //wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
         //wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
         //wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        wei_1 = round( w( w(x0) * w(y2) + w(x2) * w(y3) + w(x3) * w(y0) - w(x3) * w(y2) - w(x2) * w(y0) - w(x0) * w(y3)) / w( w(x1) * w(y2) + w(x2) * w(y3) + w(x3) * w(y1) - w(x3) * w(y2) - w(x2) * w(y1) - w(x1) * w(y3)) * 1000.0);
+        wei_1 = round( w( w(w(x0) * w(y2) + w(x2) * w(y3) + w(x3) * w(y0) )  - w(w(x3) * w(y2) - w(x2) * w(y0) - w(x0) * w(y3)) ) / w( w( w(x1) * w(y2) + w(x2) * w(y3) + w(x3) * w(y1))  - w(w(x3) * w(y2) - w(x2) * w(y1) - w(x1) * w(y3)) ) * 1000.0);
         wei_2 = round((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
         wei_3 = round((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
         if ((K <= 2.0) && (K >= -2.0) && (K > z)){
