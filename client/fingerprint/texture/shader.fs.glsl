@@ -2,7 +2,6 @@ precision mediump float;
 float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3);
 float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 float round(float x);
-float w(float x);
 uniform vec3 tri_point[333];
 uniform vec2 text_point[333];
 uniform sampler2D sampler;
@@ -27,12 +26,12 @@ void main()
         C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
         D = -1.0 * (A * x1 + B * y1 + C * z1);
         K = -1.0 * (A * x0 + B * y0 + D) / C;
-        //wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        //wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        //wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        wei_1 = round( w( w(w(x0) * w(y2) + w(x2) * w(y3) + w(x3) * w(y0) )  - w(w(x3) * w(y2) - w(x2) * w(y0) - w(x0) * w(y3)) ) / w( w( w(x1) * w(y2) + w(x2) * w(y3) + w(x3) * w(y1))  - w(w(x3) * w(y2) - w(x2) * w(y1) - w(x1) * w(y3)) ) * 1000.0);
-        wei_2 = round((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
-        wei_3 = round((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
+        wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
+        wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
+        wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
+        //wei_1 = round((x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
+        //wei_2 = round((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
+        //wei_3 = round((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
         if ((K <= 2.0) && (K >= -2.0) && (K > z)){
           z = K;
           //tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/1000.0 * 255.0 + 0.1) / 255.0 ;
@@ -58,7 +57,7 @@ void main()
           weight1 = round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           weight2 = 1000.0 - round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
-          gl_FragColor = vec4( floor(round(wei_1)) / 1000.0 , floor(round(wei_1)) / 1000.0, 0.0 , 1.0);
+          gl_FragColor = vec4( floor(round(text_point[i][0])) / 128.0 - 1.0 , floor(round(text_point[i][1])) / 128.0 - 1.0, 0.0 , 1.0);
           
           //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
@@ -78,7 +77,4 @@ float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0.0001 > kb
 }
 float round(float x) {
     if (x - floor(x) > 0.499){return (floor(x) + 0.6) ;}else{return (floor(x) + 0.1);}
-}
-float w(float x) {
-    return (floor(round(x)));
 }
