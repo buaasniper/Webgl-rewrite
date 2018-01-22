@@ -65,7 +65,7 @@ void main()
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
             if ((wei_1t < -0.5) && ( w( w(cs1) * w(flag)) - w( w(bcs1) * 1000.0) > -0.1)){
-              wei_1t = float(j);
+              wei_1t = w(flag);
             }
             flag = w(flag + 1.0);
           }
@@ -76,18 +76,18 @@ void main()
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
             if ((wei_2t < -0.5) && ( w( w(cs2) * w(flag)) - w( w(bcs2) * 1000.0) > -0.1)){
-              wei_2t = float(j);
+              wei_2t = w(flag);
             }
             flag = w(flag + 1.0);
           }
 
-          bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
-          cs1 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x1) * w(y3)) )  );
-          wei_1t = -5.0;
+          bcs3 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
+          cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x1) * w(y3)) )  );
+          wei_3t = -5.0;
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
-            if ((wei_1t < -0.5) && ( w( w(cs1) * w(flag)) - w( w(bcs1) * 1000.0) > -0.1)){
-              wei_1t = float(j);
+            if ((wei_3t < -0.5) && ( w( w(cs3) * w(flag)) - w( w(bcs3) * 1000.0) > -0.1)){
+              wei_3t = float(j);
             }
             flag = w(flag + 1.0);
           }
