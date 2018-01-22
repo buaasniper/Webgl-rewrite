@@ -9,7 +9,7 @@ uniform sampler2D sampler;
 
 void main()
 {
-  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, j, weight1, weight2;
+  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, j, weight1, weight2, bcs1, bcs2, bcs3, cs1, cs2, cs3;
   vec4 color0, color1, color2, color3, color4, color5, color6;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
   j = 0.1;
@@ -60,7 +60,7 @@ void main()
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
           //gl_FragColor = vec4( w(x0) * w(y2) / 16384.0 - 0.5 , w(x2) * w(y3) / 16384.0 - 0.5, 0.0 , 1.0);
           
-          gl_FragColor = vec4( w( w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y2)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) + 21345.0) / 49152.0 * 255.0) / 255.0 , w( w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y2)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) + 31345.0 ) / 49152.0 * 255.0) / 255.0    , 0.0 , 1.0);
+          gl_FragColor = vec4( w( w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y2)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ) / 49152.0 * 255.0) / 255.0 , w( w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y2)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) )  ) / 49152.0 * 255.0) / 255.0    , 0.0 , 1.0);
 
           //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
