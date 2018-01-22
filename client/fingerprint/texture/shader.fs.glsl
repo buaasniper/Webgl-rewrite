@@ -9,7 +9,7 @@ uniform sampler2D sampler;
 
 void main()
 {
-  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, weight1, weight2, bcs1, bcs2, bcs3, cs1, cs2, cs3;
+  float x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3, z , tx, ty, tx0, ty0, tx1, ty1,tx2, ty2,tx3, ty3, weight1, weight2, bcs1, bcs2, bcs3, cs1, cs2, cs3, ttx, tty;
   float wei_1t, wei_2t, wei_3t, flag;
   vec4 color0, color1, color2, color3, color4, color5, color6;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
@@ -92,10 +92,11 @@ void main()
             flag = w(flag + 1.0);
           }
 
-          //w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3) * w(text_point[i+2][0])))
+          ttx = w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3) * w(text_point[i+2][0])));
+          tty = w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3) * w(text_point[i+2][1])));
          
-
-          gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , w(  w( w(wei_3t)) / 1000.0    * 255.0) / 255.0, 1.0);
+          gl_FragColor = vec4 ( w(w(ttx) / 1000.0 ) / 255.0, w(w(tty) / 1000.0 ) / 255.0, 0.0, 1.0  );
+          //gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , w(  w( w(wei_3t)) / 1000.0    * 255.0) / 255.0, 1.0);
 
 
           //gl_FragColor = vec4( w( bcs1 / 16384.0 * 255.0) / 255.0 , w( cs1 / 16384.0 * 255.0) / 255.0    , 0.0 , 1.0);
