@@ -95,7 +95,7 @@ void main()
           //w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3) * w(text_point[i+2][0])))
          
 
-          gl_FragColor = vec4( w(  w( w(wei_1t))    * 255.0) / 255000.0 ,w(  w( w(wei_2t))    * 255.0) / 255000.0    , w(  w( w(wei_3t))     * 255.0) / 255000.0, 1.0);
+          gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , w(  w( w(wei_3t)) / 1000.0    * 255.0) / 255.0, 1.0);
 
 
           //gl_FragColor = vec4( w( bcs1 / 16384.0 * 255.0) / 255.0 , w( cs1 / 16384.0 * 255.0) / 255.0    , 0.0 , 1.0);
