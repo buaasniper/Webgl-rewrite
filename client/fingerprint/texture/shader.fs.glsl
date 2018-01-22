@@ -36,6 +36,7 @@ void main()
           z = K;
           //tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/1000.0 * 255.0 + 0.1) / 255.0 ;
           //ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/1000.0 * 255.0 + 0.1) / 255.0 ;
+          /*
           tx = wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0];
           ty = wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1];
           tx0 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
@@ -57,6 +58,7 @@ void main()
           weight1 = round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           weight2 = 1000.0 - round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
+          */
           //gl_FragColor = vec4( w(x0) * w(y2) / 16384.0 - 0.5 , w(x2) * w(y3) / 16384.0 - 0.5, 0.0 , 1.0);
 
           bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
@@ -92,10 +94,16 @@ void main()
             flag = w(flag + 1.0);
           }
 
-          ttx = w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3) * w(text_point[i+2][0])));
-          tty = w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3) * w(text_point[i+2][1])));
+          ttx = w(w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3) * w(text_point[i+2][0]))) / 1000.0 );
+          tty = w(w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3) * w(text_point[i+2][1]))) / 1000.0 );
          
-          gl_FragColor = vec4 ( w(w(ttx) / 1000.0 ) / 255.0, w(w(tty) / 1000.0 ) / 255.0, 0.0, 1.0  );
+          //gl_FragColor = vec4 ( w(ttx)  / 255.0, w(tty)  / 255.0, 0.0, 1.0  );
+
+          color0 = texture2D(sampler, vec2 (w(ttx)  / 255.0,w(tty)  / 255.0));
+          gl_FragColor = color0;
+
+
+
           //gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , w(  w( w(wei_3t)) / 1000.0    * 255.0) / 255.0, 1.0);
 
 
