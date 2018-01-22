@@ -81,20 +81,20 @@ void main()
             flag = w(flag + 1.0);
           }
 
-          bcs3 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
+          bcs3 =  w (   w (w(x1) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y1)) - w (   w (w(x0) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y0)) ) ); 
           cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x1) * w(y3)) )  );
           wei_3t = -5.0;
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
             if ((wei_3t < -0.5) && ( w( w(cs3) * w(flag)) - w( w(bcs3) * 1000.0) > -0.1)){
-              wei_3t = float(j);
+              wei_3t = w(flag);
             }
             flag = w(flag + 1.0);
           }
 
          
 
-          gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , 0.0, 1.0);
+          gl_FragColor = vec4( w(  w( w(wei_1t)) / 1000.0    * 255.0) / 255.0 ,w(  w( w(wei_2t)) / 1000.0    * 255.0) / 255.0    , w(  w( w(wei_3t)) / 1000.0    * 255.0) / 255.0, 1.0);
 
 
           //gl_FragColor = vec4( w( bcs1 / 16384.0 * 255.0) / 255.0 , w( cs1 / 16384.0 * 255.0) / 255.0    , 0.0 , 1.0);
