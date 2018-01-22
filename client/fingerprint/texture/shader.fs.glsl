@@ -57,7 +57,7 @@ void main()
           weight1 = round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           weight2 = 1000.0 - round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
-          gl_FragColor = vec4(tx, ty, 0.0, 1.0);
+          gl_FragColor = vec4( floor(round(x1)) / 255.0 , floor(round(y1)) / 255.0, 0.0 , 1.0);
           
           //gl_FragColor = texture2D(sampler, vec2 (tx, ty));
           //gl_FragColor = texture2D(sampler, vec2 (wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0], wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]));
