@@ -394,7 +394,7 @@ rewrite = function(gl){
 					__ActiveBuffer_vertex_result[i] = -1 * __ActiveBuffer_vertex_result[i];
 			
 			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-				__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] + 1)) * 256 /2);
+				__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
 			//console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
 			//console.log("颜色的计算",__ActiveBuffer_frag);	 
 
