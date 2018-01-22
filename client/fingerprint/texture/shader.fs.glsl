@@ -2,6 +2,7 @@ precision mediump float;
 float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, float xx3, float yy3);
 float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 float round(float x);
+float w(float x);
 uniform vec3 tri_point[333];
 uniform vec2 text_point[333];
 uniform sampler2D sampler;
@@ -29,7 +30,7 @@ void main()
         //wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
         //wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
         //wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        wei_1 = round((x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
+        wei_1 = round( w( w(x0) * w(y2) + w(x2) * w(y3) + w(x3) * w(y0) - w(x3) * w(y2) - w(x2) * w(y0) - w(x0) * w(y3)) / w( w(x1) * w(y2) + w(x2) * w(y3) + w(x3) * w(y1) - w(x3) * w(y2) - w(x2) * w(y1) - w(x1) * w(y3)) * 1000.0);
         wei_2 = round((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
         wei_3 = round((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
         if ((K <= 2.0) && (K >= -2.0) && (K > z)){
@@ -77,4 +78,7 @@ float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0.0001 > kb
 }
 float round(float x) {
     if (x - floor(x) > 0.499){return (floor(x) + 0.6) ;}else{return (floor(x) + 0.1);}
+}
+float w(float x) {
+    return (floor(round(x)));
 }
