@@ -27,31 +27,40 @@ void main()
         C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
         D = -1.0 * (A * x1 + B * y1 + C * z1);
         K = -1.0 * (A * x0 + B * y0 + D) / C;
-        wei_1 = (x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        wei_2 = (x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        wei_3 = (x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3);
-        //wei_1 = round((x0*y2 + x2*y3 + x3*y0 - x3*y2 - x2*y0- x0*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
-        //wei_2 = round((x1*y0 + x0*y3 + x3*y1 - x3*y0 - x0*y1- x1*y3)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
-        //wei_3 = round((x1*y2 + x2*y0 + x0*y1 - x0*y2 - x2*y1- x1*y0)/(x1*y2 + x2*y3 + x3*y1 - x3*y2 - x2*y1 - x1*y3) * 1000.0);
+        bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
+        cs1 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+        wei_1t = division( w(bcs1), w(cs1) );
+
+        bcs2 =  w (   w (w(x1) * w(y0)) + w (w(x0) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y0)) + w (w(x0) * w(y1)) + w (w(x1) * w(y3)) ) ); 
+        cs2 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+        wei_2t = division( w(bcs2), w(cs2) );
+
+        bcs3 =  w (   w (w(x1) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y1)) - w (   w (w(x0) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y0)) ) ); 
+        cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+        wei_3t = division( w(bcs3), w(cs3) );
+
         if ((K <= 2.0) && (K >= -2.0) && (K > z)){
           z = K;
-          //tx = floor ((floor(wei_1) * text_point[i][0] + floor(wei_2) * text_point[i+1][0] + floor(wei_3) * text_point[i+2][0])/1000.0 * 255.0 + 0.1) / 255.0 ;
-          //ty = floor ((floor(wei_1) * text_point[i][1] + floor(wei_2) * text_point[i+1][1] + floor(wei_3) * text_point[i+2][1])/1000.0 * 255.0 + 0.1) / 255.0 ;
           
-          tx = wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0];
-          ty = wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1];
-          tx0 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
-          ty0 = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 ) / 255.0;
+          tx =   w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3t) * w(text_point[i+2][0]))) / 1000.0   / 255.0 ;
+          ty =   w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 1000.0   / 255.0 ;
+
+          tx0 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) / 1000.0 ) / 255.0;
+          ty0 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 ) / 255.0;
           color0 = texture2D(sampler, vec2 (tx0, ty0));
-          tx1 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
-          ty1 = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 ) / 255.0;
+
+          tx1 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
+          ty1 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 ) / 255.0;
           color1 = texture2D(sampler, vec2 (tx1, ty1));
-          tx2 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 ) / 255.0;
-          ty2 = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
+
+          tx2 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 ) / 255.0;
+          ty2 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
           color2 = texture2D(sampler, vec2 (tx2, ty2));
-          tx3 = floor((wei_1 * text_point[i][0] + wei_2 * text_point[i+1][0] + wei_3 * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
-          ty3 = floor((wei_1 * text_point[i][1] + wei_2 * text_point[i+1][1] + wei_3 * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
+
+          tx3 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
+          ty3 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
           color3 = texture2D(sampler, vec2 (tx3, ty3));
+
           weight1 = round ((ty * 255.0 - floor(ty * 255.0))* 1000.0);
           weight2 = 1000.0 - round ((ty * 255.0 - floor(ty * 255.0))* 1000.0);
           color4 = floor((floor(weight1) * color2 + floor(weight2) * color0) / 1000.0 * 255.0 + 0.1) / 255.0;
@@ -59,24 +68,8 @@ void main()
           weight1 = round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           weight2 = 1000.0 - round ((tx * 255.0 - floor(tx * 255.0))* 1000.0);
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
-          
-          bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
-          cs1 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
-          wei_1t = division( w(bcs1), w(cs1) );
-
-          bcs2 =  w (   w (w(x1) * w(y0)) + w (w(x0) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y0)) + w (w(x0) * w(y1)) + w (w(x1) * w(y3)) ) ); 
-          cs2 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
-          wei_2t = division( w(bcs2), w(cs2) );
-
-          bcs3 =  w (   w (w(x1) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y1)) - w (   w (w(x0) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y0)) ) ); 
-          cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
-          wei_3t = division( w(bcs3), w(cs3) );
-
-
-          ttx = w(w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3t) * w(text_point[i+2][0]))) / 1000.0 );
-          tty = w(w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 1000.0 );
          
-          color0 = texture2D(sampler, vec2 (w(ttx)  / 255.0,w(tty )   / 255.0));
+          color0 = texture2D(sampler, vec2 ( tx  , ty  ));
           gl_FragColor = color0;
 
         }
