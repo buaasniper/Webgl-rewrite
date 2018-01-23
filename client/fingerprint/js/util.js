@@ -729,7 +729,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 			
 		}
 	}
-	if (left_number <= 111){
+	if (left_number <= 55){
 		var right_canvas_buffer = [
 			left * 2 / 255 - 1.0, -1.0, 
 			mid * 2 / 255 - 1, -1.0, 
@@ -754,15 +754,13 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 	}
 	else{
-		if (mid == right)
+		if (mid == right){
+			console.log("left", left, "right", right, "number", left_number);
 			return;
+		}	
 		devide_draw(left, mid, left_result, left_texture, left_normal, gl);
-	}
-		
-
-
-	
-	if (right_number <= 111){
+	}	
+	if (right_number <= 55){
 		var right_canvas_buffer = [
 			mid * 2 / 255 - 1.0, -1.0, 
 			right * 2 / 255 - 1, -1.0, 
@@ -786,17 +784,27 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 	else{
-		if (mid == left)
+		if (mid == left){
+			console.log("left", left, "right", right, "number", right_number);
 			return;
+		}	
 		devide_draw(mid, right, right_result, right_texture, right_normal, gl);
 	}
-		
-
-	
-	
-
 	return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function tri_3(i){
 	var x1 = __ActiveBuffer_vertex[i * __VertexSize];
