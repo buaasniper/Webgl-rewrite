@@ -3,7 +3,7 @@ float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, fl
 float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 float round(float x);
 float w(float x) ;
-float devision(float a, float b) ;
+float division(float a, float b) ;
 uniform vec3 tri_point[333];
 uniform vec2 text_point[333];
 uniform sampler2D sampler;
@@ -64,7 +64,23 @@ void main()
 
           bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
           cs1 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
-          wei_1t = devision( w(bcs1), w(cs1) );
+          wei_1t = division( w(bcs1), w(cs1) );
+          
+/*
+          
+
+          if (wei_1t < -1.5)
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+          else if (wei_1t < -0.5)
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          else if (wei_1t < 0.5)
+            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+          else if (wei_1t < 0.5)
+            gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+          else 
+            gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+*/
+
           /*
           wei_1t = -5.0;
           flag = 0.0;
@@ -78,7 +94,24 @@ void main()
 
           bcs2 =  w (   w (w(x1) * w(y0)) + w (w(x0) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y0)) + w (w(x0) * w(y1)) + w (w(x1) * w(y3)) ) ); 
           cs2 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
-          wei_2t = devision( w(bcs2), w(cs2) );
+          wei_2t = division( w(bcs2), w(cs2) );
+
+/*
+         
+          if (wei_2t < -1.5)
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+          else if (wei_2t < -0.5)
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          else if (wei_2t < 0.5)
+            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+          else if (wei_2t < 0.5)
+            gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+          else 
+            gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+*/
+
+
+
           /*
           wei_2t = -5.0;
           flag = 0.0;
@@ -91,8 +124,25 @@ void main()
           */
 
           bcs3 =  w (   w (w(x1) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y1)) - w (   w (w(x0) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y0)) ) ); 
-          cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x1) * w(y3)) )  );
-          wei_3t = devision( w(bcs3), w(cs3) );
+          cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+
+
+          wei_3t = division( w(bcs3), w(cs3) );
+          /*
+          if (wei_3t < -1.5)
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+          else if (wei_3t < -0.5)
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          else if (wei_3t < 0.5)
+            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+          else if (wei_3t < 1.5)
+            gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+          else 
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            */
+
+
+
           /*
           wei_3t = -5.0;
           flag = 0.0;
@@ -108,6 +158,8 @@ void main()
           tty = w(w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 1000.0 );
          
           //gl_FragColor = vec4 ( w(ttx - 128.0)  / 255.0, w(tty - 128.0)  / 255.0, 0.0, 1.0  );
+
+
 
           color0 = texture2D(sampler, vec2 (w(ttx)  / 255.0,w(tty )   / 255.0));
           gl_FragColor = color0;
@@ -144,14 +196,18 @@ float w(float x) {
 }
 
 // 这里计算的是千分置的，提高一些精度
-float devision(float a, float b){
+float division(float a, float b){
     float n = w(w(a) * 1000.0 / b);
-    if ( w( w(b) * w(w(n) - 1.0)) - w( w(a) * 1000.0) > -0.1 )
+    if ( w( w(b) * w(w(n) - 2.0)) - w( w(a) * 1000.0) > -0.1 )
+      return w(w(n) - 2.0);
+    else if ( w( w(b) * w(w(n) - 1.0)) - w( w(a) * 1000.0) > -0.1 )
       return w(w(n) - 1.0);
     else if ( w( w(b) * w(n) ) - w( w(a) * 1000.0) > -0.1 )
       return w(n);
-    else  
+    else if ( w( w(b) * w(w(n) + 1.0)) - w( w(a) * 1000.0) > -0.1 )
       return w(w(n) + 1.0);
+    else  
+      return w(w(n) + 2.0);
     
     
 }
