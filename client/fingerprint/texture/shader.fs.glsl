@@ -49,16 +49,16 @@ void main()
           ty0 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 ) / 255.0;
           color0 = texture2D(sampler, vec2 (tx0, ty0));
 
-          tx1 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
-          ty1 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 ) / 255.0;
+          tx1 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) / 1000.0 + 1.0) / 255.0;
+          ty1 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 ) / 255.0;
           color1 = texture2D(sampler, vec2 (tx1, ty1));
 
-          tx2 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 ) / 255.0;
-          ty2 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
+          tx2 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) / 1000.0 ) / 255.0;
+          ty2 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 + 1.0) / 255.0;
           color2 = texture2D(sampler, vec2 (tx2, ty2));
 
-          tx3 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) * 255.0 + 1.0) / 255.0;
-          ty3 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) * 255.0 + 1.0) / 255.0;
+          tx3 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) / 1000.0 + 1.0) / 255.0;
+          ty3 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 + 1.0) / 255.0;
           color3 = texture2D(sampler, vec2 (tx3, ty3));
 
           weight1 = round ((ty * 255.0 - floor(ty * 255.0))* 1000.0);
