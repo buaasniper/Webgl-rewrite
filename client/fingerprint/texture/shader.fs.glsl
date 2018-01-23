@@ -3,6 +3,7 @@ float judge(float xx0, float yy0, float xx1, float yy1, float xx2, float yy2, fl
 float PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 float round(float x);
 float w(float x) ;
+float devision(float a, float b) ;
 uniform vec3 tri_point[333];
 uniform vec2 text_point[333];
 uniform sampler2D sampler;
@@ -63,6 +64,8 @@ void main()
 
           bcs1 =  w (   w (w(x0) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y0)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y3)) ) ); 
           cs1 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+          wei_1t = devision( w(bcs1), w(cs1) );
+          /*
           wei_1t = -5.0;
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
@@ -71,9 +74,12 @@ void main()
             }
             flag = w(flag + 1.0);
           }
+          */
 
           bcs2 =  w (   w (w(x1) * w(y0)) + w (w(x0) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y0)) + w (w(x0) * w(y1)) + w (w(x1) * w(y3)) ) ); 
           cs2 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y3)) )  );
+          wei_2t = devision( w(bcs2), w(cs2) );
+          /*
           wei_2t = -5.0;
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
@@ -82,9 +88,12 @@ void main()
             }
             flag = w(flag + 1.0);
           }
+          */
 
           bcs3 =  w (   w (w(x1) * w(y2)) + w (w(x2) * w(y0)) + w (w(x0) * w(y1)) - w (   w (w(x0) * w(y2)) + w (w(x2) * w(y1)) + w (w(x1) * w(y0)) ) ); 
           cs3 = w (   w (w(x1) * w(y2)) + w (w(x2) * w(y3)) + w (w(x3) * w(y1)) - w (   w (w(x3) * w(y2)) + w (w(x2) * w(y0)) + w (w(x1) * w(y3)) )  );
+          wei_3t = devision( w(bcs3), w(cs3) );
+          /*
           wei_3t = -5.0;
           flag = 0.0;
           for (int j = 0; j < 1001; j++){
@@ -93,6 +102,7 @@ void main()
             }
             flag = w(flag + 1.0);
           }
+          */
 
           ttx = w(w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3t) * w(text_point[i+2][0]))) / 1000.0 );
           tty = w(w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 1000.0 );
@@ -131,4 +141,17 @@ float round(float x) {
 }
 float w(float x) {
     return (floor(round(x)));
+}
+
+// 这里计算的是千分置的，提高一些精度
+float devision(float a, float b){
+    float n = w(w(a) * 1000.0 / b);
+    if ( w( w(b) * w(w(n) - 1.0)) - w( w(a) * 1000.0) > -0.1 )
+      return w(w(n) - 1.0);
+    else if ( w( w(b) * w(n) ) - w( w(a) * 1000.0) > -0.1 )
+      return w(n);
+    else  
+      return w(w(n) + 1.0);
+    
+    
 }
