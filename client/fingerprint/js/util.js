@@ -258,9 +258,7 @@ rewrite = function(gl){
 				__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
 			// 将float系统转换成int系统
 			// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
-
 			// 在这里vertex是原始数据， 不进行转化
-
 			//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 			//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 			
@@ -505,9 +503,6 @@ rewrite = function(gl){
 			t2 = t2.concat(tri_texture[i * 2 + 1]); 
 			t2 = t2.concat(tri_texture[i * 2 + 2]); 
 		}
-
-
-
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
@@ -521,10 +516,6 @@ rewrite = function(gl){
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 		console.log("this.my_drawArrays",gl.my_drawArrays);
 		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-
-
-
-
 		gl.bindTexture(gl.TEXTURE_2D, __tex);
 		gl.activeTexture(gl.TEXTURE0);
 			
@@ -538,8 +529,6 @@ rewrite = function(gl){
 			t2 = t2.concat(tri_texture[i * 2 + 1]); 
 			t2 = t2.concat(tri_texture[i * 2 + 2]); 
 		}
-
-
 var new_vertex_buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
@@ -553,7 +542,6 @@ console.log("更改过了");
 gl.drawArrays(gl.TRIANGLES, 0, 6);
 console.log("this.my_drawArrays",gl.my_drawArrays);
 console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-
 */
 
 
@@ -572,7 +560,6 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 			t2 = t2.concat(tri_texture[i * 2 + 1]); 
 			t2 = t2.concat(tri_texture[i * 2 + 2]); 
 		}
-
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
@@ -588,8 +575,6 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 		/*
 		__PointBuffer = [];
 		__ColorBuffer = [];
-
-
 		switch (primitiveType){
 			case gl.TRIANGLES:
 				for (var i = offset; i < offset + count; i += 3){
@@ -604,7 +589,6 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 				}
 			break;
 		}
-
 		// 在这里重新将值转化回来
 		//matrix_mut(__Matrix1);
 		//__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
@@ -658,12 +642,7 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
 			console.log("__VertexSize",__VertexSize);
-
 			
-
-
-
-
 			//var new_frag_buffer = gl.createBuffer();
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
 			//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
@@ -675,8 +654,6 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 			gl.my_useProgram(__Program);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-
-
 			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
 			console.log("画点的数量", Point_Number/__VertexSize);
 			console.log("=====================================");
@@ -685,8 +662,6 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 	}
 	return gl;
 }
-
-var uniform_number  = 111;
 
 function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	var left_result = [];
@@ -731,14 +706,14 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 			
 		}
 	}
-	if (left_number <= uniform_number){
+	if (left_number <= 111){
 		var right_canvas_buffer = [
-			left * 2 / 255 - 1.0,     -1.0, 
-			mid * 2 / 255 - 1.0,      -1.0, 
-			left * 2 / 255 - 1.0,      1.0, 
-			left * 2 / 255 - 1.0,      1.0,
-			mid * 2 / 255 - 1.0,      -1.0, 
-			mid * 2 / 255 - 1.0,       1.0]; 
+			left * 2 / 255 - 1.0, -1.0, 
+			mid * 2 / 255 - 1, -1.0, 
+			left * 2 / 255 - 1.,  1.0, 
+			left * 2 / 255 - 1.,  1.0,
+			mid * 2 / 255 - 1, -1.0, 
+			mid * 2 / 255 - 1,  1.0]; 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -746,8 +721,6 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		//console.log("left_result", left_result);
-		//console.log("left_texture", left_texture);
 		gl.uniform3fv(traingles_vex_loc, left_result);
 		gl.uniform2fv(traingles_text_loc, left_texture);
 		if (__My_buffer_flag == 4){
@@ -758,23 +731,22 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 	}
 	else{
-		if (mid == right){
-			//console.log("分割左右的","left", left, "right", right, "number", left_number);
-			devide_draw_height(left, right, 0, 255, tri_result, tri_texture, tri_normal, gl);
-			
+		if (mid == right)
 			return;
-		}	
 		devide_draw(left, mid, left_result, left_texture, left_normal, gl);
 	}
+		
 
-	if (right_number <= uniform_number){
+
+	
+	if (right_number <= 111){
 		var right_canvas_buffer = [
 			mid * 2 / 255 - 1.0, -1.0, 
-			right * 2 / 255 - 1.0, -1.0, 
-			mid * 2 / 255 - 1.0,  1.0, 
-			mid * 2 / 255 - 1.0,  1.0,
-			right * 2 / 255 - 1.0, -1.0, 
-			right * 2 / 255 - 1.0,  1.0]; 
+			right * 2 / 255 - 1, -1.0, 
+			mid * 2 / 255 - 1.,  1.0, 
+			mid * 2 / 255 - 1.,  1.0,
+			right * 2 / 255 - 1, -1.0, 
+			right * 2 / 255 - 1,  1.0]; 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -791,146 +763,17 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 	else{
-		if (mid == left){
-			//console.log("分割左右的","left", left, "right", right, "number", right_number);
-			devide_draw_height(left, right, 0, 255, tri_result, tri_texture, tri_normal, gl);
-			
+		if (mid == left)
 			return;
-		}	
 		devide_draw(mid, right, right_result, right_texture, right_normal, gl);
 	}
-	return;
-}
-
-
-
-/* ===================================分割高低的==================================================*/
-
-function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_normal, gl){
-	var bot_result = [];
-	var bot_texture = [];
-	var bot_normal = [];
-	var top_result = [];
-	var top_texture = [];
-	var top_normal = [];
-	var tri_number = tri_result.length / 9;
-	var mid = Math.floor((bot + top) / 2);
-	var bot_number = 0;
-	var top_number = 0;
-	//console.log("接受的数据", left, right, bot, top, tri_number);
-
-	//console.log("中间点", mid);
-	for (var i = 0; i < tri_number; i++){
-		if (!((tri_result[i * 9 + 1] >= mid) && (tri_result[i * 9 + 4] >= mid) && (tri_result[i * 9 + 7] >= mid))){
-			
-			bot_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				bot_result =  bot_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				bot_texture = bot_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
-				for (var j = 0; j < 9; j++)
-					bot_normal =  bot_normal.concat(tri_normal[i * 9 + j]);
-			}
-			
-		}		
-		if (!((tri_result[i * 9 + 1] <= mid) && (tri_result[i * 9 + 4] <= mid) && (tri_result[i * 9 + 7] <= mid))){
-			
-			top_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				top_result = top_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				top_texture = top_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
-					for (var j = 0; j < 9; j++)
-						top_normal =  top_normal.concat(tri_normal[i * 9 + j]);
-				}
-			
-		}
-	}
-	if (bot_number <= uniform_number){
-		//console.log("bot开始画了", bot_number, bot * 2 / 255 -1.0, mid * 2 / 255 -1.0);
 		
-		var right_canvas_buffer = [
-			left * 2 / 255 - 1.0,   bot * 2 / 255 -1.0, 
-			right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
-			left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0, 
-			left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0,
-			right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
-			right * 2 / 255 - 1.0,    mid * 2 / 255 -1.0]; 
 
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, bot_result);
-		gl.uniform2fv(traingles_text_loc, bot_texture);
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3fv(traingles_nor_loc, bot_normal);
-		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+	
+	
 
-	}
-	else{
-		if (mid == top){
-			//console.log("left", left, "right", right, "bot", bot, "top", top, "number", bot_number);
-			return;
-		}	
-		devide_draw_height(left, right, bot, mid, bot_result, bot_texture, bot_normal, gl);
-	}	
-	if (top_number <= uniform_number){
-		//console.log("top开始画了", top_number, mid * 2 / 255 -1.0, top * 2 / 255 -1.0);
-		var right_canvas_buffer = [
-			left * 2 / 255 - 1.0, mid * 2 / 255 -1.0, 
-			right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
-			left * 2 / 255 - 1.0,  top * 2 / 255 -1.0, 
-			left * 2 / 255 - 1.0,  top * 2 / 255 -1.0,
-			right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
-			right * 2 / 255 - 1.0,  top * 2 / 255 -1.0]; 
-
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, top_result);
-		gl.uniform2fv(traingles_text_loc, top_texture);
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3fv(traingles_nor_loc, top_normal);
-		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
-	}
-	else{
-		if (mid == left){
-			//console.log("left", left, "right", right, "bot", bot, "top", top, "number", top_number);
-			return;
-		}	
-		devide_draw_height(left, right, mid, top, top_result, top_texture, top_normal, gl);
-	}
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function tri_3(i){
 	var x1 = __ActiveBuffer_vertex[i * __VertexSize];
@@ -1240,4 +1083,3 @@ var loadJSONResource = function(url, callback, caller) {
     }
   }, caller);
 };
-
