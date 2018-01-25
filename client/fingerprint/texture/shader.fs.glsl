@@ -15,7 +15,7 @@ void main()
   vec4 color0, color1, color2, color3, color4, color5, color6;
   x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
   gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-  for (int i = 0 ; i < 333; i += 3){
+  for (int i = 0 ; i < 336; i += 3){
       x1 = tri_point[i][0];   y1 = tri_point[i][1];   z1 = tri_point[i][2];
       x2 = tri_point[i+1][0]; y2 = tri_point[i+1][1]; z2 = tri_point[i+1][2];
       x3 = tri_point[i+2][0]; y3 = tri_point[i+2][1]; z3 = tri_point[i+2][2];
