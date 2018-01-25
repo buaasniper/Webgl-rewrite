@@ -663,7 +663,7 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 	return gl;
 }
 
-var uniform_number  = 55;
+var uniform_number  = 30;
 
 function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	var left_result = [];
