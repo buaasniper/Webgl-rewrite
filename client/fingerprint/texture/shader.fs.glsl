@@ -10,9 +10,13 @@ uniform sampler2D sampler;
 
 void main()
 {
-  int i = 1;
-  if (i == 1)
-     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  int i = 107;
+  int j = 107;
+  int k = 4;
+  int l = 7;
+  int m = 28;
+  if ((i /j * k * l / m) == 1)
+     gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
   else
     gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
 }
