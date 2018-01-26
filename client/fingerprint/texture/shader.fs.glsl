@@ -70,7 +70,7 @@ void main()
           color6 = floor((floor(weight1) * color5 + floor(weight2) * color4) / 1000.0 * 255.0 + 0.1) / 255.0;
          
           //color0 = texture2D(sampler, vec2 ( tx  , ty  ));
-          gl_FragColor = color6;
+          gl_FragColor = color0;
 
         }
       }
