@@ -15,8 +15,8 @@ void main()
   int k = 4;
   int l = 7;
   int m = 28;
-  if ((i /j * k * l / m) == 1)
-     gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+  if ((i /j * k * l / m + 37 - 3 * 9 - 2 * 5) == 1)
+     gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
   else
     gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
 }
