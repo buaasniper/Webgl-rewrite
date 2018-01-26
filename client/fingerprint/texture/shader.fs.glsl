@@ -42,8 +42,8 @@ void main()
         if ((K <= 2.0) && (K >= -2.0) && (K > z)){
           z = K;
           
-          tx =   w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3t) * w(text_point[i+2][0]))) / 1000.0   / 255.0 ;
-          ty =   w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 1000.0   / 255.0 ;
+          tx =  w( w(w (wei_1t * w(text_point[i][0]) ) +    w(w (wei_2t) * w (text_point[i+1][0])) +  w(w(wei_3t) * w(text_point[i+2][0]))) / 100.0 ) / 10.0  / 255.0 ;
+          ty =  w( w(w (wei_1t * w(text_point[i][1]) ) +    w(w (wei_2t) * w (text_point[i+1][1])) +  w(w(wei_3t) * w(text_point[i+2][1]))) / 100.0 ) / 10.0  / 255.0 ;
 
           tx0 = floor((wei_1t * text_point[i][0] + wei_2t * text_point[i+1][0] + wei_3t * text_point[i+2][0]) / 1000.0 ) / 255.0;
           ty0 = floor((wei_1t * text_point[i][1] + wei_2t * text_point[i+1][1] + wei_3t * text_point[i+2][1]) / 1000.0 ) / 255.0;
