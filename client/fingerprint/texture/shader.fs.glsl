@@ -14,10 +14,12 @@ uniform sampler2D sampler;
 void main()
 {
   assign;
-  float aa = gl_FragCoord.x / 255.0;
-  float bb = gl_FragCoord.y / 255.0;
+  int a = int(gl_FragCoord.x);
+  int b = int(gl_FragCoord.y);
+  float aa = float(a) / 255.0;
+  float bb = float(b) / 255.0;
   //float cc = float(c) / 255.0;
-  gl_FragColor = vec4(aa, bb, 0.0, 1.0);
+  gl_FragColor = vec4(aa, bb, 1.0, 1.0);
 
 }
 
