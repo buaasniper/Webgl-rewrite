@@ -1,18 +1,23 @@
 precision mediump float;
+struct tri_p {
+  int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+};
+struct txt_p {
+  int x0, y0, x1, y1, x2, y2, x3,  y3;
+};
 uniform ivec3 tri_point[333];
 uniform ivec2 text_point[333];
 uniform sampler2D sampler;
-
+#define assign tri_p triangle; txt_p fragTexCoord; 
+                
+                
 void main()
 {
-  int a = tri_point[0][0];
-  int b = tri_point[0][1];
-  int c = tri_point[1][1];
-  //x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; z = -2.0;
-  float aa = float(a) / 255.0;
-  float bb = float(b) / 255.0;
-  float cc = float(c) / 255.0;
-  gl_FragColor = vec4(aa, bb, cc, 1.0);
+  assign;
+  float aa = gl_FragCoord.x / 255.0;
+  float bb = gl_FragCoord.y / 255.0;
+  //float cc = float(c) / 255.0;
+  gl_FragColor = vec4(aa, bb, 0.0, 1.0);
 
 }
 
