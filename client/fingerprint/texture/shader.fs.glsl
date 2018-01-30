@@ -12,7 +12,9 @@ struct txt_p {
 #define init tri_p tri; txt_p fragTexCoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0;
 #define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];fragTexCoord.x1 = text_point[i][0]; fragTexCoord.y1 = text_point[i][1];fragTexCoord.x2 = text_point[i+1][0]; fragTexCoord.y2 = text_point[i+1][1];fragTexCoord.x3 = text_point[i+2][0]; fragTexCoord.y3 = text_point[i+2][1];
 int judge(tri_p t);
+int f_judge(tri_p t);
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);   
+int f_PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
@@ -24,7 +26,7 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    if (judge(tri) == 1){
+    if (f_judge(tri) == 1){
       z0 = cal_z(tri);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
@@ -43,18 +45,21 @@ int judge(tri_p t) {
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2){ 
 int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
 if  ( ((0 > kb ) && (0 < kc )) || ((0  < kb ) && (0 > kc)) ) 
-
- //if   ((kb>0 && kc > 0) || (kc<0 && kb <0) )
-    //return 0;
  return 1;
  return 0;
-  
-// if  ( ((0 > kb ) && (0 < kc )) || ((0 < kb ) && (0 > kc)) ) 
- // if (tx0*ty1 == tx1*ty0) 
-//if (kc * kb <= 0)
-//  {return 1;} 
-//  else 
-//     return 0; 
+}
+
+int f_judge(tri_p t){
+  if ( f_PinAB( float(t.x0 - t.x1), float(t.y0 - t.y1), float(t.x2 - t.x1), float(t.y2 - t.y1), float(t.x3 - t.x1), float(t.y3 - t.y1))
+     + f_PinAB( float(t.x0 - t.x2), float(t.y0 - t.y2), float(t.x3 - t.x2), float(t.y3 - t.y2), float(t.x1 - t.x2), float(t.y1 - t.y2)) 
+     + f_PinAB( float(t.x0 - t.x3), float(t.y0 - t.y3), float(t.x2 - t.x3), float(t.y2 - t.y3), float(t.x1 - t.x3), float(t.y1 - t.y3))
+    == 3){return 1;}
+  else{return 0;}
+}
+
+int f_PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2){ 
+  float kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
+  if  ( ((0.0001 > kb) && (-0.0001 < kc)) || ((-0.0001 < kb) && (0.0001 > kc)) ) {return 1;} return 0; 
 }
 
 int cal_z(tri_p t){
