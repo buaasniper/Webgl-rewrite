@@ -42,11 +42,14 @@ int judge(tri_p t) {
 
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2){ 
 int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
- if   ((kb>0 && kc > 0) || (kc<0 && kb <0) )
-    return 0;
+if  ( ((0 > kb ) && (0 < kc )) || ((0 < kb ) && (0 > kc)) ) 
+
+ //if   ((kb>0 && kc > 0) || (kc<0 && kb <0) )
+    //return 0;
  return 1;
+ return 0;
   
-// if  ( ((0 > kb ) && (-1 < kc )) || ((-1 < kb ) && (1 > kc)) ) 
+// if  ( ((0 > kb ) && (0 < kc )) || ((0 < kb ) && (0 > kc)) ) 
  // if (tx0*ty1 == tx1*ty0) 
 //if (kc * kb <= 0)
 //  {return 1;} 
