@@ -114,7 +114,8 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   t1 = int( color2[0] * 255.0);
   t2 = int( color2[1] * 255.0);
   t3 = int( color2[2] * 255.0);
-  return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
+  //return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
+  return vec4(1.0, 0.0, 0.0, 1.0);
   //return cal_color(color0, color1, color2, color3, wei_x, wei_y);
 }
 
