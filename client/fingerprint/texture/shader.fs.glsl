@@ -45,7 +45,9 @@ int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
  //if  ( ((0 > kb ) && (0 < kc )) || ((0 < kb ) && (0 > kc)) || 
   if (tx0*ty1 == tx1*ty0) 
 //if (kc * kb <= 0)
-  {return 1;} return 0; 
+  {return 1;} 
+  else 
+     return 0; 
 }
 
 int cal_z(tri_p t){
@@ -120,7 +122,7 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   t2 = int( color2[1] * 255.0);
   t3 = int( color2[2] * 255.0);
   //return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
-  return vec4(0.0, 1.0, 0.0, 1.0);
+  return vec4(1.0, 1.0, 0.0, 1.0);
   //return cal_color(color0, color1, color2, color3, wei_x, wei_y);
 }
 
