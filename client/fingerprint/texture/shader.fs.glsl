@@ -110,8 +110,8 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
   int t1, t2, t3;
-  t1 = int( color0[0] * 255.0);
-  t2 = int( color0[1] * 255.0);
-  t3 = int( color0[2] * 255.0);
+  t1 = int( color1[0] * 255.0);
+  t2 = int( color1[1] * 255.0);
+  t3 = int( color1[2] * 255.0);
   return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
 }
