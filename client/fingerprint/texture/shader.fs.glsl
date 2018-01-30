@@ -23,11 +23,11 @@ void main()
     assign;
     if (judge(tri) == 1){
       z0 = cal_z(tri);
-      //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
-        gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
-        //gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+        //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
+        //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
+        gl_FragColor = texture2D(sampler, vec2 ( float(tri.x1)/255.0, float(tri.y1)/255.0 ));
       } 
     }
   } 
