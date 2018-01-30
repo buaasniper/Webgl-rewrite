@@ -16,7 +16,8 @@ int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);
 int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
-vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p tri);           
+vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p tri);    
+vec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y);       
                 
 void main()
 {
@@ -39,7 +40,7 @@ int judge(tri_p t) {
 }
 
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2){ 
-int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0 > kb ) && (0 < kc )) || ((0 < kb ) && (0 > kc)) ) {return 1;} return 0; 
+int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;if  ( ((0 >= kb ) && (0 <= kc )) || ((0 <= kb ) && (0 >= kc)) ) {return 1;} return 0; 
 }
 
 int cal_z(tri_p t){
@@ -93,7 +94,7 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   bcs3 = (t.x1 * t.y2 + t.x2 * t.y0 + t.x0 * t.y1) - (t.x0 * t.y2 + t.x2 * t.y1 + t.x1 * t.y0);
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
-  // 在这里还是2560这样一个系数
+  // 在这里还是25600这样一个系数
   tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 10);
   ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 10);
 
@@ -109,9 +110,18 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   //return (color0 * float((100 - wei_x) * (100 - wei_y)) + color1 * float(wei_x * (100 - wei_y)) + color2 * float((100 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 10000.0; 
   //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
-  int t1, t2, t3;
-  t1 = int( color2[0] * 255.0);
-  t2 = int( color2[1] * 255.0);
-  t3 = int( color2[2] * 255.0);
-  return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
+  //int t1, t2, t3;
+  //t1 = int( color2[0] * 255.0);
+  //t2 = int( color2[1] * 255.0);
+  //t3 = int( color2[2] * 255.0);
+  //return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
+  return cal_color(color0, color1, color2, color3, wei_x, wei_y);
+}
+
+vec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y){
+  int r, g, b;
+  r = division( int(color0[0] * 255.0) * (100 - wei_x) * (100 - wei_y) + int(color1[0] * 255.0) * wei_x * (100 - wei_y) + int(color2[0] * 255.0) * (100 - wei_x) * wei_y + int(color3[0] * 255.0) * wei_x * wei_y, 10000);
+  g = division( int(color0[1] * 255.0) * (100 - wei_x) * (100 - wei_y) + int(color1[1] * 255.0) * wei_x * (100 - wei_y) + int(color2[1] * 255.0) * (100 - wei_x) * wei_y + int(color3[1] * 255.0) * wei_x * wei_y, 10000);
+  b = division( int(color0[2] * 255.0) * (100 - wei_x) * (100 - wei_y) + int(color1[2] * 255.0) * wei_x * (100 - wei_y) + int(color2[2] * 255.0) * (100 - wei_x) * wei_y + int(color3[2] * 255.0) * wei_x * wei_y, 10000);
+  return vec4( float(r)/255.0 , float(g)/255.0, float(b)/255.0, 1.0 );
 }
