@@ -26,7 +26,7 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    if (f_judge(tri) == 1){
+    if (judge(tri) == 1){
       z0 = cal_z(tri);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
