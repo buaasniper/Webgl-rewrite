@@ -13,7 +13,8 @@ struct txt_p {
 #define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];
 int judge(tri_p t);
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);   
-int cal_z(tri_p tri);             
+int cal_z(tri_p tri);
+int division(int a, int b);             
                 
 void main()
 {
@@ -46,5 +47,19 @@ int cal_z(tri_p t){
   B = (t.x3 - t.x1)*(t.z2 - t.z1) - (t.x2 - t.x1)*(t.z3 - t.z1);
   C = (t.x2 - t.x1)*(t.y3 - t.y1) - (t.x3 - t.x1)*(t.y2 - t.y1);
   D = -1 * (A * t.x1 + B * t.y1 + C * t.z1);
-  return (-1 * (A * t.x0 + B * t.y0 + D) / C);
+  return (-1 *  division( (A * t.x0 + B * t.y0 + D) , C));
+}
+
+int division(int a, int b){
+  int n = a / b;
+  if ( (b - 2) * n >= a )
+    return (b - 2);
+  else if ( (b - 1) * n >= a )
+    return (b - 1);
+  else if ( b * n >= a )
+    return b;
+  else if ( (b + 1) * n >= a )
+    return (b + 1);
+  else
+    return (b + 2);
 }
