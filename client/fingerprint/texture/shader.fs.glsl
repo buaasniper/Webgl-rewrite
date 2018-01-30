@@ -24,7 +24,8 @@ void main()
       z0 = cal_z(tri);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
-        gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
+        //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
       } 
     }
   } 
