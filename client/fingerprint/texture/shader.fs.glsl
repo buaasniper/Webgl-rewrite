@@ -94,8 +94,8 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
   // 在这里还是2560这样一个系数
-  tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 100);
-  ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 100);
+  tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 10);
+  ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 10);
 
   tx0 = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 1000);
   ty0 = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 1000);
@@ -104,10 +104,10 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
   color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
 
-  wei_x = mod (tx, 10);
-  wei_y = mod (ty, 10);
-  return vec4( float(wei_x * 20) / 255.0, float(wei_y * 20) / 255.0, 0.0, 1.0  );
-  //return (color0 * float((10 - wei_x) * (10 - wei_y)) + color1 * float(wei_x * (10 - wei_y)) + color2 * float((10 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 100.0; 
+  wei_x = mod (tx, 100);
+  wei_y = mod (ty, 100);
+  //return vec4( float(wei_x * 2) / 255.0, float(wei_y * 2) / 255.0, 0.0, 1.0  );
+  return (color0 * float((100 - wei_x) * (100 - wei_y)) + color1 * float(wei_x * (100 - wei_y)) + color2 * float((100 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 10000.0; 
   //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
 }
