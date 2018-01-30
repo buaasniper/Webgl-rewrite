@@ -54,15 +54,15 @@ int cal_z(tri_p t){
 int division(int a, int b){
   int n = a / b;
   if ( (n - 2) * b >= a )
-    return (n - 2);
+    return (n - 3);
   else if ( (n - 1) * b >= a )
-    return (n - 1);
+    return (n - 2);
   else if ( b * n >= a )
-    return n;
+    return (n - 1);
   else if ( (n + 1) * b >= a )
-    return (n + 1);
+    return n ;
   else
-    return (n + 2);
+    return (n + 1);
 }
 
 int mod(int a, int b){
@@ -82,7 +82,8 @@ int mod(int a, int b){
 
 
 vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
-  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3, tx, ty;
+  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3, tx, ty, tx0, ty0;
+  vec4 color0, color1, color2, color3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
   cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_1 = division(bcs1 * 1000, cs1);
@@ -94,10 +95,18 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   bcs3 = (t.x1 * t.y2 + t.x2 * t.y0 + t.x0 * t.y1) - (t.x0 * t.y2 + t.x2 * t.y1 + t.x1 * t.y0);
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
+  // 在这里还是2560这样一个系数
+  tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 100);
+  ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 100);
 
-  tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 1000);
-  ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 1000);
+  tx0 = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 1000);
+  ty0 = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 1000);
+  color0 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0     )/ 255.0));
+  color1 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0     )/ 255.0));
+  color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
+  color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
 
-  return texture2D(sampler, vec2 ( float(tx-1)/255.0, float(ty-1)/255.0 ));
+  return color0;
+  //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
 }
