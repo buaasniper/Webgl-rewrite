@@ -106,7 +106,8 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
 
   wei_x = mod (tx, 10);
   wei_y = mod (ty, 10);
-  return (color0 * float((10 - wei_x) * (10 - wei_y)) + color1 * float(wei_x * (10 - wei_y)) + color2 * float((10 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 100.0; 
+  return vec4( float(wei_x * 20) / 255.0, float(wei_y * 20) / 255.0, 0.0, 1.0  );
+  //return (color0 * float((10 - wei_x) * (10 - wei_y)) + color1 * float(wei_x * (10 - wei_y)) + color2 * float((10 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 100.0; 
   //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
 }
