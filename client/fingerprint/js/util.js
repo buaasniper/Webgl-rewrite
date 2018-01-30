@@ -749,7 +749,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		console.log("left_result", left_result);
 		console.log("left_texture", left_texture);
 		gl.uniform3iv(traingles_vex_loc, left_result);
-		gl.uniform3iv(traingles_text_loc, left_texture);
+		gl.uniform2iv(traingles_text_loc, left_texture);
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
 			gl.uniform3iv(traingles_nor_loc, left_normal);

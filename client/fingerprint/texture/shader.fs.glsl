@@ -79,10 +79,8 @@ int mod(int a, int b){
     return a - (n + 1) * b;
 }
 
-
-
 vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
-  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3, tx, ty, tx0, ty0;
+  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3, tx, ty, tx0, ty0, wei_x, wei_y;
   vec4 color0, color1, color2, color3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
   cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
@@ -106,7 +104,9 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
   color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
 
-  return color1;
+  wei_x = mod (tx, 10);
+  wei_y = mod (ty, 10);
+  return (color0 * float((10 - wei_x) * (10 - wei_y)) + color1 * float(wei_x * (10 - wei_y)) + color2 * float((10 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 100.0; 
   //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
   //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
 }
