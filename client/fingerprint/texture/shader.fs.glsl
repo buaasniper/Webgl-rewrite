@@ -14,7 +14,8 @@ struct txt_p {
 int judge(tri_p t);
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);   
 int cal_z(tri_p tri);
-int division(int a, int b);             
+int division(int a, int b);  
+vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p tri);           
                 
 void main()
 {
@@ -25,9 +26,8 @@ void main()
       z0 = cal_z(tri);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
-        //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
-        //gl_FragColor = vec4(float(tri.x1)/255.0, float(tri.y1)/255.0, 0.0, 1.0);
-        gl_FragColor = texture2D(sampler, vec2 ( float(tri.x1)/255.0, float(tri.y1)/255.0 ));
+        //gl_FragColor = texture2D(sampler, vec2 ( float(tri.x1)/255.0, float(tri.y1)/255.0 ));
+        gl_FragColor = D_texture2D(sampler, fragTexCoord, tri);
       } 
     }
   } 
@@ -62,4 +62,27 @@ int division(int a, int b){
     return (b + 1);
   else
     return (b + 2);
+}
+
+vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
+  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3;
+  bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
+  cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
+  wei_1 = division(bcs1 * 1000, cs1);
+
+  bcs2 = (t.x1 * t.y0 + t.x0 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y0 + t.x0 * t.y1 + t.x1 * t.y3);
+  cs2 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
+  wei_2 = division(bcs2 * 1000, cs2);
+
+  bcs3 = (t.x1 * t.y2 + t.x2 * t.y0 + t.x0 * t.y1) - (t.x0 * t.y2 + t.x2 * t.y1 + t.x1 * t.y0);
+  cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
+  wei_3 = division(bcs3 * 1000, cs3);
+
+  //wei_1 = 724;
+  //wei_2 = 21;
+  //wei_3 = 12;
+  return vec4(float(wei_1) / 500.0, float(wei_2) / 200.0,float(wei_3) / 500.0, 1.0   );
+  //return vec4( float( division(wei_1, 255) * 255 - wei_1 ) /  255.0, float( division(wei_2, 255) * 255 - wei_2 ) /  255.0 ,float( division(wei_3, 255) * 255 - wei_3 ) /  255.0  , 1.0 );
+  //return texture2D(sampler, vec2 ( float( division(wei_1, 255) * 255 - wei_1 ) /  255.0, float( division(wei_2, 255) * 255 - wei_2 ) /  255.0 ));
+  //return texture2D(sampler, vec2 ( float(t.x1)/255.0, float(t.y1)/255.0 ));
 }
