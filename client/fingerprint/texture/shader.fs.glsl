@@ -38,19 +38,18 @@ void main()
 }
 
 int judge(tri_p t) {
-    if ( PinAB(t.x0 - t.x1, t.y0 - t.y1, t.x2 - t.x1, t.y2 - t.y1, t.x3 - t.x1, t.y3 - t.y1)+ PinAB(t.x0 - t.x2, t.y0 - t.y2, t.x3 - t.x2, t.y3 - t.y2, t.x1 - t.x2, t.y1 - t.y2) 
-    + PinAB(t.x0 - t.x3, t.y0 - t.y3, t.x2 - t.x3, t.y2 - t.y3, t.x1 - t.x3, t.y1 - t.y3) == 3){return 1;}else{return 0;}
+    if (( PinAB(t.x0 - t.x1, t.y0 - t.y1, t.x2 - t.x1, t.y2 - t.y1, t.x3 - t.x1, t.y3 - t.y1)+ PinAB(t.x0 - t.x2, t.y0 - t.y2, t.x3 - t.x2, t.y3 - t.y2, t.x1 - t.x2, t.y1 - t.y2) 
+    + PinAB(t.x0 - t.x3, t.y0 - t.y3, t.x2 - t.x3, t.y2 - t.y3, t.x1 - t.x3, t.y1 - t.y3) == 3) || (1 == 1) )
+      {return 1;}
+    else
+      {return 0;}
 }
 
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2){ 
 int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
-//if  ( ((0 > kb ) && (0 < kc )) || ((0  < kb ) && (0 > kc)) ) 
-// return 1;
-// return 0;
-
-if ( ( kb > 0 && kc > 0) || (kb < 0 && kc < 0))
+if  ( ((0 > kb ) && (0 < kc )) || ((0  < kb ) && (0 > kc)) ) 
+  return 1;
   return 0;
-return 1; 
 }
 
 int f_judge(tri_p t){
