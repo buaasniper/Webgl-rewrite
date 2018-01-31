@@ -234,7 +234,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         if (count == 50) {
           dataURL = canvas.toDataURL('image/png', 1.0);
           console.log("texture test result:", calcSHA1(dataURL));
-          console.log(dataURL);
+          //console.log(dataURL);
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();

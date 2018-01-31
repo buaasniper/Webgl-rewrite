@@ -746,10 +746,14 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
+
 		console.log("left_result", left_result);
 		console.log("left_texture", left_texture);
 		gl.uniform3iv(traingles_vex_loc, left_result);
 		gl.uniform2iv(traingles_text_loc, left_texture);
+		gl.uniform1i(traingles_num_loc, left_number);
+
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
 			gl.uniform3iv(traingles_nor_loc, left_normal);
@@ -780,10 +784,14 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
+
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
 		gl.uniform3iv(traingles_vex_loc, right_result);
 		gl.uniform2iv(traingles_text_loc, right_texture);
+		gl.uniform1i(traingles_num_loc, right_number);
+		
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
 			gl.uniform3iv(traingles_nor_loc, right_normal);

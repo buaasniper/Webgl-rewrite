@@ -1,6 +1,7 @@
 precision mediump float;
 uniform ivec3 tri_point[333];
 uniform ivec2 text_point[333];
+uniform int tri_number;
 uniform sampler2D sampler;
 struct tri_p {
   int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
@@ -26,7 +27,7 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    if (judge(tri) == 1){
+    if ( ( i < (tri_number * 3) )   && (judge(tri) == 1)){
       z0 = cal_z(tri);
       if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
         z = z0;
@@ -39,7 +40,7 @@ void main()
 
 int judge(tri_p t) {
     if (( PinAB(t.x0 - t.x1, t.y0 - t.y1, t.x2 - t.x1, t.y2 - t.y1, t.x3 - t.x1, t.y3 - t.y1)+ PinAB(t.x0 - t.x2, t.y0 - t.y2, t.x3 - t.x2, t.y3 - t.y2, t.x1 - t.x2, t.y1 - t.y2) 
-    + PinAB(t.x0 - t.x3, t.y0 - t.y3, t.x2 - t.x3, t.y2 - t.y3, t.x1 - t.x3, t.y1 - t.y3) == 3) || (1 == 1) )
+    + PinAB(t.x0 - t.x3, t.y0 - t.y3, t.x2 - t.x3, t.y2 - t.y3, t.x1 - t.x3, t.y1 - t.y3) == 3)  )
       {return 1;}
     else
       {return 0;}
@@ -47,7 +48,7 @@ int judge(tri_p t) {
 
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2){ 
 int kb, kc; kb = tx0*ty1 - tx1*ty0; kc = tx0*ty2 - tx2*ty0;
-if  ( ((0 > kb ) && (0 < kc )) || ((0  < kb ) && (0 > kc)) ) 
+if  ( ((0 >= kb ) && (0 <= kc )) || ((0  <= kb ) && (0 >= kc)) ) 
   return 1;
   return 0;
 }
