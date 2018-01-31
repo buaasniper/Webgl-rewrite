@@ -117,18 +117,19 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   bcs3 = (t.x1 * t.y2 + t.x2 * t.y0 + t.x0 * t.y1) - (t.x0 * t.y2 + t.x2 * t.y1 + t.x1 * t.y0);
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
-  // 在这里还是25600这样一个系数
-  //tx = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 10);
-  //ty = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 10);
+  // 在这里还是256000这样一个系数
+
   tx = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
   ty = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;
 
-  tx0 = division (wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3, 1000);
-  ty0 = division (wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 1000);
+
+  tx0 = division ( tx, 1000);
+  ty0 = division ( ty, 1000);
   color0 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0     )/ 255.0));
   color1 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0     )/ 255.0));
   color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
   color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
+
   wei_x = mod (tx, 1000);
   wei_y = mod (ty, 1000);
   //return vec4( float(wei_x * 2) / 255.0, float(wei_y * 2) / 255.0, 0.0, 1.0  );

@@ -748,8 +748,8 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
 		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
 
-		console.log("left_result", left_result);
-		console.log("left_texture", left_texture);
+		//console.log("left_result", left_result);
+		//console.log("left_texture", left_texture);
 		gl.uniform3iv(traingles_vex_loc, left_result);
 		gl.uniform2iv(traingles_text_loc, left_texture);
 		gl.uniform1i(traingles_num_loc, left_number);
@@ -791,7 +791,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.uniform3iv(traingles_vex_loc, right_result);
 		gl.uniform2iv(traingles_text_loc, right_texture);
 		gl.uniform1i(traingles_num_loc, right_number);
-		
+
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
 			gl.uniform3iv(traingles_nor_loc, right_normal);
