@@ -9,9 +9,16 @@ struct tri_p {
 struct txt_p {
   int x1, y1, x2, y2, x3,  y3;
 };
+struct txt_coord{
+  int x, y;
+};
 #define uniformNumber 336
-#define init tri_p tri; txt_p fragTexCoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0;
-#define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];fragTexCoord.x1 = text_point[i][0]; fragTexCoord.y1 = text_point[i][1];fragTexCoord.x2 = text_point[i+1][0]; fragTexCoord.y2 = text_point[i+1][1];fragTexCoord.x3 = text_point[i+2][0]; fragTexCoord.y3 = text_point[i+2][1];
+#define init tri_p tri; txt_p texcoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; txt_coord fragTexCoord;
+#define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];texcoord.x1 = text_point[i][0]; texcoord.y1 = text_point[i][1];texcoord.x2 = text_point[i+1][0]; texcoord.y2 = text_point[i+1][1];texcoord.x3 = text_point[i+2][0]; texcoord.y3 = text_point[i+2][1];
+#define cal_Zbuffer z0 = cal_z(tri);
+#define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
+#define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > z)
+#define renew_Zbuffer z = z0; fragTexCoord = calCoord(texcoord, tri);
 int judge(tri_p t);
 int f_judge(tri_p t);
 int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);   
@@ -19,7 +26,8 @@ int f_PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
-vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p tri);    
+txt_coord calCoord(txt_p f, tri_p t);
+vec4 D_texture2D(sampler2D sampler,txt_coord t); 
 vec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y);       
                 
 void main()
@@ -27,12 +35,11 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    if ( ( i < (tri_number * 3) )   && (judge(tri) == 1)){
-      z0 = cal_z(tri);
-      if ( (z0 >= -512) && (z0 <= 512) && (z0 > z)){
-        z = z0;
-        //gl_FragColor = texture2D(sampler, vec2 ( float(tri.x1)/255.0, float(tri.y1)/255.0 ));
-        gl_FragColor = D_texture2D(sampler, fragTexCoord, tri);
+    if ( pixel_on_triangle ){
+        cal_Zbuffer;
+      if ( draw_pixel ){
+        renew_Zbuffer;
+        gl_FragColor = D_texture2D(sampler, fragTexCoord);
       } 
     }
   } 
@@ -103,9 +110,9 @@ int mod(int a, int b){
     return a - (n + 1) * b;
 }
 
-vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
-  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3, tx, ty, tx0, ty0, wei_x, wei_y;
-  vec4 color0, color1, color2, color3;
+txt_coord calCoord(txt_p f, tri_p t){
+  txt_coord tt;
+  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
   cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_1 = division(bcs1 * 1000, cs1);
@@ -119,29 +126,24 @@ vec4 D_texture2D(sampler2D sampler, txt_p f, tri_p t){
   wei_3 = division(bcs3 * 1000, cs3);
   // 在这里还是256000这样一个系数
 
-  tx = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
-  ty = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;
+  tt.x = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
+  tt.y = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;
+  return tt;
+}
 
 
-  tx0 = division ( tx, 1000);
-  ty0 = division ( ty, 1000);
+vec4 D_texture2D(sampler2D sampler,txt_coord t){
+  int tx0, ty0, wei_x, wei_y;
+  vec4 color0, color1, color2, color3;
+  tx0 = division ( t.x, 1000);
+  ty0 = division ( t.y, 1000);
   color0 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0     )/ 255.0));
   color1 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0     )/ 255.0));
   color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
   color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
 
-  wei_x = mod (tx, 1000);
-  wei_y = mod (ty, 1000);
-  //return vec4( float(wei_x * 2) / 255.0, float(wei_y * 2) / 255.0, 0.0, 1.0  );
-  //return (color0 * float((100 - wei_x) * (100 - wei_y)) + color1 * float(wei_x * (100 - wei_y)) + color2 * float((100 - wei_x) *  wei_y) + color3 * float(wei_x * wei_y)) / 10000.0; 
-  //return texture2D(sampler, vec2 ( float(tx)/255.0, float(ty)/255.0 ));
-  //return vec4( float( mod (wei_1, 255 )) / 255.0, float( mod (wei_2, 255 )) / 255.0, float( mod (wei_3, 255 )) / 255.0, 1.0  );
-  //int t1, t2, t3;
-  //t1 = int( color2[0] * 255.0);
-  //t2 = int( color2[1] * 255.0);
-  //t3 = int( color2[2] * 255.0);
-  //return vec4 ( float(t1)/255.0, float(t2)/255.0,float(t3)/255.0, 1.0   );
-  //return vec4(1.0, 0.0, 0.0, 1.0);
+  wei_x = mod (t.x, 1000);
+  wei_y = mod (t.y, 1000);
   return cal_color(color0, color1, color2, color3, wei_x, wei_y);
 }
 
