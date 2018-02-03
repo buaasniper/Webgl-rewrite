@@ -27,9 +27,10 @@ int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
 txt_coord calCoord(txt_p f, tri_p t);
-vec4 D_texture2D(sampler2D sampler,txt_coord t); 
-vec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y);       
-                
+ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
+ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y);   
+vec4 col_transfer(ivec4 color);    
+// r,g,b 0 - 255   a 0 - 100                 
 void main()
 {
   init;
@@ -39,7 +40,7 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        gl_FragColor = D_texture2D(sampler, fragTexCoord);
+        gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
       } 
     }
   } 
@@ -132,7 +133,7 @@ txt_coord calCoord(txt_p f, tri_p t){
 }
 
 
-vec4 D_texture2D(sampler2D sampler,txt_coord t){
+ivec4 D_texture2D(sampler2D sampler,txt_coord t){
   int tx0, ty0, wei_x, wei_y;
   vec4 color0, color1, color2, color3;
   tx0 = division ( t.x, 1000);
@@ -147,10 +148,14 @@ vec4 D_texture2D(sampler2D sampler,txt_coord t){
   return cal_color(color0, color1, color2, color3, wei_x, wei_y);
 }
 
-vec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y){
+ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y){
   int r, g, b;
   r = division( int(color0[0] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[0] * 255.0) * wei_x * (1000 - wei_y) + int(color2[0] * 255.0) * (1000 - wei_x) * wei_y + int(color3[0] * 255.0) * wei_x * wei_y, 1000000);
   g = division( int(color0[1] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[1] * 255.0) * wei_x * (1000 - wei_y) + int(color2[1] * 255.0) * (1000 - wei_x) * wei_y + int(color3[1] * 255.0) * wei_x * wei_y, 1000000);
   b = division( int(color0[2] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[2] * 255.0) * wei_x * (1000 - wei_y) + int(color2[2] * 255.0) * (1000 - wei_x) * wei_y + int(color3[2] * 255.0) * wei_x * wei_y, 1000000);
-  return vec4( float(r)/255.0 , float(g)/255.0, float(b)/255.0, 1.0 );
+  return ivec4( r, g, b, 100 );
+}
+
+vec4 col_transfer( ivec4 c){
+  return vec4 (  float(c[0])/255.0, float(c[1])/255.0, float(c[2])/255.0, float(c[3])/ 100.0);
 }
