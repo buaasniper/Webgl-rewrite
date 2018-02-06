@@ -756,7 +756,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, left_normal);
+			gl.uniform3fv(traingles_nor_loc, left_normal);
 		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -794,7 +794,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, right_normal);
+			gl.uniform3fv(traingles_nor_loc, right_normal);
 		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
