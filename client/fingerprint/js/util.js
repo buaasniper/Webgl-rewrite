@@ -32,6 +32,7 @@ var __Matrix0 = new Float32Array(16);  // projection
 var __Matrix1 = new Float32Array(16);
 var __Mworld_flag = 0;
 var __Mworld = new Float32Array(16);  // world
+var __Mworld_fs = new Float32Array(16); // 原版world 
 var __Mview_flag = 0;
 var __Mview = new Float32Array(16);
 var __Program;
@@ -408,14 +409,29 @@ rewrite = function(gl){
 
 		//这个是int版本
 		for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
-				if (i % 3 != 2)
-					__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
-				else
-					__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+			if (i % 3 != 2)
+				__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+			else
+				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 
 			
-			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-				__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+		for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
+			__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+
+		var t_nor = [];	
+		if (__My_buffer_flag == 4){
+			console.log("__Mworld_fs",__Mworld_fs);
+			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
+				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[1] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[2]));
+				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[4] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[6]) );
+				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[8] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[9] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10]) * -1) ;
+			}
+			__ActiveBuffer_vertex_normal = t_nor;
+			
+		}
+		
+
+		
 			//console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
 			//console.log("颜色的计算",__ActiveBuffer_frag);	 
 
@@ -502,9 +518,13 @@ rewrite = function(gl){
 
 			}
 		}
+		console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
+		console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
+		console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
+
 		console.log("tri_result",tri_result);
 		console.log("tri_texture",tri_texture);
-		//console.log("tri_normal",tri_normal);
+		console.log("tri_normal",tri_normal);
 
 
 		devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);

@@ -224,7 +224,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
+        console.log("worldMatrix",worldMatrix);
+        mat4.copy(__Mworld_fs, worldMatrix);
         mat4.copy(__Mworld, worldMatrix);
         mat4.transpose(__Mworld, __Mworld);
         mat4.transpose(__Mview, __Mview);
