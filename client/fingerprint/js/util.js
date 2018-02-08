@@ -422,9 +422,9 @@ rewrite = function(gl){
 		if (__My_buffer_flag == 4){
 			console.log("__Mworld_fs",__Mworld_fs);
 			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
-				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[1] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[2]));
-				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[4] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[6]) );
-				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[8] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[9] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10]) * -1) ;
+				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[8]));
+				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[9]) );
+				t_nor = t_nor.concat(4 - (__ActiveBuffer_vertex_normal[i] * __Mworld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10])) ;
 			}
 			__ActiveBuffer_vertex_normal = t_nor;
 			
@@ -440,8 +440,8 @@ rewrite = function(gl){
 		var canvas_buffer = [
 			0.0, -1.0, 
 			1.0, -1.0, 
-		 0.0,  1.0, 
-		 0.0,  1.0,
+		 	0.0,  1.0, 
+		 	0.0,  1.0,
 			1.0, -1.0, 
 			1.0,  1.0]; 
 
