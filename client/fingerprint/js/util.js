@@ -424,7 +424,7 @@ rewrite = function(gl){
 			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[8]));
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[9]) );
-				t_nor = t_nor.concat(4 - (__ActiveBuffer_vertex_normal[i] * __Mworld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10])) ;
+				t_nor = t_nor.concat(2 - (__ActiveBuffer_vertex_normal[i] * __Mworld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10])) ;
 			}
 			__ActiveBuffer_vertex_normal = t_nor;
 			
