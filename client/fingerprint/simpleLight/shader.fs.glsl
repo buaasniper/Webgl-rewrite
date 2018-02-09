@@ -54,11 +54,10 @@ void main()
         renew_Zbuffer;
         vec4 texel = col_transfer( D_texture2D(sampler, fragTexCoord));
         vec3 vertNormal = vec3 ( (float(wei_1) * nor_point[i][0] + float(wei_2) * nor_point[i+1][0] + float(wei_3) * nor_point[i+2][0])/1000.0   , (float(wei_1) * nor_point[i][1] + float(wei_2) * nor_point[i+1][1] + float(wei_3) * nor_point[i+2][1])/1000.0 , (float(wei_1) * nor_point[i][2] + float(wei_2) * nor_point[i+1][2] + float(wei_3) * nor_point[i+2][2])/1000.0    );
-			  vec3 fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 		  	vec3 surfaceNormal = normalize(vertNormal);
 		  	vec3 normSunDir = normalize(sun.direction);
 			  vec3 lightIntensity = ambientLightIntensity +
-			  sun.color * max(dot(fragNormal, normSunDir), 0.0);
+			  sun.color * max(dot(vertNormal, normSunDir), 0.0);
 			  gl_FragColor = vec4(texel.rgb * lightIntensity, texel.a);
       } 
     }
