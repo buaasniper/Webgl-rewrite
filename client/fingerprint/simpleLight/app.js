@@ -243,6 +243,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == 50) {
+          dataURL = canvas.toDataURL('image/png', 1.0);
+          console.log("light test result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[childNumber]);
           parent.childComplete();
