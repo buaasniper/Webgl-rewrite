@@ -67,8 +67,8 @@ void main()
         //gl_FragColor = vec4(float(vertNormal[0])/100.0, float(vertNormal[1])/100.0,float(vertNormal[2])/100.0, 1.0);
 
 
-        gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
-
+        //gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
+        gl_FragColor = vec4( float(wei_1)/ 1000.0, float(wei_2)/ 1000.0,float(wei_3)/ 1000.0, 1.0  );
 
 
       } 
