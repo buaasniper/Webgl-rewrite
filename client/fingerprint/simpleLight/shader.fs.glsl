@@ -1,8 +1,8 @@
 precision mediump float;
 struct DirectionalLight
 {
-	vec3 direction;
-	vec3 color;
+	ivec3 direction;
+	ivec3 color;
 };
 
 uniform ivec3 tri_point[333];
@@ -31,14 +31,16 @@ int f_PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
 int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
+int isqrt(int a);
 txt_coord calCoord(txt_p f, tri_p t);
 ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
-ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y);   
+ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y); 
+ivec3 D_normalize(ivec3 a);
 vec4 col_transfer(ivec4 color);    
 // r,g,b 0 - 255   a 0 - 100      
 
-uniform vec3 nor_point[333];
-uniform vec3 ambientLightIntensity;
+uniform ivec3 nor_point[333];
+uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
 uniform sampler2D sampler;
 uniform mat4 mWorld;
@@ -52,13 +54,15 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        vec4 texel = col_transfer( D_texture2D(sampler, fragTexCoord));
-        vec3 vertNormal = vec3 ( (float(wei_1) * nor_point[i][0] + float(wei_2) * nor_point[i+1][0] + float(wei_3) * nor_point[i+2][0])/1000.0   , (float(wei_1) * nor_point[i][1] + float(wei_2) * nor_point[i+1][1] + float(wei_3) * nor_point[i+2][1])/1000.0 , (float(wei_1) * nor_point[i][2] + float(wei_2) * nor_point[i+1][2] + float(wei_3) * nor_point[i+2][2])/1000.0    );
-		  	vec3 surfaceNormal = normalize(vertNormal);
-		  	vec3 normSunDir = normalize(sun.direction);
-			  vec3 lightIntensity = ambientLightIntensity +
-			  sun.color * max(dot(vertNormal, normSunDir), 0.0);
-			  gl_FragColor = vec4(texel.rgb * lightIntensity, texel.a);
+        //vec4 texel = col_transfer( D_texture2D(sampler, fragTexCoord));
+        ivec4 texel = D_texture2D(sampler, fragTexCoord);
+        ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
+		  	ivec3 surfaceNormal = D_normalize(vertNormal);
+		  	//vec3 normSunDir = normalize(sun.direction);
+			  //vec3 lightIntensity = ambientLightIntensity +
+			  //sun.color * max(dot(vertNormal, normSunDir), 0.0);
+			  //gl_FragColor = vec4(texel.rgb * lightIntensity, texel.a);
+        gl_FragColor = vec4(float(vertNormal[0])/100.0, float(vertNormal[1])/100.0,float(vertNormal[2])/100.0, 1.0);
       } 
     }
   } 
@@ -178,7 +182,16 @@ vec4 col_transfer( ivec4 c){
   return vec4 (  float(c[0])/255.0, float(c[1])/255.0, float(c[2])/255.0, float(c[3])/ 100.0);
 }
 
+ivec3 D_normalize(ivec3 a){
+  int rate = isqrt (division(a[0] * a[0] + a[1] * a[1] + a[2] * a[2], 100)) ;
+  return ivec3( division( a[0] * rate, 10),  division( a[1] * rate, 10), division( a[2] * rate, 10));
+}
 
+int isqrt(int a){
+  for (int i = 0; i < 1000; i++)
+    if (i * i >= a)
+      return i;
+}
 
 
 

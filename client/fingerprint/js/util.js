@@ -426,7 +426,9 @@ rewrite = function(gl){
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[9]) );
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * __Mworld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * __Mworld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * __Mworld_fs[10])) ;
 			}
-			__ActiveBuffer_vertex_normal = t_nor;
+			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
+				__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 100);
+			//__ActiveBuffer_vertex_normal = t_nor;
 			
 		}
 		
@@ -776,7 +778,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3fv(traingles_nor_loc, left_normal);
+			gl.uniform3iv(traingles_nor_loc, left_normal);
 		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -814,7 +816,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 		if (__My_buffer_flag == 4){
 			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3fv(traingles_nor_loc, right_normal);
+			gl.uniform3iv(traingles_nor_loc, right_normal);
 		}
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}

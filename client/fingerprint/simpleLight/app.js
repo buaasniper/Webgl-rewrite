@@ -187,6 +187,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       mat4.identity(projMatrix);
 
       //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
       //gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
       //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
@@ -205,9 +206,9 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       var sunlightIntUniformLocation =
           gl.getUniformLocation(program, 'sun.color');
 
-      gl.uniform3f(ambientUniformLocation, 0.3, 0.3, 0.3);
-      gl.uniform3f(sunlightDirUniformLocation, 3.0, 4.0, -2.0);
-      gl.uniform3f(sunlightIntUniformLocation, 2, 2, 2);
+      gl.uniform3i(ambientUniformLocation, 30, 30, 30);
+      gl.uniform3i(sunlightDirUniformLocation, 300, 400, -200);
+      gl.uniform3i(sunlightIntUniformLocation, 200, 200, 200);
 
       //
       // Main render loop
