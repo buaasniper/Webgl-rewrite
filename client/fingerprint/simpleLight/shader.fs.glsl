@@ -70,7 +70,7 @@ void main()
         //gl_FragColor = vec4( float(mod(wei_1, 255) )/ 255.0, float(mod(wei_2, 255) )/ 255.0,float(mod(wei_3, 255) )/ 255.0, 1.0  );
         //gl_FragColor = vec4 ( float( division( fragTexCoord.x, 1000) )/255.0, float( division( fragTexCoord.y, 1000) )/255.0, 0.0, 1.0);
         gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
-        gl_FragColor = color3;
+        //gl_FragColor = color3;
 
       } 
     }
@@ -181,9 +181,9 @@ ivec4 D_texture2D(sampler2D sampler,txt_coord t){
 
 ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y){
   int r, g, b;
-  r = division( int(color0[0] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[0] * 255.0) * wei_x * (1000 - wei_y) + int(color2[0] * 255.0) * (1000 - wei_x) * wei_y + int(color3[0] * 255.0) * wei_x * wei_y, 1000000);
-  g = division( int(color0[1] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[1] * 255.0) * wei_x * (1000 - wei_y) + int(color2[1] * 255.0) * (1000 - wei_x) * wei_y + int(color3[1] * 255.0) * wei_x * wei_y, 1000000);
-  b = division( int(color0[2] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[2] * 255.0) * wei_x * (1000 - wei_y) + int(color2[2] * 255.0) * (1000 - wei_x) * wei_y + int(color3[2] * 255.0) * wei_x * wei_y, 1000000);
+  r = division( int(color0[0] * 255.0 + 0.1) * (1000 - wei_x) * (1000 - wei_y) + int(color1[0] * 255.0 + 0.1) * wei_x * (1000 - wei_y) + int(color2[0] * 255.0 + 0.1) * (1000 - wei_x) * wei_y + int(color3[0] * 255.0 + 0.1) * wei_x * wei_y, 1000000);
+  g = division( int(color0[1] * 255.0 + 0.1) * (1000 - wei_x) * (1000 - wei_y) + int(color1[1] * 255.0 + 0.1) * wei_x * (1000 - wei_y) + int(color2[1] * 255.0 + 0.1) * (1000 - wei_x) * wei_y + int(color3[1] * 255.0 + 0.1) * wei_x * wei_y, 1000000);
+  b = division( int(color0[2] * 255.0 + 0.1) * (1000 - wei_x) * (1000 - wei_y) + int(color1[2] * 255.0 + 0.1) * wei_x * (1000 - wei_y) + int(color2[2] * 255.0 + 0.1) * (1000 - wei_x) * wei_y + int(color3[2] * 255.0 + 0.1) * wei_x * wei_y, 1000000);
   return ivec4( r, g, b, 100 );
 }
 
