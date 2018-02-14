@@ -38,7 +38,7 @@ ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, i
 ivec3 D_normalize(ivec3 a);
 vec4 col_transfer(ivec4 color);    
 // r,g,b 0 - 255   a 0 - 100      
-
+vec4 color0, color1, color2, color3;
 uniform ivec3 nor_point[333];
 uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
@@ -69,7 +69,9 @@ void main()
 
         //gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
         //gl_FragColor = vec4( float(mod(wei_1, 255) )/ 255.0, float(mod(wei_2, 255) )/ 255.0,float(mod(wei_3, 255) )/ 255.0, 1.0  );
-        gl_FragColor = vec4 ( float( division( fragTexCoord.x, 1000) )/255.0, float( division( fragTexCoord.y, 1000) )/255.0, 0.0, 1.0);
+        //gl_FragColor = vec4 ( float( division( fragTexCoord.x, 1000) )/255.0, float( division( fragTexCoord.y, 1000) )/255.0, 0.0, 1.0);
+        gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
+        gl_FragColor = color0;
 
       } 
     }
@@ -165,7 +167,7 @@ txt_coord calCoord(txt_p f, tri_p t){
 
 ivec4 D_texture2D(sampler2D sampler,txt_coord t){
   int tx0, ty0, wei_x, wei_y;
-  vec4 color0, color1, color2, color3;
+  
   tx0 = division ( t.x, 1000);
   ty0 = division ( t.y, 1000);
   color0 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0     )/ 255.0));
