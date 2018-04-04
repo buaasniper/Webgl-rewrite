@@ -1,0 +1,245 @@
+<html>
+    <head>
+    <script type="text/javascript"></script>
+    
+    <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 v3Position;
+    varying vec2 v_texCoord;
+    void main(void)
+    {
+        v_texCoord = vec2((v3Position.x+1.0)/2.0, 1.0-(v3Position.y+1.0)/2.0);
+        gl_Position = vec4(v3Position, 1.0);
+    }
+    </script>
+    
+    <script id="shader-fs" type="x-shader/x-fragment">
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+        precision highp float;
+    #else
+        precision mediump float;
+    #endif
+    uniform float linecolor;
+    uniform sampler2D s_texture;
+    varying vec2 v_texCoord;
+    
+    void main(void)
+    {
+        if (linecolor < 0.5){
+          gl_FragColor = texture2D(s_texture, v_texCoord);          
+        }
+        else if (linecolor < 0.8){
+            gl_FragColor =vec4(0.0, 1.0, 0.0, 1.0);
+        }
+        else{
+            gl_FragColor =vec4(1.0, 0.0, 0.0, 1.0);
+        }
+
+    }
+    </script>
+    
+    <script>
+    function ShaderSourceFromScript(scriptID)
+    {
+        var shaderScript = document.getElementById(scriptID);
+        if (shaderScript == null) return "";
+    
+        var sourceCode = "";
+        var child = shaderScript.firstChild;
+        while (child)
+        {
+            if (child.nodeType == child.TEXT_NODE ) sourceCode += child.textContent;
+            child = child.nextSibling;
+        }
+    
+        return sourceCode;
+    }
+
+    
+    function getPoints()
+    {
+        var res = []
+         for (var x = 0; x < 256; x ++) {
+             var y = 256 - 100 * Math.cos(2.0 * Math.PI * x / 100.0) + 30 * Math.cos(4.0 * Math.PI * x / 100.0) + 6 * Math.cos(6.0 * Math.PI * x / 100.0);
+             res.push(x / 150 - 0.8, y / 200 - 1.4, 0);
+        }
+        return res;
+    }
+    
+    var webgl = null;
+    var vertexShaderObject = null;
+    var fragmentShaderObject = null;
+    var programObject = null;
+    var triangleBuffer = null;
+    var v3PositionIndex = 0;
+    var textureObject = null;
+    var samplerIndex = -1;
+    var lineIndex = -1;
+
+    function Init()
+    {
+        var myCanvasObject = document.getElementById('canvas');
+        webgl = myCanvasObject.getContext("experimental-webgl");
+    
+        webgl.viewport(0, 0, myCanvasObject.clientWidth, myCanvasObject.clientHeight);
+    
+        vertexShaderObject = webgl.createShader(webgl.VERTEX_SHADER);
+        fragmentShaderObject = webgl.createShader(webgl.FRAGMENT_SHADER);
+    
+        webgl.shaderSource(vertexShaderObject, ShaderSourceFromScript("shader-vs"));
+        webgl.shaderSource(fragmentShaderObject, ShaderSourceFromScript("shader-fs"));
+    
+        webgl.compileShader(vertexShaderObject);
+        webgl.compileShader(fragmentShaderObject);
+    
+        if(!webgl.getShaderParameter(vertexShaderObject, webgl.COMPILE_STATUS)){alert(webgl.getShaderInfoLog(vertexShaderObject));return;}
+        if(!webgl.getShaderParameter(fragmentShaderObject, webgl.COMPILE_STATUS)){alert(webgl.getShaderInfoLog(fragmentShaderObject));return;}
+    
+        programObject = webgl.createProgram();
+    
+        webgl.attachShader(programObject, vertexShaderObject);
+        webgl.attachShader(programObject, fragmentShaderObject);
+    
+        webgl.bindAttribLocation(programObject, v3PositionIndex, "v3Position");
+    
+        webgl.linkProgram(programObject);
+        if(!webgl.getProgramParameter(programObject, webgl.LINK_STATUS)){alert(webgl.getProgramInfoLog(programObject));return;}
+    
+        samplerIndex = webgl.getUniformLocation(programObject, "s_texture");
+        lineIndex = webgl.getUniformLocation(programObject, "linecolor");
+
+        webgl.useProgram(programObject);
+
+        var vertices = getPoints();
+        vertices.push.apply(vertices, [
+            -0.7,-0.1,0,
+            -0.3,0.6,0,
+            -0.3,-0.3,0,
+            0.2,0.6,0,
+            0.3,-0.3,0,
+            0.7,0.6,0
+        ]);
+
+        var jsArrayData = [
+           1.0, 1.0, 0.0,//上顶点
+            -1.0, 1.0, 0.0,//左顶点
+            -1.0, -1.0, 0.0,
+            1.0, 1.0, 0.0,//上顶点
+            -1.0, -1.0, 0.0,//左顶点
+            1.0, -1.0, 0.0,
+            ];//右顶点
+
+        var texSize = 256;
+        var numChecks = 8;
+        var image = new Uint8Array(4*texSize*texSize);
+
+        for ( var i = 0; i < texSize; i++ ) {
+            for ( var j = 0; j <texSize; j++ ) {
+                image[4*i*texSize+4*j] = i;
+                image[4*i*texSize+4*j+1] = j;
+                image[4*i*texSize+4*j+2] = 0;
+                image[4*i*texSize+4*j+3] = 255;
+            }
+        }
+
+        triangleBuffer = webgl.createBuffer();
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
+        webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(jsArrayData), webgl.STATIC_DRAW);
+    
+        lineBuffer = webgl.createBuffer();
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, lineBuffer);
+        webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(vertices), webgl.STATIC_DRAW);
+
+        textureObject = webgl.createTexture();
+        webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
+        webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
+        webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, texSize, texSize, 0,  webgl.RGBA, webgl.UNSIGNED_BYTE, image);
+
+
+        webgl.clearColor(0.0, 0.0, 1.0, 1.0);
+        webgl.clear(webgl.COLOR_BUFFER_BIT);
+    
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
+        webgl.enableVertexAttribArray(v3PositionIndex);
+        webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
+    
+        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
+        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
+        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_S, webgl.CLAMP_TO_EDGE);
+        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_T, webgl.CLAMP_TO_EDGE);
+    
+        webgl.activeTexture(webgl.TEXTURE0);
+        webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
+        webgl.uniform1i(samplerIndex, 0);
+        webgl.uniform1f(lineIndex, 0.3);
+        webgl.drawArrays(webgl.TRIANGLES, 0, 6);
+
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, lineBuffer);
+        webgl.enableVertexAttribArray(v3PositionIndex);
+        webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
+
+        webgl.uniform1f(lineIndex, 0.7);
+        webgl.drawArrays(webgl.LINE_STRIP,  0, 256);
+
+        var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+        webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
+        console.log(pixels);
+        // for i 
+        // for ( var i = 0; i < 256; i++ ) {
+        //     for ( var j = 0; j <256; j++ ) {
+        //         // var patchx = Math.floor(i/(texSize/numChecks));
+        //         // var patchy = Math.floor(j/(texSize/numChecks));
+        //         // if(patchx%2 ^ patchy%2) c = 255;
+        //         // else c = 0;
+        //         //c = 255*(((i & 0x8) == 0) ^ ((j & 0x8)  == 0))
+        //         if ((pixels[4*i*256+j*4] != 0)){
+        //          // = 0;
+        //             console.log(i,j);
+        //             // console.log(pixels[4*i+j]);
+        //             // console.log(pixels[4*i+j+1]);
+        //             // console.log(pixels[4*i+j+2]);
+        //         }
+        //         // image[4*i*texSize+4*j+1] = 0;
+        //         // image[4*i*texSize+4*j+2] = 0;
+        //         // image[4*i*texSize+4*j+3] = 255;
+        //     }
+        // }
+        webgl.clearColor(0.0, 0.0, 1.0, 1.0);
+        webgl.clear(webgl.COLOR_BUFFER_BIT);
+
+
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
+        webgl.enableVertexAttribArray(v3PositionIndex);
+        webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
+
+        var texture = textureFromPixelArray(webgl, pixels, webgl.RGBA, canvas.width, canvas.height);
+
+        webgl.activeTexture(webgl.TEXTURE0);
+        webgl.bindTexture(webgl.TEXTURE_2D, texture);
+        webgl.uniform1i(samplerIndex, 0);
+        webgl.uniform1f(lineIndex, 0.3);
+        webgl.drawArrays(webgl.TRIANGLES, 0, 6);
+
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, lineBuffer);
+        webgl.enableVertexAttribArray(v3PositionIndex);
+        webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
+
+        webgl.uniform1f(lineIndex, 0.9);
+        webgl.drawArrays(webgl.LINES,  256, 6);
+
+        function textureFromPixelArray(webgl, dataArray, type, width, height) {
+            var texture = webgl.createTexture();
+            webgl.bindTexture(webgl.TEXTURE_2D, texture);
+            webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
+            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
+            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
+            return texture;
+        }
+// ***************************
+    }
+    </script>
+
+    </head>
+    <body onload='Init()'>
+        <p><canvas id="canvas" width='256px' height='256px'></canvas> </p>
+    </body>
+    </html> 
