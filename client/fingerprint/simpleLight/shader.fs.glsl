@@ -40,13 +40,16 @@ vec4 col_transfer(ivec4 color);
 // r,g,b 0 - 255   a 0 - 100      
 vec4 color0, color1, color2, color3;
 uniform ivec3 nor_point[333];
+uniform ivec2 map[256];
 uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
 uniform sampler2D sampler;
 uniform mat4 mWorld;
 int  wei_1, wei_2, wei_3;
+
 void main()
 {
+  float a[5] = float[](3.4, 4.2, 5.0, 5.2, 1.1);
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
@@ -54,9 +57,15 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
+        ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
+        ivec3 surfaceNormal = D_normalize(vertNormal);
+        ivec3 normSunDir = D_normalize(sun.direction);
+        ivec4 texel = D_texture2D(sampler, fragTexCoord);
+        ivec3 lightIntensity = ambientLightIntensity + division(int (sun.color * max(dot(vertNormal, normSun Dir), 0.0) ), 1000);
+        gl_FragColor = vec4(col_transfer(division(texel.rgb * lightIntensity, 1000)) , 1.0);
 
         //vec4 texel = col_transfer( D_texture2D(sampler, fragTexCoord));
-        ivec4 texel = D_texture2D(sampler, fragTexCoord);
+        
         //ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
 		  	//ivec3 surfaceNormal = D_normalize(vertNormal);
 		  	//vec3 normSunDir = normalize(sun.direction);
@@ -72,7 +81,7 @@ void main()
         //gl_FragColor = vec4 ( float( division( fragTexCoord.x, 1000) )/255.0, float( division( fragTexCoord.y, 1000) )/255.0, 0.0, 1.0);
         //gl_FragColor = vec4 ( float( mod( fragTexCoord.x, 255) )/255.0, float( mod( fragTexCoord.y, 255) )/255.0, 0.0, 1.0);
         //gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
-        gl_FragColor = color0;
+        //gl_FragColor = color0;
 
       } 
     }
@@ -146,6 +155,7 @@ int mod(int a, int b){
 
 txt_coord calCoord(txt_p f, tri_p t){
   txt_coord tt;
+  txt_coord ttt;
   int bcs1, bcs2, bcs3, cs1, cs2, cs3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
   cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
@@ -162,7 +172,9 @@ txt_coord calCoord(txt_p f, tri_p t){
 
   tt.x = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
   tt.y = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;
-  return tt;
+  ttt.x = tt.x + map[tt.x][0];
+  ttt.y = tt.y + map[tt.y][1];
+  return ttt;
 }
 
 
@@ -204,5 +216,8 @@ int isqrt(int a){
       return i;
 }
 
-
-
+ivec3 D_normalize(ivec3 a){
+  vec3 b = division(a, 1000);
+  vec3 c = normalize(b);
+  return int(c * 1000);
+}

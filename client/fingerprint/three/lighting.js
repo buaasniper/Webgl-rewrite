@@ -21,6 +21,12 @@ var LightingTest = function() {
   function run(canvas, cb, anti, ID) {
     // RENDERER
     //
+    __ColorFlag = 1;  
+    __Mworld_flag = 1;
+    __Mview_flag = 1;
+    __Mpro_flag = 1;
+    __Drawnumber = 1
+  
     var gl;
     if (anti) {
       gl = getGLAA(getCanvas("can_aa"));

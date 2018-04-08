@@ -10,6 +10,13 @@ This makes use of a variety of different webgl compressed texture extensions
  */
 
 (function() {
+  //标准纹理   uniform需要从333变为100进行测试
+  __ColorFlag = 0;  
+  __Mworld_flag = 1;
+  __Mview_flag = 1;
+  __Mpro_flag = 1;
+  __Drawnumber = 1
+
   var CompressedTextureTest, root;
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;

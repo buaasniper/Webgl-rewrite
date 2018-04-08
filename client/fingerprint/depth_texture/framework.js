@@ -915,7 +915,7 @@
         this.mode = this.gl.TRIANGLES;
       }
       this.vertexSize = 0;
-      ref = this.pointers;
+      ref = this.pointers;  // 两个参数  第一个是position  第二个是normal
       for (j = 0, len = ref.length; j < len; j++) {
         pointer = ref[j];
         this.vertexSize += pointer.size;
@@ -928,11 +928,11 @@
       if (vertices instanceof Array) {
         data = new Float32Array(vertices);
       } else {
-        data = vertices;
+        data = vertices;        //将vertices的值完全存入到data
       }
       this.size = data.length / this.vertexSize;
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-      this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
+      this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.STATIC_DRAW);   //bind buffer 完毕 
       return this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     };
 

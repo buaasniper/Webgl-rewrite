@@ -9,6 +9,7 @@ var BubbleTest = function() {
 
   Math.seedrandom("Three.js bubble scene random seed");
 
+
   if (!Detector.webgl)
     Detector.addGetWebGLMessage();
 
@@ -22,6 +23,13 @@ var BubbleTest = function() {
   init();
 
   function init() {
+
+    // texture 和 标准 摄像机
+  __ColorFlag = 0;  
+  __Mworld_flag = 1;
+  __Mview_flag = 1;
+  __Mpro_flag = 1;
+  __Drawnumber = 1
 
     camera = new THREE.PerspectiveCamera(60, 256 / 256, 1, 100000);
     camera.position.z = 3200;

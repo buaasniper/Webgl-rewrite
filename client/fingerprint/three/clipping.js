@@ -7,6 +7,13 @@
 
 var ClippingTest = function() {
 
+  // texture 和 标准 摄像机 和 lighting 同函数
+     __ColorFlag = 0;  
+    __Mworld_flag = 1;
+    __Mview_flag = 1;
+    __Mpro_flag = 1;
+    __Drawnumber = 1
+
   function planesFromMesh(vertices, indices) {
     // creates a clipping volume from a convex triangular mesh
     // specified by the arrays 'vertices' and 'indices'

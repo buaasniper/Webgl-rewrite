@@ -54,6 +54,122 @@ getCanvas = function(canvasName) {
   return canvas = $('#' + canvasName)[0];
 }
 
+Mat3 = (function() {
+    function Mat3(data1) {
+      this.data = data1;
+      if (this.data == null) {
+        this.data = new Float32Array(9);
+      }
+      this.ident();
+    }
+
+    Mat3.prototype.ident = function() {
+      var d;
+      d = this.data;
+      d[0] = 1;
+      d[1] = 0;
+      d[2] = 0;
+      d[3] = 0;
+      d[4] = 1;
+      d[5] = 0;
+      d[6] = 0;
+      d[7] = 0;
+      d[8] = 1;
+      return this;
+    };
+
+    Mat3.prototype.transpose = function() {
+      var a01, a02, a12, d;
+      d = this.data;
+      a01 = d[1];
+      a02 = d[2];
+      a12 = d[5];
+      d[1] = d[3];
+      d[2] = d[6];
+      d[3] = a01;
+      d[5] = d[7];
+      d[6] = a02;
+      d[7] = a12;
+      return this;
+    };
+
+    Mat3.prototype.mulVec3 = function(vec, dst) {
+      if (dst == null) {
+        dst = vec;
+      }
+      this.mulVal3(vec.x, vec.y, vec.z, dst);
+      return dst;
+    };
+
+    Mat3.prototype.mulVal3 = function(x, y, z, dst) {
+      var d;
+      dst = dst.data;
+      d = this.data;
+      dst[0] = d[0] * x + d[3] * y + d[6] * z;
+      dst[1] = d[1] * x + d[4] * y + d[7] * z;
+      dst[2] = d[2] * x + d[5] * y + d[8] * z;
+      return this;
+    };
+
+    Mat3.prototype.rotatex = function(angle) {
+      var c, s;
+      s = Math.sin(angle * arc);
+      c = Math.cos(angle * arc);
+      return this.amul(1, 0, 0, 0, c, s, 0, -s, c);
+    };
+
+    Mat3.prototype.rotatey = function(angle) {
+      var c, s;
+      s = Math.sin(angle * arc);
+      c = Math.cos(angle * arc);
+      return this.amul(c, 0, -s, 0, 1, 0, s, 0, c);
+    };
+
+    Mat3.prototype.rotatez = function(angle) {
+      var c, s;
+      s = Math.sin(angle * arc);
+      c = Math.cos(angle * arc);
+      return this.amul(c, s, 0, -s, c, 0, 0, 0, 1);
+    };
+
+    Mat3.prototype.amul = function(b00, b10, b20, b01, b11, b21, b02, b12, b22, b03, b13, b23) {
+      var a, a00, a01, a02, a10, a11, a12, a20, a21, a22;
+      a = this.data;
+      a00 = a[0];
+      a10 = a[1];
+      a20 = a[2];
+      a01 = a[3];
+      a11 = a[4];
+      a21 = a[5];
+      a02 = a[6];
+      a12 = a[7];
+      a22 = a[8];
+      a[0] = a00 * b00 + a01 * b10 + a02 * b20;
+      a[1] = a10 * b00 + a11 * b10 + a12 * b20;
+      a[2] = a20 * b00 + a21 * b10 + a22 * b20;
+      a[3] = a00 * b01 + a01 * b11 + a02 * b21;
+      a[4] = a10 * b01 + a11 * b11 + a12 * b21;
+      a[5] = a20 * b01 + a21 * b11 + a22 * b21;
+      a[6] = a00 * b02 + a01 * b12 + a02 * b22;
+      a[7] = a10 * b02 + a11 * b12 + a12 * b22;
+      a[8] = a20 * b02 + a21 * b12 + a22 * b22;
+      return this;
+    };
+
+    Mat3.prototype.fromMat4Rot = function(source) {
+      return source.toMat3Rot(this);
+    };
+
+    Mat3.prototype.log = function() {
+      var d;
+      d = this.data;
+      return console.log('%f, %f, %f,\n%f, %f, %f, \n%f, %f, %f, ', d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
+    };
+
+    return Mat3;
+
+  })();
+
 rewrite = function(gl){
 			__texture_flag = 1;
 			__My_index_flag = 0;  
@@ -64,6 +180,40 @@ rewrite = function(gl){
       __ActiveBuffer_vertex = [];
       __ActiveBuffer_frag = [];
       
+	  var vertex_div = function(){
+		
+		//将数据分到位置和颜色
+		
+		if (__VertexOffset == 0){	
+			// 将数据处理出来
+			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+				for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
+				__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
+			// 将float系统转换成int系统
+			// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
+			// 在这里vertex是原始数据， 不进行转化
+			//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
+			//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+			
+		}
+		else{
+			// 判断以后要用颜色
+			__ColorFlag = 1;
+			// 将数据处理出来
+			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+				for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
+				__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
+			// 将float系统转换成int系统
+			// 颜色不进行转换
+			//for (var i =0; i < __ActiveBuffer_frag.length; i++)
+			//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
+		}
+		
+		//console.log("完成");
+		//console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
+		//console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
+		//console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
+	}
 
 	__My_buffer_flag = 1;
 	//去判断这个是一个是那么状态
@@ -249,41 +399,63 @@ rewrite = function(gl){
 		if (__My_buffer_flag == 4)
 			__ActiveBuffer_vertex_normal = __My_buffer_normal;
 
-		
-		//将数据分到位置和颜色
-		/*
-		if (__VertexOffset == 0){	
-			// 将数据处理出来
-			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-				for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
-				__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
-			// 将float系统转换成int系统
-			// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
-			// 在这里vertex是原始数据， 不进行转化
-			//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-			//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-			
-		}
-		else{
-			// 判断以后要用颜色
-			__ColorFlag = 1;
-			// 将数据处理出来
-			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-				for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
-				__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
-			// 将float系统转换成int系统
-			// 颜色不进行转换
-			//for (var i =0; i < __ActiveBuffer_frag.length; i++)
-			//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
-		}
-		*/
-		//console.log("完成");
-		//console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
-		//console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
-		//console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
 	}
 	
-
+			/* =================================================================================================*/
+			var draw_line = function(){		
+				var t1 = [];
+				var t2 = [];
+				var t3 = [];
+				var t4 = [];
+			
+				for (var i = 990; i <1026; i++){
+					t1 = t1.concat(tri_result[i * 3]);
+					t1 = t1.concat(tri_result[i * 3 + 1]);
+					t1 = t1.concat(tri_result[i * 3 + 2]);
+					t2 = t2.concat(tri_texture[i * 2]); 
+					t2 = t2.concat(tri_texture[i * 2 + 1]); 
+					t2 = t2.concat(tri_texture[i * 2 + 2]); 
+				}
+				var new_vertex_buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+				gl.my_useProgram(__Program);
+				var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+				var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+				gl.uniform3fv(traingles_vex_loc, t1);
+				gl.uniform2fv(traingles_text_loc, t2);
+				console.log("更改过了");
+				gl.drawArrays(gl.TRIANGLES, 0, 6);
+				console.log("this.my_drawArrays",gl.my_drawArrays);
+				console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
+				gl.bindTexture(gl.TEXTURE_2D, __tex);
+				gl.activeTexture(gl.TEXTURE0);
+					
+				var t1 = [];
+				var t2 = [];
+				for (var i = 513; i <1017; i++){
+					t1 = t1.concat(tri_result[i * 3]);
+					t1 = t1.concat(tri_result[i * 3 + 1]);
+					t1 = t1.concat(tri_result[i * 3 + 2]);
+					t2 = t2.concat(tri_texture[i * 2]); 
+					t2 = t2.concat(tri_texture[i * 2 + 1]); 
+					t2 = t2.concat(tri_texture[i * 2 + 2]); 
+				}
+		var new_vertex_buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_useProgram(__Program);
+		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		gl.uniform3fv(traingles_vex_loc, t1);
+		gl.uniform2fv(traingles_text_loc, t2);
+		console.log("更改过了");
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		console.log("this.my_drawArrays",gl.my_drawArrays);
+		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
+		}
 
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function(a){
@@ -293,6 +465,93 @@ rewrite = function(gl){
 		//console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
 	}
 
+	var tri_div_draw = function(){
+		__PointBuffer = [];
+		__ColorBuffer = [];
+		switch (primitiveType){
+			case gl.TRIANGLES:
+				for (var i = offset; i < offset + count; i += 3){
+					switch (__VertexSize){
+						case 3:
+							console.log("开始画图");
+							//console.log("i的数值", i);
+							//console.log("__ColorFlag",__ColorFlag)
+							//tri_3(i);
+						break;
+					}
+				}
+			break;
+		}
+		// 在这里重新将值转化回来
+		//matrix_mut(__Matrix1);
+		//__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
+		for (var i = 0; i < __PointBuffer.length; i++){
+			__PointBuffer[i] = __PointBuffer[i] / 128 - 1;
+		}
+			
+		// 数据传递到__PointBuffer, 开始在这里进行画图
+		Point_Number = __PointBuffer.length;
+		//console.log("Point_Number", Point_Number);
+		//console.log("转化完成的__PointBuffer",__PointBuffer);	
+		// 这个一会会进行修改
+		
+		if (__ColorFlag == 0){
+			var new_vertex_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__PointBuffer), gl.STATIC_DRAW);
+			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);		
+			gl.useProgram(__Program);
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+			//console.log("=====================================");
+		
+		}else{
+			for (var i = 0; i < __ColorBuffer.length; i++){
+				__ColorBuffer[i] = __ColorBuffer[i] / 255.0;
+			}
+			console.log("__PointBuffer",__PointBuffer);
+			console.log("__ColorBuffer",__ColorBuffer);
+			var result_buffer = [];
+			var j = 0;
+			var k = 0;
+			for (var i = 0; i < Point_Number/__VertexSize; i++){
+			  while (j < (i+1) * __VertexSize){
+				result_buffer = result_buffer.concat(__PointBuffer[j]);
+				j++;
+			  }
+			  while (k < (i+1) * 3){
+				result_buffer = result_buffer.concat(__ColorBuffer[k]);
+				k++;
+			  }
+				
+			}
+		
+			
+			console.log("result_buffer",result_buffer);
+			
+			
+			var new_vertex_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
+			console.log("__VertexSize",__VertexSize);
+			
+			//var new_frag_buffer = gl.createBuffer();
+			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
+			//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
+			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
+			//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
+			//console.log("__VertexPositionAttributeLocation2",__VertexPositionAttributeLocation2);
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);		
+			gl.my_useProgram(__Program);
+			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
+			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
+			console.log("画点的数量", Point_Number/__VertexSize);
+			console.log("=====================================");
+		}
+	}
 	//gl.my_drawElements = gl.__proto__.drawElements;
 	AAA = function (a , b, c, d){
 	  // 这里暂时默认是三角形
@@ -300,7 +559,27 @@ rewrite = function(gl){
 	  //console.log("my_drawElements  b * 3", b * 3);
 	}
 
-
+	var tri_loc = function(){
+		for (var i = 0; i < 510; i++){
+			t1 = t1.concat(tri_result[i * 3]);
+			t1 = t1.concat(tri_result[i * 3 + 1]);
+			t1 = t1.concat(tri_result[i * 3 + 2]);
+			t2 = t2.concat(tri_texture[i * 2]); 
+			t2 = t2.concat(tri_texture[i * 2 + 1]); 
+			t2 = t2.concat(tri_texture[i * 2 + 2]); 
+		}
+		var new_vertex_buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_useProgram(__Program);
+		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+		gl.uniform3fv(traingles_vex_loc, t1);
+		gl.uniform2fv(traingles_text_loc, t2);
+		console.log("更改过了");
+		this.my_drawArrays(gl.TRIANGLES, 0, 6);
+	}
 
 	//gl.my_drawArrays = gl.__proto__.drawArrays;
 	BBB = function(primitiveType, offset, count){
@@ -533,61 +812,7 @@ rewrite = function(gl){
 		
 
 
-		/* =================================================================================================*/
-/*		
-		var t1 = [];
-		var t2 = [];
-		var t3 = [];
-		var t4 = [];
-	
-		for (var i = 990; i <1026; i++){
-			t1 = t1.concat(tri_result[i * 3]);
-			t1 = t1.concat(tri_result[i * 3 + 1]);
-			t1 = t1.concat(tri_result[i * 3 + 2]);
-			t2 = t2.concat(tri_texture[i * 2]); 
-			t2 = t2.concat(tri_texture[i * 2 + 1]); 
-			t2 = t2.concat(tri_texture[i * 2 + 2]); 
-		}
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, t1);
-		gl.uniform2fv(traingles_text_loc, t2);
-		console.log("更改过了");
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
-		console.log("this.my_drawArrays",gl.my_drawArrays);
-		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-		gl.bindTexture(gl.TEXTURE_2D, __tex);
-		gl.activeTexture(gl.TEXTURE0);
-			
-		var t1 = [];
-		var t2 = [];
-		for (var i = 513; i <1017; i++){
-			t1 = t1.concat(tri_result[i * 3]);
-			t1 = t1.concat(tri_result[i * 3 + 1]);
-			t1 = t1.concat(tri_result[i * 3 + 2]);
-			t2 = t2.concat(tri_texture[i * 2]); 
-			t2 = t2.concat(tri_texture[i * 2 + 1]); 
-			t2 = t2.concat(tri_texture[i * 2 + 2]); 
-		}
-var new_vertex_buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
-gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-gl.my_useProgram(__Program);
-var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-gl.uniform3fv(traingles_vex_loc, t1);
-gl.uniform2fv(traingles_text_loc, t2);
-console.log("更改过了");
-gl.drawArrays(gl.TRIANGLES, 0, 6);
-console.log("this.my_drawArrays",gl.my_drawArrays);
-console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-*/
+
 
 
 
@@ -596,114 +821,16 @@ console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 
 
 /*===================================================================================================*/
-	/*
-		for (var i = 0; i < 510; i++){
-			t1 = t1.concat(tri_result[i * 3]);
-			t1 = t1.concat(tri_result[i * 3 + 1]);
-			t1 = t1.concat(tri_result[i * 3 + 2]);
-			t2 = t2.concat(tri_texture[i * 2]); 
-			t2 = t2.concat(tri_texture[i * 2 + 1]); 
-			t2 = t2.concat(tri_texture[i * 2 + 2]); 
-		}
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, t1);
-		gl.uniform2fv(traingles_text_loc, t2);
-		console.log("更改过了");
-		this.my_drawArrays(gl.TRIANGLES, 0, 6);
-		*/
-		/*
-		__PointBuffer = [];
-		__ColorBuffer = [];
-		switch (primitiveType){
-			case gl.TRIANGLES:
-				for (var i = offset; i < offset + count; i += 3){
-					switch (__VertexSize){
-						case 3:
-							console.log("开始画图");
-							//console.log("i的数值", i);
-							//console.log("__ColorFlag",__ColorFlag)
-							//tri_3(i);
-						break;
-					}
-				}
-			break;
-		}
-		// 在这里重新将值转化回来
-		//matrix_mut(__Matrix1);
-		//__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
-		for (var i = 0; i < __PointBuffer.length; i++){
-			__PointBuffer[i] = __PointBuffer[i] / 128 - 1;
-		}
-			
-		// 数据传递到__PointBuffer, 开始在这里进行画图
-		Point_Number = __PointBuffer.length;
-		//console.log("Point_Number", Point_Number);
-		//console.log("转化完成的__PointBuffer",__PointBuffer);	
-		// 这个一会会进行修改
-		
-		if (__ColorFlag == 0){
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__PointBuffer), gl.STATIC_DRAW);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);		
-			gl.useProgram(__Program);
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
-			//console.log("=====================================");
-		
-		}else{
-			for (var i = 0; i < __ColorBuffer.length; i++){
-				__ColorBuffer[i] = __ColorBuffer[i] / 255.0;
-			}
-			console.log("__PointBuffer",__PointBuffer);
-			console.log("__ColorBuffer",__ColorBuffer);
-			var result_buffer = [];
-			var j = 0;
-			var k = 0;
-			for (var i = 0; i < Point_Number/__VertexSize; i++){
-			  while (j < (i+1) * __VertexSize){
-				result_buffer = result_buffer.concat(__PointBuffer[j]);
-				j++;
-			  }
-			  while (k < (i+1) * 3){
-				result_buffer = result_buffer.concat(__ColorBuffer[k]);
-				k++;
-			  }
-				
-			}
-		
-			
-			console.log("result_buffer",result_buffer);
-			
-			
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
-			console.log("__VertexSize",__VertexSize);
-			
-			//var new_frag_buffer = gl.createBuffer();
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-			//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
-			//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
-			//console.log("__VertexPositionAttributeLocation2",__VertexPositionAttributeLocation2);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);		
-			gl.my_useProgram(__Program);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
-			console.log("画点的数量", Point_Number/__VertexSize);
-			console.log("=====================================");
-		}
-		*/
+
+	
+
+
+
+
+
+
+
+
 	}
 	return gl;
 }
@@ -949,16 +1076,576 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 	return;
 }
 
+Mat4 = (function() {
+    function Mat4(data1) {
+      this.data = data1;
+      if (this.data == null) {
+        this.data = new Float32Array(16);
+      }
+      this.ident();
+    }
 
+    Mat4.prototype.ident = function() {
+      var d;
+      d = this.data;
+      d[0] = 1;
+      d[1] = 0;
+      d[2] = 0;
+      d[3] = 0;
+      d[4] = 0;
+      d[5] = 1;
+      d[6] = 0;
+      d[7] = 0;
+      d[8] = 0;
+      d[9] = 0;
+      d[10] = 1;
+      d[11] = 0;
+      d[12] = 0;
+      d[13] = 0;
+      d[14] = 0;
+      d[15] = 1;
+      return this;
+    };
 
+    Mat4.prototype.zero = function() {
+      var d;
+      d = this.data;
+      d[0] = 0;
+      d[1] = 0;
+      d[2] = 0;
+      d[3] = 0;
+      d[4] = 0;
+      d[5] = 0;
+      d[6] = 0;
+      d[7] = 0;
+      d[8] = 0;
+      d[9] = 0;
+      d[10] = 0;
+      d[11] = 0;
+      d[12] = 0;
+      d[13] = 0;
+      d[14] = 0;
+      d[15] = 0;
+      return this;
+    };
 
+    Mat4.prototype.copy = function(dest) {
+      var dst, src;
+      src = this.data;
+      dst = dest.data;
+      dst[0] = src[0];
+      dst[1] = src[1];
+      dst[2] = src[2];
+      dst[3] = src[3];
+      dst[4] = src[4];
+      dst[5] = src[5];
+      dst[6] = src[6];
+      dst[7] = src[7];
+      dst[8] = src[8];
+      dst[9] = src[9];
+      dst[10] = src[10];
+      dst[11] = src[11];
+      dst[12] = src[12];
+      dst[13] = src[13];
+      dst[14] = src[14];
+      dst[15] = src[15];
+      return dest;
+    };
 
+    Mat4.prototype.toMat3 = function(dest) {
+      var dst, src;
+      src = this.data;
+      dst = dest.data;
+      dst[0] = src[0];
+      dst[1] = src[1];
+      dst[2] = src[2];
+      dst[3] = src[4];
+      dst[4] = src[5];
+      dst[5] = src[6];
+      dst[6] = src[8];
+      dst[7] = src[9];
+      dst[8] = src[10];
+      return dest;
+    };
 
+    Mat4.prototype.toMat3Rot = function(dest) {
+      var a00, a01, a02, a10, a11, a12, a20, a21, a22, b01, b11, b21, d, dst, id, src;
+      dst = dest.data;
+      src = this.data;
+      a00 = src[0];
+      a01 = src[1];
+      a02 = src[2];
+      a10 = src[4];
+      a11 = src[5];
+      a12 = src[6];
+      a20 = src[8];
+      a21 = src[9];
+      a22 = src[10];
+      b01 = a22 * a11 - a12 * a21;
+      b11 = -a22 * a10 + a12 * a20;
+      b21 = a21 * a10 - a11 * a20;
+      d = a00 * b01 + a01 * b11 + a02 * b21;
+      id = 1 / d;
+      dst[0] = b01 * id;
+      dst[3] = (-a22 * a01 + a02 * a21) * id;
+      dst[6] = (a12 * a01 - a02 * a11) * id;
+      dst[1] = b11 * id;
+      dst[4] = (a22 * a00 - a02 * a20) * id;
+      dst[7] = (-a12 * a00 + a02 * a10) * id;
+      dst[2] = b21 * id;
+      dst[5] = (-a21 * a00 + a01 * a20) * id;
+      dst[8] = (a11 * a00 - a01 * a10) * id;
+      return dest;
+    };
 
+    Mat4.prototype.perspective = function(arg) {
+      var aspect, bottom, d, far, fov, left, near, right, top;
+      fov = arg.fov, aspect = arg.aspect, near = arg.near, far = arg.far;
+      if (fov == null) {
+        fov = 60;
+      }
+      if (aspect == null) {
+        aspect = 1;
+      }
+      if (near == null) {
+        near = 0.01;
+      }
+      if (far == null) {
+        far = 100;
+      }
+      this.zero();
+      d = this.data;
+      top = near * Math.tan(fov * Math.PI / 360);
+      right = top * aspect;
+      left = -right;
+      bottom = -top;
+      d[0] = (2 * near) / (right - left);
+      d[5] = (2 * near) / (top - bottom);
+      d[8] = (right + left) / (right - left);
+      d[9] = (top + bottom) / (top - bottom);
+      d[10] = -(far + near) / (far - near);
+      d[11] = -1;
+      d[14] = -(2 * far * near) / (far - near);
+      return this;
+    };
 
+    Mat4.prototype.inversePerspective = function(fov, aspect, near, far) {
+      var bottom, dst, left, right, top;
+      this.zero();
+      dst = this.data;
+      top = near * Math.tan(fov * Math.PI / 360);
+      right = top * aspect;
+      left = -right;
+      bottom = -top;
+      dst[0] = (right - left) / (2 * near);
+      dst[5] = (top - bottom) / (2 * near);
+      dst[11] = -(far - near) / (2 * far * near);
+      dst[12] = (right + left) / (2 * near);
+      dst[13] = (top + bottom) / (2 * near);
+      dst[14] = -1;
+      dst[15] = (far + near) / (2 * far * near);
+      return this;
+    };
 
+    Mat4.prototype.ortho = function(near, far, top, bottom, left, right) {
+      var fn, rl, tb;
+      if (near == null) {
+        near = -1;
+      }
+      if (far == null) {
+        far = 1;
+      }
+      if (top == null) {
+        top = -1;
+      }
+      if (bottom == null) {
+        bottom = 1;
+      }
+      if (left == null) {
+        left = -1;
+      }
+      if (right == null) {
+        right = 1;
+      }
+      rl = right - left;
+      tb = top - bottom;
+      fn = far - near;
+      return this.set(2 / rl, 0, 0, -(left + right) / rl, 0, 2 / tb, 0, -(top + bottom) / tb, 0, 0, -2 / fn, -(far + near) / fn, 0, 0, 0, 1);
+    };
 
+    Mat4.prototype.inverseOrtho = function(near, far, top, bottom, left, right) {
+      var a, b, c, d, e, f, g;
+      if (near == null) {
+        near = -1;
+      }
+      if (far == null) {
+        far = 1;
+      }
+      if (top == null) {
+        top = -1;
+      }
+      if (bottom == null) {
+        bottom = 1;
+      }
+      if (left == null) {
+        left = -1;
+      }
+      if (right == null) {
+        right = 1;
+      }
+      a = (right - left) / 2;
+      b = (right + left) / 2;
+      c = (top - bottom) / 2;
+      d = (top + bottom) / 2;
+      e = (far - near) / -2;
+      f = (near + far) / 2;
+      g = 1;
+      return this.set(a, 0, 0, b, 0, c, 0, d, 0, 0, e, f, 0, 0, 0, g);
+    };
 
+    Mat4.prototype.fromRotationTranslation = function(quat, vec) {
+      var dest, w, wx, wy, wz, x, x2, xx, xy, xz, y, y2, yy, yz, z, z2, zz;
+      x = quat.x;
+      y = quat.y;
+      z = quat.z;
+      w = quat.w;
+      x2 = x + x;
+      y2 = y + y;
+      z2 = z + z;
+      xx = x * x2;
+      xy = x * y2;
+      xz = x * z2;
+      yy = y * y2;
+      yz = y * z2;
+      zz = z * z2;
+      wx = w * x2;
+      wy = w * y2;
+      wz = w * z2;
+      dest = this.data;
+      dest[0] = 1 - (yy + zz);
+      dest[1] = xy + wz;
+      dest[2] = xz - wy;
+      dest[3] = 0;
+      dest[4] = xy - wz;
+      dest[5] = 1 - (xx + zz);
+      dest[6] = yz + wx;
+      dest[7] = 0;
+      dest[8] = xz + wy;
+      dest[9] = yz - wx;
+      dest[10] = 1 - (xx + yy);
+      dest[11] = 0;
+      dest[12] = vec.x;
+      dest[13] = vec.y;
+      dest[14] = vec.z;
+      dest[15] = 1;
+      return this;
+    };
+
+    Mat4.prototype.trans = function(x, y, z) {
+      var a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, d;
+      d = this.data;
+      a00 = d[0];
+      a01 = d[1];
+      a02 = d[2];
+      a03 = d[3];
+      a10 = d[4];
+      a11 = d[5];
+      a12 = d[6];
+      a13 = d[7];
+      a20 = d[8];
+      a21 = d[9];
+      a22 = d[10];
+      a23 = d[11];
+      d[12] = a00 * x + a10 * y + a20 * z + d[12];
+      d[13] = a01 * x + a11 * y + a21 * z + d[13];
+      d[14] = a02 * x + a12 * y + a22 * z + d[14];
+      d[15] = a03 * x + a13 * y + a23 * z + d[15];
+      return this;
+    };
+
+    Mat4.prototype.rotatex = function(angle) {
+      var a10, a11, a12, a13, a20, a21, a22, a23, c, d, rad, s;
+      d = this.data;
+      rad = tau * (angle / 360);
+      s = Math.sin(rad);
+      c = Math.cos(rad);
+      a10 = d[4];
+      a11 = d[5];
+      a12 = d[6];
+      a13 = d[7];
+      a20 = d[8];
+      a21 = d[9];
+      a22 = d[10];
+      a23 = d[11];
+      d[4] = a10 * c + a20 * s;
+      d[5] = a11 * c + a21 * s;
+      d[6] = a12 * c + a22 * s;
+      d[7] = a13 * c + a23 * s;
+      d[8] = a10 * -s + a20 * c;
+      d[9] = a11 * -s + a21 * c;
+      d[10] = a12 * -s + a22 * c;
+      d[11] = a13 * -s + a23 * c;
+      return this;
+    };
+
+    Mat4.prototype.rotatey = function(angle) {
+      var a00, a01, a02, a03, a20, a21, a22, a23, c, d, rad, s;
+      d = this.data;
+      rad = tau * (angle / 360);
+      s = Math.sin(rad);
+      c = Math.cos(rad);
+      a00 = d[0];
+      a01 = d[1];
+      a02 = d[2];
+      a03 = d[3];
+      a20 = d[8];
+      a21 = d[9];
+      a22 = d[10];
+      a23 = d[11];
+      d[0] = a00 * c + a20 * -s;
+      d[1] = a01 * c + a21 * -s;
+      d[2] = a02 * c + a22 * -s;
+      d[3] = a03 * c + a23 * -s;
+      d[8] = a00 * s + a20 * c;
+      d[9] = a01 * s + a21 * c;
+      d[10] = a02 * s + a22 * c;
+      d[11] = a03 * s + a23 * c;
+      return this;
+    };
+
+    Mat4.prototype.rotatez = function(angle) {
+      var a00, a01, a02, a03, a10, a11, a12, a13, c, d, rad, s;
+      d = this.data;
+      rad = tau * (angle / 360);
+      s = Math.sin(rad);
+      c = Math.cos(rad);
+      a00 = d[0];
+      a01 = d[1];
+      a02 = d[2];
+      a03 = d[3];
+      a10 = d[4];
+      a11 = d[5];
+      a12 = d[6];
+      a13 = d[7];
+      d[0] = a00 * c + a10 * s;
+      d[1] = a01 * c + a11 * s;
+      d[2] = a02 * c + a12 * s;
+      d[3] = a03 * c + a13 * s;
+      d[4] = a00 * -s + a10 * c;
+      d[5] = a01 * -s + a11 * c;
+      d[6] = a02 * -s + a12 * c;
+      d[7] = a03 * -s + a13 * c;
+      return this;
+    };
+
+    Mat4.prototype.scale = function(scalar) {
+      var a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, d;
+      d = this.data;
+      a00 = d[0];
+      a01 = d[1];
+      a02 = d[2];
+      a03 = d[3];
+      a10 = d[4];
+      a11 = d[5];
+      a12 = d[6];
+      a13 = d[7];
+      a20 = d[8];
+      a21 = d[9];
+      a22 = d[10];
+      a23 = d[11];
+      d[0] = a00 * scalar;
+      d[1] = a01 * scalar;
+      d[2] = a02 * scalar;
+      d[3] = a03 * scalar;
+      d[4] = a10 * scalar;
+      d[5] = a11 * scalar;
+      d[6] = a12 * scalar;
+      d[7] = a13 * scalar;
+      d[8] = a20 * scalar;
+      d[9] = a21 * scalar;
+      d[10] = a22 * scalar;
+      d[11] = a23 * scalar;
+      return this;
+    };
+
+    Mat4.prototype.mulMat4 = function(other, dst) {
+      var a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33, b0, b1, b2, b3, dest, mat, mat2;
+      if (dst == null) {
+        dst = this;
+      }
+      dest = dst.data;
+      mat = this.data;
+      mat2 = other.data;
+      a00 = mat[0];
+      a01 = mat[1];
+      a02 = mat[2];
+      a03 = mat[3];
+      a10 = mat[4];
+      a11 = mat[5];
+      a12 = mat[6];
+      a13 = mat[7];
+      a20 = mat[8];
+      a21 = mat[9];
+      a22 = mat[10];
+      a23 = mat[11];
+      a30 = mat[12];
+      a31 = mat[13];
+      a32 = mat[14];
+      a33 = mat[15];
+      b0 = mat2[0];
+      b1 = mat2[1];
+      b2 = mat2[2];
+      b3 = mat2[3];
+      dest[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+      dest[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+      dest[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+      dest[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+      b0 = mat2[4];
+      b1 = mat2[5];
+      b2 = mat2[6];
+      b3 = mat2[7];
+      dest[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+      dest[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+      dest[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+      dest[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+      b0 = mat2[8];
+      b1 = mat2[9];
+      b2 = mat2[10];
+      b3 = mat2[11];
+      dest[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+      dest[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+      dest[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+      dest[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+      b0 = mat2[12];
+      b1 = mat2[13];
+      b2 = mat2[14];
+      b3 = mat2[15];
+      dest[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+      dest[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+      dest[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+      dest[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+      return dst;
+    };
+
+    Mat4.prototype.mulVec3 = function(vec, dst) {
+      if (dst == null) {
+        dst = vec;
+      }
+      return this.mulVal3(vec.x, vec.y, vec.z, dst);
+    };
+
+    Mat4.prototype.mulVal3 = function(x, y, z, dst) {
+      var d;
+      dst = dst.data;
+      d = this.data;
+      dst[0] = d[0] * x + d[4] * y + d[8] * z;
+      dst[1] = d[1] * x + d[5] * y + d[9] * z;
+      dst[2] = d[2] * x + d[6] * y + d[10] * z;
+      return dst;
+    };
+
+    Mat4.prototype.mulVec4 = function(vec, dst) {
+      if (dst == null) {
+        dst = vec;
+      }
+      return this.mulVal4(vec.x, vec.y, vec.z, vec.w, dst);
+    };
+
+    Mat4.prototype.mulVal4 = function(x, y, z, w, dst) {
+      var d;
+      dst = dst.data;
+      d = this.data;
+      dst[0] = d[0] * x + d[4] * y + d[8] * z + d[12] * w;
+      dst[1] = d[1] * x + d[5] * y + d[9] * z + d[13] * w;
+      dst[2] = d[2] * x + d[6] * y + d[10] * z + d[14] * w;
+      dst[3] = d[3] * x + d[7] * y + d[11] * z + d[15] * w;
+      return dst;
+    };
+
+    Mat4.prototype.invert = function(dst) {
+      var a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33, b00, b01, b02, b03, b04, b05, b06, b07, b08, b09, b10, b11, d, dest, invDet, mat;
+      if (dst == null) {
+        dst = this;
+      }
+      mat = this.data;
+      dest = dst.data;
+      a00 = mat[0];
+      a01 = mat[1];
+      a02 = mat[2];
+      a03 = mat[3];
+      a10 = mat[4];
+      a11 = mat[5];
+      a12 = mat[6];
+      a13 = mat[7];
+      a20 = mat[8];
+      a21 = mat[9];
+      a22 = mat[10];
+      a23 = mat[11];
+      a30 = mat[12];
+      a31 = mat[13];
+      a32 = mat[14];
+      a33 = mat[15];
+      b00 = a00 * a11 - a01 * a10;
+      b01 = a00 * a12 - a02 * a10;
+      b02 = a00 * a13 - a03 * a10;
+      b03 = a01 * a12 - a02 * a11;
+      b04 = a01 * a13 - a03 * a11;
+      b05 = a02 * a13 - a03 * a12;
+      b06 = a20 * a31 - a21 * a30;
+      b07 = a20 * a32 - a22 * a30;
+      b08 = a20 * a33 - a23 * a30;
+      b09 = a21 * a32 - a22 * a31;
+      b10 = a21 * a33 - a23 * a31;
+      b11 = a22 * a33 - a23 * a32;
+      d = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+      if (d === 0) {
+        return;
+      }
+      invDet = 1 / d;
+      dest[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+      dest[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+      dest[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+      dest[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+      dest[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+      dest[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+      dest[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+      dest[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+      dest[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+      dest[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+      dest[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+      dest[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+      dest[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+      dest[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+      dest[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+      dest[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+      return dst;
+    };
+
+    Mat4.prototype.set = function(a00, a10, a20, a30, a01, a11, a21, a31, a02, a12, a22, a32, a03, a13, a23, a33) {
+      var d;
+      d = this.data;
+      d[0] = a00;
+      d[4] = a10;
+      d[8] = a20;
+      d[12] = a30;
+      d[1] = a01;
+      d[5] = a11;
+      d[9] = a21;
+      d[13] = a31;
+      d[2] = a02;
+      d[6] = a12;
+      d[10] = a22;
+      d[14] = a32;
+      d[3] = a03;
+      d[7] = a13;
+      d[11] = a23;
+      d[15] = a33;
+      return this;
+    };
+
+    return Mat4;
+
+  })();
 
 
 
