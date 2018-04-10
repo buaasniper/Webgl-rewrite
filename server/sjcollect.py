@@ -1,6 +1,7 @@
 from flask import Flask, request,make_response, current_app
 import os
 import md5
+import re
 from flask_failsafe import failsafe
 import flask
 from flask_cors import CORS, cross_origin
