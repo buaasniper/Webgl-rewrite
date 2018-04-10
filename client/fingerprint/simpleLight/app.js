@@ -71,6 +71,35 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         return;
       }
 
+
+      //测试一下所有的shader的精度情况
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT));
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT));
+      console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT));
+
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT));
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT));
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT));
+      console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT));
+
+
+  
+
+  var test1 = new Attri_data();
+  test1.bufferData = [1,2,3];
+  var test2 = new Attri_data();
+  console.log("dsaasfdfdsfdsfdsfdsfdsfdsfdsfdsfdsfd",test1.bufferData);
+  var map = [];
+  map.push(test1);
+  map.push(test2);
+  console.log(map.length);
+
+
       var program = gl.createProgram();
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
@@ -120,6 +149,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bindBuffer(gl.ARRAY_BUFFER, susanPosVertexBufferObject);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
+      console.log("***********************************************************************************");
+      console.log("positionAttribLocation",positionAttribLocation);
       gl.vertexAttribPointer(
           positionAttribLocation, // Attribute location
           3,                      // Number of elements per attribute
@@ -133,6 +164,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bindBuffer(gl.ARRAY_BUFFER, susanTexCoordVertexBufferObject);
       var texCoordAttribLocation =
           gl.getAttribLocation(program, 'vertTexCoord');
+      console.log("texCoordAttribLocation",texCoordAttribLocation);
       gl.vertexAttribPointer(
           texCoordAttribLocation, // Attribute location
           2,                      // Number of elements per attribute
@@ -144,6 +176,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
       gl.bindBuffer(gl.ARRAY_BUFFER, susanNormalBufferObject);
       var normalAttribLocation = gl.getAttribLocation(program, 'vertNormal');
+      console.log("normalAttribLocation",normalAttribLocation);
       gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.TRUE,
                              3 * Float32Array.BYTES_PER_ELEMENT, 0);
       gl.enableVertexAttribArray(normalAttribLocation);

@@ -46,6 +46,33 @@ var __tex;
 var __texture_flag;
 
 
+
+/*------------map部分------开头-------------*/
+//建立attribute的map
+var Attri_data = function(){
+    this.bufferName = undefined;  //bindBuffer 时候使用的名字  
+    this.bufferType = undefined;  //依照这个来判断是array还是element_array
+    this.bufferData = undefined;  //存储buffer本身的数值
+    this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
+    this.programName = undefined; //这个位置是在哪一个program的
+    this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
+    this.attriName = undefined;   //？？？？？？？？？？？？？？？？？？？？？？？？这个我现在不能确定是否有必要，写完再进行判断
+    this.attriLoc = undefined;    //gl.getAttribLocation所生成的数值，用来匹配的
+    this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
+    this.eleArrFlag = undefined;  //记录是否有element_array的存在， 0 表示不存在， 1 表示存在。 element_array 数值本身的数值为0
+    this.uniformData = undefined; //这个是记录最终生成的数值，直接通过uniform传入的
+}
+
+//建立random number program 和 shadername对应关系的map
+var Random_loc = function(){
+	this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
+	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
+	this.programName = undefined;   //这个位置是在哪一个program的 
+}
+
+/*------------map部分------结尾-------------*/
+
+
 getCanvas = function(canvasName) {
   var canvas = $('#' + canvasName);
   if(!canvas[0]){
@@ -170,7 +197,60 @@ Mat3 = (function() {
 
   })();
 
-rewrite = function(gl){
+
+
+
+
+/*------------map部分------开头-------------*/
+	//用在bindbuffer 的几个函数
+	  
+	// 重新把之前所有active的buffer状态归位inactive
+	initAttriMap = function(){
+		for (i = 0; i < map.length; i++)
+			map[i].activeFlag = 0;
+	}
+
+	//判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
+	addAttriMap = function(bufferType, bufferName){
+		for (i = 0; i < map.length; i++){
+			if (map[i].bufferName == bufferName)
+				return;
+		}
+		var newData = new Attri_data();
+		newData.bufferType = bufferType;
+		newData.bufferName = bufferName;
+		map.push(newData);
+		return;
+	}
+
+	//激活当前的buffer
+	activeAttriMap = function(bufferType, bufferName){
+		for (i = 0; i < map.length; i++)
+			if (map[i].bufferName == bufferName){
+				map[i].activeFlag = 1;
+				return;
+			}
+	}
+
+
+/*------------map部分------结尾-------------*/
+
+
+
+
+ /*------------map部分------开头-------------*/
+	//用bufferdata的函数
+	addBufferMap = function(bufferData){
+		for (i = 0; i < map.length; i++){
+			if (map[i].activeFlag == 1){
+				map[i].bufferData = bufferData;
+			}
+		}
+	}
+ /*------------map部分------结尾-------------*/
+
+
+  rewrite = function(gl){
 			__texture_flag = 1;
 			__My_index_flag = 0;  
       __PointBuffer = [];
@@ -217,8 +297,50 @@ rewrite = function(gl){
 
 	__My_buffer_flag = 1;
 	//去判断这个是一个是那么状态
+
+/*------------map部分------开头-------------*/
+	//重新定义bindbuffer
+	//有两种情况，第一个是第一次出现这个buffer，需要完全加入一个新的attribute变量，第二种情况，只是更新目前到底在修饰哪一个buffer
+	gl.my_bindBuffer = gl.__proto__.bindBuffer;
+	gl.bindBuffer = function (bufferType, bufferName){
+		initAttriMap(); // 重新把之前所有active的buffer状态归位inactive
+		addAttriMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
+		activeAttriMap(bufferType, bufferName); //激活当前的buffer
+	}
+/*------------map部分------结尾-------------*/
+
+
+
+/*------------map部分------开头-------------*/
+	//重新定义getAttribLocation
+	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
+	gl.my_getAttribLocation = gl.__proto__.getAttribLocation;
+	gl.getAttribLocation = function (programName, shaderName){
+		for (i = 0; i < Random_loc.length; i++){
+			if ((Random_loc[i].programName == programName) && (Random_loc[i].shaderName == shaderName))
+				return Random_loc[i].randomNumber;
+		}
+		var newData = new Random_loc;
+		newData.randomNumber = creatNumber(); // 我暂时还没有构思好如何给这个数字，明天在写这个函数
+		newData.programName = programName;
+		newData.shaderName = shaderName;
+		Random_loc.push(newData);
+	}
+
+
+/*------------map部分------结尾-------------*/
+
+
+
+
 	gl.my_glbufferData = gl.__proto__.bufferData;
 	gl.bufferData = function (a, b, c){
+		/*------------map部分------开头-------------*/
+		addBufferMap(b);
+		/*------------map部分------结尾-------------*/
+
+
+
 		if (__texture_flag == 0){
 			if (a == gl.ELEMENT_ARRAY_BUFFER){
 				__My_index = b;
@@ -257,6 +379,12 @@ rewrite = function(gl){
 			//console.log("__My_buffer", b);
 		}
 	} 
+
+
+
+
+
+
 
 	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
 	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
@@ -401,8 +529,8 @@ rewrite = function(gl){
 
 	}
 	
-			/* =================================================================================================*/
-			var draw_line = function(){		
+
+	var draw_line = function(){		
 				var t1 = [];
 				var t2 = [];
 				var t3 = [];
@@ -442,21 +570,26 @@ rewrite = function(gl){
 					t2 = t2.concat(tri_texture[i * 2 + 1]); 
 					t2 = t2.concat(tri_texture[i * 2 + 2]); 
 				}
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, t1);
-		gl.uniform2fv(traingles_text_loc, t2);
-		console.log("更改过了");
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
-		console.log("this.my_drawArrays",gl.my_drawArrays);
-		console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
+				var new_vertex_buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
+				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+				gl.my_useProgram(__Program);
+				var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+				var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+				gl.uniform3fv(traingles_vex_loc, t1);
+				gl.uniform2fv(traingles_text_loc, t2);
+				console.log("更改过了");
+				gl.drawArrays(gl.TRIANGLES, 0, 6);
+				console.log("this.my_drawArrays",gl.my_drawArrays);
+				console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
 		}
 
+	
+	
+	
+	
+	
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function(a){
 		__Program = a;
@@ -834,6 +967,12 @@ rewrite = function(gl){
 	}
 	return gl;
 }
+
+
+
+
+
+
 
 var uniform_number  = 111;
 
