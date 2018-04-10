@@ -48,20 +48,26 @@ var __texture_flag;
 
 
 /*------------map部分------开头-------------*/
-//建立attribute的map
-var Attri_data = function(){
+//建立buffer的map
+var Buffer_data = function(){
     this.bufferName = undefined;  //bindBuffer 时候使用的名字  
     this.bufferType = undefined;  //依照这个来判断是array还是element_array
     this.bufferData = undefined;  //存储buffer本身的数值
     this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
-    this.programName = undefined; //这个位置是在哪一个program的
+    
+}
+var BufferDataMap;
+
+// 建立attribute的map
+var Attri_data = function(){
+	this.programName = undefined; //这个位置是在哪一个program的
     this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
-    this.attriName = undefined;   //？？？？？？？？？？？？？？？？？？？？？？？？这个我现在不能确定是否有必要，写完再进行判断
+    this.attriName = undefined;   //需要使用，这个数据来源于Random_loc.shaderName，需要和parsing进行匹配
     this.attriLoc = undefined;    //gl.getAttribLocation所生成的数值，用来匹配的
     this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
-    this.eleArrFlag = undefined;  //记录是否有element_array的存在， 0 表示不存在， 1 表示存在。 element_array 数值本身的数值为0
     this.uniformData = undefined; //这个是记录最终生成的数值，直接通过uniform传入的
 }
+var AttriDataMap;
 
 //建立random number program 和 shadername对应关系的map
 var Random_loc = function(){
@@ -69,6 +75,7 @@ var Random_loc = function(){
 	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
 	this.programName = undefined;   //这个位置是在哪一个program的 
 }
+var RandomLocMap;
 
 /*------------map部分------结尾-------------*/
 
@@ -206,28 +213,28 @@ Mat3 = (function() {
 	  
 	// 重新把之前所有active的buffer状态归位inactive
 	initAttriMap = function(){
-		for (i = 0; i < map.length; i++)
-			map[i].activeFlag = 0;
+		for (i = 0; i < BufferDataMap.length; i++)
+			BufferDataMap[i].activeFlag = 0;
 	}
 
 	//判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
 	addAttriMap = function(bufferType, bufferName){
-		for (i = 0; i < map.length; i++){
-			if (map[i].bufferName == bufferName)
+		for (i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].bufferName == bufferName)
 				return;
 		}
-		var newData = new Attri_data();
+		var newData = new Buffer_data();
 		newData.bufferType = bufferType;
 		newData.bufferName = bufferName;
-		map.push(newData);
+		BufferDataMap.push(newData);
 		return;
 	}
 
 	//激活当前的buffer
 	activeAttriMap = function(bufferType, bufferName){
-		for (i = 0; i < map.length; i++)
-			if (map[i].bufferName == bufferName){
-				map[i].activeFlag = 1;
+		for (i = 0; i < BufferDataMap.length; i++)
+			if (BufferDataMap[i].bufferName == bufferName){
+				BufferDataMap[i].activeFlag = 1;
 				return;
 			}
 	}
@@ -241,13 +248,57 @@ Mat3 = (function() {
  /*------------map部分------开头-------------*/
 	//用bufferdata的函数
 	addBufferMap = function(bufferData){
-		for (i = 0; i < map.length; i++){
-			if (map[i].activeFlag == 1){
-				map[i].bufferData = bufferData;
+		for (i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].activeFlag == 1){
+				BufferDataMap[i].bufferData = bufferData;
 			}
 		}
 	}
  /*------------map部分------结尾-------------*/
+
+
+ /*------------map部分------开头-------------*/
+	//用getAttribLocation的函数
+	var __Locnumber = 100; //初始化函数
+	//单独建立函数的原因是在单个program的时候，单一__Locnumber是可行的，我担心在three.js多program和多attribute的情况下，可能会出问题，先暂时写成这样，调试的时候再做修改。
+	creatNumber = function(){
+		__Locnumber++;
+		return __Locnumber;
+
+	}
+ /*------------map部分------结尾-------------*/ 
+
+
+ 
+ /*------------map部分------开头-------------*/
+	//用在vertexAttribPointer中的函数
+	//提取getAttribLocation能获得的glsl部分的信息
+ 	var getShaderData = function(positionAttributeLocation){
+		 for (var i = 0; i < RandomLocMap.length; i++){
+			 if (RandomLocMap[i].randomNumber == positionAttributeLocation)
+			 	return RandomLocMap[i];
+		 }
+
+	 }
+
+
+	//提取bufferdata中的信息
+	var getBufferData = function(){
+		for (var i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].activeFlag == 1)
+				return BufferDataMap[i];
+		}
+	}
+
+	//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
+	var getEleFlag = function(){
+		for (var i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].bufferType == l.ELEMENT_ARRAY_BUFFER)
+				return BufferDataMap[i].bufferData;
+		}
+		return 0;
+	}
+ /*------------map部分------结尾-------------*/ 
 
 
   rewrite = function(gl){
@@ -316,15 +367,16 @@ Mat3 = (function() {
 	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
 	gl.my_getAttribLocation = gl.__proto__.getAttribLocation;
 	gl.getAttribLocation = function (programName, shaderName){
-		for (i = 0; i < Random_loc.length; i++){
-			if ((Random_loc[i].programName == programName) && (Random_loc[i].shaderName == shaderName))
-				return Random_loc[i].randomNumber;
+		for (i = 0; i < RandomLocMap.length; i++){
+			if ((RandomLocMap[i].programName == programName) && (RandomLocMap[i].shaderName == shaderName))
+				return RandomLocMap[i].randomNumber;
 		}
 		var newData = new Random_loc;
-		newData.randomNumber = creatNumber(); // 我暂时还没有构思好如何给这个数字，明天在写这个函数
+		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
 		newData.programName = programName;
 		newData.shaderName = shaderName;
-		Random_loc.push(newData);
+		RandomLocMap.push(newData);
+		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
 	}
 
 
@@ -388,6 +440,28 @@ Mat3 = (function() {
 
 	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
 	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
+		/*------------map部分------开头-------------*/
+		//这块就需要将两个map进行关连，最终合成到一个map中
+		//此时，bindbuffer已经激活了一个javascript部分的buffer数据类型，现在需要将其合成
+		//在这里要考虑单个buffer最终合成多个attribute这种情况，所以说应该是建立buffer map和attribute map两张表格才可以（上个版本只用了一个表格，是不可以的）
+		//在buffer map转化为attribute map的时候，如果出现了element buffer这种情况，将要直接把重复的部分直接合成成新的data
+
+		//先提取getAttribLocation能获得的glsl部分的信息
+		var ShaderData = new Random_loc;
+		ShaderData = getShaderData(positionAttributeLocation);
+
+		//提取bufferdata中的信息
+		var BufferData = new Buffer_data;
+		BufferData = getBufferData();
+		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
+		var EleFlag;
+		EleFlag = getEleFlag();
+
+
+
+
+		/*------------map部分------结尾-------------*/
+
 		if (__texture_flag == 0){
 				// 在这里无法智能的判断位置和颜色
 			//console.log("进入");
