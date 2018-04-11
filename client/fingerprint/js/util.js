@@ -56,16 +56,16 @@ var Buffer_data = function(){
     this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
     
 }
-var BufferDataMap;
+var BufferDataMap = [];
 
 // 建立attribute的map
 var Attri_data = function(){
 	this.programName = undefined; //这个位置是在哪一个program的
     this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
 	this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
-    this.uniformData = undefined; //这个是记录最终生成的数值，直接通过uniform传入的
+    this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
 }
-var AttriDataMap;
+var AttriDataMap = [];
 
 //建立random number program 和 shadername对应关系的map
 var Random_loc = function(){
@@ -73,7 +73,7 @@ var Random_loc = function(){
 	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
 	this.programName = undefined;   //这个位置是在哪一个program的 
 }
-var RandomLocMap;
+var RandomLocMap = [];
 
 /*------------map部分------结尾-------------*/
 
@@ -289,9 +289,11 @@ Mat3 = (function() {
 	}
 
 	//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
+	//gl.ARRAY_BUFFER 34962
+	//gl.ELEMENT_ARRAY_BUFFER 34963
 	var getEleFlag = function(){
 		for (var i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].bufferType == l.ELEMENT_ARRAY_BUFFER)
+			if (BufferDataMap[i].bufferType == 34963)
 				return BufferDataMap[i].bufferData;
 		}
 		return 0;
@@ -307,7 +309,7 @@ Mat3 = (function() {
 		newAttri.attriEleNum = size - offset;
 		for (var i = 0; i * size < BufferData.bufferData.length; i++){
 			for (var j = i * size + offset; j < (i + 1) * size; j++)
-			temData = ntemData.concat(BufferData.bufferData[j]);
+			temData = temData.concat(BufferData.bufferData[j]);
 		}
 
 		// 这个是为了重组整个数据

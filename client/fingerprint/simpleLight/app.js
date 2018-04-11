@@ -146,6 +146,11 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
       console.log("normals",normals);
 
+
+
+      console.log("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER);
+      console.log("gl.ELEMENT_ARRAY_BUFFER", gl.ELEMENT_ARRAY_BUFFER);
+      
       gl.bindBuffer(gl.ARRAY_BUFFER, susanPosVertexBufferObject);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
@@ -160,7 +165,9 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
           0 // Offset from the beginning of a single vertex to this attribute
           );
       gl.enableVertexAttribArray(positionAttribLocation);
+      
 
+    
       gl.bindBuffer(gl.ARRAY_BUFFER, susanTexCoordVertexBufferObject);
       var texCoordAttribLocation =
           gl.getAttribLocation(program, 'vertTexCoord');
