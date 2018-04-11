@@ -62,7 +62,7 @@ var BufferDataMap;
 var Attri_data = function(){
 	this.programName = undefined; //这个位置是在哪一个program的
     this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
-    this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
+	this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
     this.uniformData = undefined; //这个是记录最终生成的数值，直接通过uniform传入的
 }
 var AttriDataMap;
@@ -301,13 +301,27 @@ Mat3 = (function() {
 	//需要判断是否需要重组bufferdata
 	var addAttriMap = function(ShaderData,BufferData,EleFlag,size,offset){
 		var newAttri = new Attri_data;
+		var temData = [];
 		newAttri.shaderName = ShaderData.shaderName;
 		newAttri.programName = ShaderData.programName;
-		newAttri.attriEleNum = size;
-		for (i = 0; i * size < BufferData.bufferData; i++){
-			
+		newAttri.attriEleNum = size - offset;
+		for (var i = 0; i * size < BufferData.bufferData.length; i++){
+			for (var j = i * size + offset; j < (i + 1) * size; j++)
+			temData = ntemData.concat(BufferData.bufferData[j]);
 		}
 
+		// 这个是为了重组整个数据
+		if (EleFlag == 0){
+			newAttri.uniformData = temData;
+		}else{
+			for (var i = 0; i < EleFlag.length; i++){
+				for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
+					newAttri.uniformData = newAttri.uniformData.concat(temData[j]);
+			}
+		}
+
+		// 将attribute加入map
+		AttriDataMap.push(newAttri);
 	}
 
  /*------------map部分------结尾-------------*/ 
