@@ -62,8 +62,6 @@ var BufferDataMap;
 var Attri_data = function(){
 	this.programName = undefined; //这个位置是在哪一个program的
     this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
-    this.attriName = undefined;   //需要使用，这个数据来源于Random_loc.shaderName，需要和parsing进行匹配
-    this.attriLoc = undefined;    //gl.getAttribLocation所生成的数值，用来匹配的
     this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
     this.uniformData = undefined; //这个是记录最终生成的数值，直接通过uniform传入的
 }
@@ -212,13 +210,13 @@ Mat3 = (function() {
 	//用在bindbuffer 的几个函数
 	  
 	// 重新把之前所有active的buffer状态归位inactive
-	initAttriMap = function(){
+	initBufferMap = function(){
 		for (i = 0; i < BufferDataMap.length; i++)
 			BufferDataMap[i].activeFlag = 0;
 	}
 
 	//判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
-	addAttriMap = function(bufferType, bufferName){
+	addBufferMap = function(bufferType, bufferName){
 		for (i = 0; i < BufferDataMap.length; i++){
 			if (BufferDataMap[i].bufferName == bufferName)
 				return;
@@ -231,7 +229,7 @@ Mat3 = (function() {
 	}
 
 	//激活当前的buffer
-	activeAttriMap = function(bufferType, bufferName){
+	activeBufferMap = function(bufferType, bufferName){
 		for (i = 0; i < BufferDataMap.length; i++)
 			if (BufferDataMap[i].bufferName == bufferName){
 				BufferDataMap[i].activeFlag = 1;
@@ -247,7 +245,7 @@ Mat3 = (function() {
 
  /*------------map部分------开头-------------*/
 	//用bufferdata的函数
-	addBufferMap = function(bufferData){
+	addBufferData = function(bufferData){
 		for (i = 0; i < BufferDataMap.length; i++){
 			if (BufferDataMap[i].activeFlag == 1){
 				BufferDataMap[i].bufferData = bufferData;
@@ -298,6 +296,20 @@ Mat3 = (function() {
 		}
 		return 0;
 	}
+
+	//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
+	//需要判断是否需要重组bufferdata
+	var addAttriMap = function(ShaderData,BufferData,EleFlag,size,offset){
+		var newAttri = new Attri_data;
+		newAttri.shaderName = ShaderData.shaderName;
+		newAttri.programName = ShaderData.programName;
+		newAttri.attriEleNum = size;
+		for (i = 0; i * size < BufferData.bufferData; i++){
+			
+		}
+
+	}
+
  /*------------map部分------结尾-------------*/ 
 
 
@@ -354,9 +366,9 @@ Mat3 = (function() {
 	//有两种情况，第一个是第一次出现这个buffer，需要完全加入一个新的attribute变量，第二种情况，只是更新目前到底在修饰哪一个buffer
 	gl.my_bindBuffer = gl.__proto__.bindBuffer;
 	gl.bindBuffer = function (bufferType, bufferName){
-		initAttriMap(); // 重新把之前所有active的buffer状态归位inactive
-		addAttriMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
-		activeAttriMap(bufferType, bufferName); //激活当前的buffer
+		initBufferMap(); // 重新把之前所有active的buffer状态归位inactive
+		addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
+		activeBufferMap(bufferType, bufferName); //激活当前的buffer
 	}
 /*------------map部分------结尾-------------*/
 
@@ -388,7 +400,7 @@ Mat3 = (function() {
 	gl.my_glbufferData = gl.__proto__.bufferData;
 	gl.bufferData = function (a, b, c){
 		/*------------map部分------开头-------------*/
-		addBufferMap(b);
+		addBufferData(b);
 		/*------------map部分------结尾-------------*/
 
 
@@ -456,6 +468,12 @@ Mat3 = (function() {
 		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
 		var EleFlag;
 		EleFlag = getEleFlag();
+
+		//在这里生成一个新的attribute条目
+		//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
+		addAttriMap(ShaderData,BufferData,EleFlag,size,offset);
+
+		
 
 
 
