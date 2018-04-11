@@ -73,6 +73,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
 
       //测试一下所有的shader的精度情况
+      /*
       console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT));
       console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT));
       console.log(gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT));
@@ -86,7 +87,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT));
       console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT));
       console.log(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT));
-
+      */
 
   
 
@@ -150,7 +151,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
       console.log("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER);
       console.log("gl.ELEMENT_ARRAY_BUFFER", gl.ELEMENT_ARRAY_BUFFER);
-      
+
       gl.bindBuffer(gl.ARRAY_BUFFER, susanPosVertexBufferObject);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');

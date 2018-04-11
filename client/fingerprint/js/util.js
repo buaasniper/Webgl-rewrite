@@ -301,7 +301,7 @@ Mat3 = (function() {
 
 	//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
 	//需要判断是否需要重组bufferdata
-	var addAttriMap = function(ShaderData,BufferData,EleFlag,size,offset){
+	var addAttriMap = function( ShaderData = new Random_loc,BufferData = new Buffer_data,EleFlag,size,offset){
 		var newAttri = new Attri_data;
 		var temData = [];
 		newAttri.shaderName = ShaderData.shaderName;
@@ -385,6 +385,10 @@ Mat3 = (function() {
 		initBufferMap(); // 重新把之前所有active的buffer状态归位inactive
 		addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
 		activeBufferMap(bufferType, bufferName); //激活当前的buffer
+
+
+		//这块还是需要让原始代码运行
+		gl.my_bindBuffer(bufferType, bufferName);
 	}
 /*------------map部分------结尾-------------*/
 
@@ -404,7 +408,14 @@ Mat3 = (function() {
 		newData.programName = programName;
 		newData.shaderName = shaderName;
 		RandomLocMap.push(newData);
-		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
+		// 这块两个系统产生了冲突
+		//先关闭map系统
+		//return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
+
+		//开启状态机系统
+		return gl.my_getAttribLocation(programName, shaderName);
+
+		
 	}
 
 
