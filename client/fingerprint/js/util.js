@@ -501,6 +501,11 @@ Mat3 = (function() {
 		//在这里要考虑单个buffer最终合成多个attribute这种情况，所以说应该是建立buffer map和attribute map两张表格才可以（上个版本只用了一个表格，是不可以的）
 		//在buffer map转化为attribute map的时候，如果出现了element buffer这种情况，将要直接把重复的部分直接合成成新的data
 
+		console.log("判断三个map的状态");
+		console.log("BufferDataMap", BufferDataMap);
+		console.log("AttriDataMap", AttriDataMap);
+		console.log("RandomLocMap", RandomLocMap);
+
 		//先提取getAttribLocation能获得的glsl部分的信息
 		var ShaderData = new Random_loc;
 		ShaderData = getShaderData(positionAttributeLocation);
@@ -511,6 +516,10 @@ Mat3 = (function() {
 		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
 		var EleFlag;
 		EleFlag = getEleFlag();
+
+		console.log("ShaderData",ShaderData);
+		console.log("BufferData",BufferData);
+		console.log("EleFlag",EleFlag);
 
 		//在这里生成一个新的attribute条目
 		//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
