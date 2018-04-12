@@ -392,6 +392,7 @@ Mat3 = (function() {
 
 
 		//这块还是需要让原始代码运行
+		// *******************************这块在去掉另外一套系统后，应该可以删除
 		gl.my_bindBuffer(bufferType, bufferName);
 	}
 /*------------map部分------结尾-------------*/
@@ -409,10 +410,11 @@ Mat3 = (function() {
 		}
 		
 		// 在这里测试buffermap有没有问题
-		console.log("buffermap", BufferDataMap);
-		console.log("buffermap的位数", BufferDataMap.length);
-		console.log("bindbuffernum的数量", bindbuffernum);
-		// 这块说明Buffermap还是有问题，应该是bind部分的问题
+		//console.log("buffermap", BufferDataMap);
+		//console.log("buffermap的位数", BufferDataMap.length);
+		//console.log("bindbuffernum的数量", bindbuffernum);
+		
+		console.log("BufferDataMap","确认bindbuffer的激活情况正确",BufferDataMap);
 
 		var newData = new Random_loc;
 		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
@@ -420,11 +422,14 @@ Mat3 = (function() {
 		newData.shaderName = shaderName;
 		RandomLocMap.push(newData);
 		// 这块两个系统产生了冲突
-		//先关闭map系统
-		//return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
+
+		console.log("RandomLocMap", "确认LocBuffer的激活情况正确",RandomLocMap);
+
+		//开启map系统
+		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
 
 		//开启状态机系统
-		return gl.my_getAttribLocation(programName, shaderName);
+		//return gl.my_getAttribLocation(programName, shaderName);
 
 		
 	}

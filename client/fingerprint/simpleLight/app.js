@@ -129,27 +129,27 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices),
                     gl.STATIC_DRAW);
       //console.log("vertices",vertices);
-      console.log("BufferDataMap","1",BufferDataMap);
+      //console.log("BufferDataMap","1",BufferDataMap);
 
       var susanTexCoordVertexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, susanTexCoordVertexBufferObject);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords),
                     gl.STATIC_DRAW);
       //console.log("texCoords",texCoords);
-      console.log("BufferDataMap","2",BufferDataMap);
+      //console.log("BufferDataMap","2",BufferDataMap);
 
       var susanIndexBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, susanIndexBufferObject);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices),
                     gl.STATIC_DRAW);
       //console.log("indices",indices);
-      console.log("BufferDataMap","3",BufferDataMap);
+      //console.log("BufferDataMap","3",BufferDataMap);
 
       var susanNormalBufferObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, susanNormalBufferObject);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
       //console.log("normals",normals);
-      console.log("BufferDataMap","4",BufferDataMap);
+      //console.log("BufferDataMap","4",BufferDataMap);
 
 
 
@@ -157,10 +157,10 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       //console.log("gl.ELEMENT_ARRAY_BUFFER", gl.ELEMENT_ARRAY_BUFFER);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, susanPosVertexBufferObject);
-      console.log("BufferDataMap","5",BufferDataMap);
+      //console.log("BufferDataMap","5",BufferDataMap);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
-      console.log("***********************************************************************************");
+      //console.log("***********************************************************************************");
       console.log("positionAttribLocation",positionAttribLocation);
       gl.vertexAttribPointer(
           positionAttribLocation, // Attribute location
@@ -175,7 +175,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
     
       gl.bindBuffer(gl.ARRAY_BUFFER, susanTexCoordVertexBufferObject);
-      console.log("BufferDataMap","6",BufferDataMap);
+      //console.log("BufferDataMap","6",BufferDataMap);
       var texCoordAttribLocation =
           gl.getAttribLocation(program, 'vertTexCoord');
       console.log("texCoordAttribLocation",texCoordAttribLocation);
@@ -189,7 +189,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.enableVertexAttribArray(texCoordAttribLocation);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, susanNormalBufferObject);
-      console.log("BufferDataMap","7",BufferDataMap);
+      //console.log("BufferDataMap","7",BufferDataMap);
       var normalAttribLocation = gl.getAttribLocation(program, 'vertNormal');
       console.log("normalAttribLocation",normalAttribLocation);
       gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.TRUE,
