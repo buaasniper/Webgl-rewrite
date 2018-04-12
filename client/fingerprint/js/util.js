@@ -380,8 +380,12 @@ Mat3 = (function() {
 /*------------map部分------开头-------------*/
 	//重新定义bindbuffer
 	//有两种情况，第一个是第一次出现这个buffer，需要完全加入一个新的attribute变量，第二种情况，只是更新目前到底在修饰哪一个buffer
+	//bindbuffer这块出现了次数远远多于正常情况的情况
+	var bindbuffernum = 0;
 	gl.my_bindBuffer = gl.__proto__.bindBuffer;
 	gl.bindBuffer = function (bufferType, bufferName){
+		console.log("bufferName",bufferName);
+		bindbuffernum ++;
 		initBufferMap(); // 重新把之前所有active的buffer状态归位inactive
 		addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
 		activeBufferMap(bufferType, bufferName); //激活当前的buffer
@@ -403,6 +407,13 @@ Mat3 = (function() {
 			if ((RandomLocMap[i].programName == programName) && (RandomLocMap[i].shaderName == shaderName))
 				return RandomLocMap[i].randomNumber;
 		}
+		
+		// 在这里测试buffermap有没有问题
+		console.log("buffermap", BufferDataMap);
+		console.log("buffermap的位数", BufferDataMap.length);
+		console.log("bindbuffernum的数量", bindbuffernum);
+		// 这块说明Buffermap还是有问题，应该是bind部分的问题
+
 		var newData = new Random_loc;
 		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
 		newData.programName = programName;
