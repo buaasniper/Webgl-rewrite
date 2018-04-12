@@ -83,7 +83,7 @@ var Uniform_data = function(){
 	this.programName = undefined; //这个位置是在哪一个program的
 	this.shaderName = undefined;  //在glsl代码中对应的uniform的变量名
 	this.uniformNum = undefined;  //这个uniform是vec2，vec3，vec4
-	this.uniformNum = undefined;  //这个类型是int 还是 float
+	this.uniformType = undefined;  //这个类型是int 0 还是 float 1
 	this.uniformData = undefined;  // 这个uniform的数据
 	this.uniformActive = undefined;  //这个uniform是否要被输入到shader
 }
@@ -487,7 +487,99 @@ Mat3 = (function() {
 
 /*------------map部分------开头-------------*/
 //进入uniform 赋值区域  需要重新定义大量函数， 放在一起定义就好了
-	
+	//这个类型是int 0 还是 float 1
+	//传入loc，data，type, num
+	//个数是1的情况
+	gl.my_uniform1i = gl.__proto__.uniform1i;
+	gl.uniform1i = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 0, 1);
+	}
+
+	gl.my_uniform1iv = gl.__proto__.uniform1iv;
+	gl.uniform1iv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 0, 1);
+	}
+
+	gl.my_uniform1f = gl.__proto__.uniform1f;
+	gl.uniform1f = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 1);
+	}
+
+	gl.my_uniform1fv = gl.__proto__.uniform1fv;
+	gl.uniform1fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 1);
+	}
+
+	//个数是2的情况
+	gl.my_uniform2i = gl.__proto__.uniform2i;
+	gl.uniform2i = function (uniformLoc, uniformData0, uniformData1){
+		var uniformData = [uniformData0, uniformData1];
+		AddUniformMap(uniformLoc, uniformData, 0, 2);
+	}
+
+	gl.my_uniform2iv = gl.__proto__.uniform2iv;
+	gl.uniform2iv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 0, 2);
+	}
+
+	gl.my_uniform2f = gl.__proto__.uniform2f;
+	gl.uniform2f = function (uniformLoc,  uniformData0, uniformData1){
+		var uniformData = [uniformData0, uniformData1];
+		AddUniformMap(uniformLoc, uniformData, 1, 2);
+	}
+
+	gl.my_uniform2fv = gl.__proto__.uniform2fv;
+	gl.uniform2fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 2);
+	}
+
+	//个数是3的情况
+	gl.my_uniform3i = gl.__proto__.uniform3i;
+	gl.uniform3i = function (uniformLoc, uniformData0, uniformData1, uniformData2){
+		var uniformData = [uniformData0, uniformData1, uniformData2];
+		AddUniformMap(uniformLoc, uniformData, 0, 3);
+	}
+
+	gl.my_uniform3iv = gl.__proto__.uniform3iv;
+	gl.uniform3iv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 0, 3);
+	}
+
+	gl.my_uniform3f = gl.__proto__.uniform3f;
+	gl.uniform3f = function (uniformLoc,  uniformData0, uniformData1, uniformData2){
+		var uniformData = [uniformData0, uniformData1, uniformData2];
+		AddUniformMap(uniformLoc, uniformData, 1, 3);
+	}
+
+	gl.my_uniform3fv = gl.__proto__.niform3fv;
+	gl.niform3fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 3);
+	}
+
+	//个数是4的情况
+	gl.my_uniform4i = gl.__proto__.uniform4i;
+	gl.uniform4i = function (uniformLoc, uniformData0, uniformData1, uniformData2,uniformData3){
+		var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
+		AddUniformMap(uniformLoc, uniformData, 0, 3);
+	}
+
+	gl.my_uniform4iv = gl.__proto__.uniform4iv;
+	gl.uniform4iv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 0, 3);
+	}
+
+	gl.my_uniform4f = gl.__proto__.uniform4f;
+	gl.uniform4f = function (uniformLoc,  uniformData0, uniformData1, uniformData2, uniformData3){
+		var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
+		AddUniformMap(uniformLoc, uniformData, 1, 3);
+	}
+
+	gl.my_uniform4fv = gl.__proto__.uniform4fv;
+	gl.uniform4fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 3);
+	}
+
+	//matrix 
 
 /*------------map部分------结尾-------------*/
 
