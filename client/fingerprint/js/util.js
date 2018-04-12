@@ -68,12 +68,34 @@ var Attri_data = function(){
 var AttriDataMap = [];
 
 //建立random number program 和 shadername对应关系的map
-var Random_loc = function(){
+var Attribute_loc = function(){
 	this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
 	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
 	this.programName = undefined;   //这个位置是在哪一个program的 
 }
-var RandomLocMap = [];
+var AttributeLocMap = [];
+
+
+//两个uniform的map
+//存储uniform的数据
+//这块的uniform类行vec2，vec3，vec4为2，3，4，matrix2，3，4为12，13，14
+var Uniform_data = function(){
+	this.programName = undefined; //这个位置是在哪一个program的
+	this.shaderName = undefined;  //在glsl代码中对应的uniform的变量名
+	this.uniformNum = undefined;  //这个uniform是vec2，vec3，vec4
+	this.uniformNum = undefined;  //这个类型是int 还是 float
+	this.uniformData = undefined;  // 这个uniform的数据
+}
+var UniformDataMap = [];
+
+
+//储存uniform的location
+var Uniform_loc = function(){
+	this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
+	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
+	this.programName = undefined;   //这个位置是在哪一个program的 
+}
+var UniformLocMap = [];
 
 /*------------map部分------结尾-------------*/
 
@@ -272,9 +294,9 @@ Mat3 = (function() {
 	//用在vertexAttribPointer中的函数
 	//提取getAttribLocation能获得的glsl部分的信息
  	var getShaderData = function(positionAttributeLocation){
-		 for (var i = 0; i < RandomLocMap.length; i++){
-			 if (RandomLocMap[i].randomNumber == positionAttributeLocation)
-			 	return RandomLocMap[i];
+		 for (var i = 0; i < AttributeLocMap.length; i++){
+			 if (AttributeLocMap[i].randomNumber == positionAttributeLocation)
+			 	return AttributeLocMap[i];
 		 }
 
 	 }
@@ -301,7 +323,7 @@ Mat3 = (function() {
 
 	//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
 	//需要判断是否需要重组bufferdata
-	var addAttriMap = function( ShaderData = new Random_loc,BufferData = new Buffer_data,EleFlag,size,offset){
+	var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,EleFlag,size,offset){
 		var newAttri = new Attri_data;
 		var temData = [];
 		newAttri.shaderName = ShaderData.shaderName;
@@ -404,9 +426,9 @@ Mat3 = (function() {
 	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
 	gl.my_getAttribLocation = gl.__proto__.getAttribLocation;
 	gl.getAttribLocation = function (programName, shaderName){
-		for (i = 0; i < RandomLocMap.length; i++){
-			if ((RandomLocMap[i].programName == programName) && (RandomLocMap[i].shaderName == shaderName))
-				return RandomLocMap[i].randomNumber;
+		for (i = 0; i < AttributeLocMap.length; i++){
+			if ((AttributeLocMap[i].programName == programName) && (AttributeLocMap[i].shaderName == shaderName))
+				return AttributeLocMap[i].randomNumber;
 		}
 		
 		// 在这里测试buffermap有没有问题
@@ -416,14 +438,14 @@ Mat3 = (function() {
 		
 		console.log("BufferDataMap","确认bindbuffer的激活情况正确",BufferDataMap);
 
-		var newData = new Random_loc;
+		var newData = new Attribute_loc;
 		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
 		newData.programName = programName;
 		newData.shaderName = shaderName;
-		RandomLocMap.push(newData);
+		AttributeLocMap.push(newData);
 		// 这块两个系统产生了冲突
 
-		console.log("RandomLocMap", "确认LocBuffer的激活情况正确",RandomLocMap);
+		console.log("AttributeLocMap", "确认LocBuffer的激活情况正确",AttributeLocMap);
 
 		//开启map系统
 		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
@@ -504,10 +526,10 @@ Mat3 = (function() {
 		console.log("判断三个map的状态");
 		console.log("BufferDataMap", BufferDataMap);
 		console.log("AttriDataMap", AttriDataMap);
-		console.log("RandomLocMap", RandomLocMap);
+		console.log("AttributeLocMap", AttributeLocMap);
 
 		//先提取getAttribLocation能获得的glsl部分的信息
-		var ShaderData = new Random_loc;
+		var ShaderData = new Attribute_loc;
 		ShaderData = getShaderData(positionAttributeLocation);
 
 		//提取bufferdata中的信息
