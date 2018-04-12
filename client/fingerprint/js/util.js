@@ -85,6 +85,7 @@ var Uniform_data = function(){
 	this.uniformNum = undefined;  //这个uniform是vec2，vec3，vec4
 	this.uniformNum = undefined;  //这个类型是int 还是 float
 	this.uniformData = undefined;  // 这个uniform的数据
+	this.uniformActive = undefined;  //这个uniform是否要被输入到shader
 }
 var UniformDataMap = [];
 
@@ -455,10 +456,40 @@ Mat3 = (function() {
 
 		
 	}
-
-
 /*------------map部分------结尾-------------*/
 
+/*------------map部分------开头-------------*/
+	//重新定义getAttribLocation
+	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
+	gl.my_getUniformLocation = gl.__proto__.getUniformLocation;
+	gl.getUniformLocation = function (programName, shaderName){
+		// 如果出现了重复的，就直接返回原始值
+		for (i = 0; i < UniformLocMap.length;i++){
+			if ((UniformLocMap.programName == programName) && (UniformLocMap.shaderName == shaderName))
+				return UniformLocMap.randomNumber;
+		}
+
+		var newData = new Uniform_loc;
+		newData.randomNumber = creatNumber();
+		NewData.programName = programName;
+		newData.shaderName = shaderName;
+		UniformLocMap.push(newData);
+
+
+		//开启map状态
+		return newData.randomNumber;   
+
+
+		
+	}
+/*------------map部分------结尾-------------*/
+
+
+/*------------map部分------开头-------------*/
+//进入uniform 赋值区域  需要重新定义大量函数， 放在一起定义就好了
+	
+
+/*------------map部分------结尾-------------*/
 
 
 
