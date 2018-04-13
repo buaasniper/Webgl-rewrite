@@ -352,6 +352,30 @@ Mat3 = (function() {
  /*------------map部分------结尾-------------*/ 
 
 
+ /*------------map部分------开头-------------*/
+	//用在gl.uniformXX和gl.uniformMatrix4XX的部分
+	var AddUniformMap = function(uniformLoc, uniformData, type, size){
+		var newUniform = new Uniform_data;
+		var newUniformLoc = new Uniform_loc;
+		newUniformLoc = getUniformLoc(uniformLoc.randomNumber);
+		newUniform.programName = newUniformLoc.programName;
+		newUniform.shaderName = newUniformLoc.shaderName;
+		newUniform.uniformNum = size;
+		newUniform.uniformType = type;
+		newUniform.uniformData = uniformData;
+		newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+		UniformDataMap.push(newUniform);
+	}
+
+	var getUniformLoc = function(randomNumber){
+		for (var i = 0; i < UniformLocMap.length; i++)
+			if (randomNumber == UniformLocMap[i].randomNumber)
+				return UniformLocMap[i];
+	}
+
+ /*------------map部分------结尾-------------*/ 
+
+
   rewrite = function(gl){
 			__texture_flag = 1;
 			__My_index_flag = 0;  
@@ -560,26 +584,41 @@ Mat3 = (function() {
 	gl.my_uniform4i = gl.__proto__.uniform4i;
 	gl.uniform4i = function (uniformLoc, uniformData0, uniformData1, uniformData2,uniformData3){
 		var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
-		AddUniformMap(uniformLoc, uniformData, 0, 3);
+		AddUniformMap(uniformLoc, uniformData, 0, 4);
 	}
 
 	gl.my_uniform4iv = gl.__proto__.uniform4iv;
 	gl.uniform4iv = function (uniformLoc, uniformData){
-		AddUniformMap(uniformLoc, uniformData, 0, 3);
+		AddUniformMap(uniformLoc, uniformData, 0, 4);
 	}
 
 	gl.my_uniform4f = gl.__proto__.uniform4f;
 	gl.uniform4f = function (uniformLoc,  uniformData0, uniformData1, uniformData2, uniformData3){
 		var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
-		AddUniformMap(uniformLoc, uniformData, 1, 3);
+		AddUniformMap(uniformLoc, uniformData, 1, 4);
 	}
 
 	gl.my_uniform4fv = gl.__proto__.uniform4fv;
 	gl.uniform4fv = function (uniformLoc, uniformData){
-		AddUniformMap(uniformLoc, uniformData, 1, 3);
+		AddUniformMap(uniformLoc, uniformData, 1, 4);
 	}
 
 	//matrix 
+	//在这里不考虑2*3， 2*4， 3*4 这几种情况
+	gl.my_uniformMatrix2fv = gl.__proto__.uniformMatrix2fv;
+	gl.uniformMatrix2fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 12);
+	}
+
+	gl.my_uniformMatrix3fv = gl.__proto__.uniformMatrix3fv;
+	gl.uniformMatrix3fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 13);
+	}
+
+	gl.my_uniformMatrix4fv = gl.__proto__.uniformMatrix4fv;
+	gl.uniformMatrix4fv = function (uniformLoc, uniformData){
+		AddUniformMap(uniformLoc, uniformData, 1, 14);
+	}
 
 /*------------map部分------结尾-------------*/
 
