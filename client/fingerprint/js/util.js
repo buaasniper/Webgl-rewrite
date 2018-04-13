@@ -48,6 +48,25 @@ var __texture_flag;
 
 
 /*------------map部分------开头-------------*/
+//建立program的map
+var Program_data = function(){
+	this.programName = undefined; //program的名字
+	this.vertexSource = undefined; //vetex的source
+	this.fragSource = undefined //frag的source
+	this.activeFlag = undefined //这个program是否被激活
+}
+var ProgramDataMap = [];
+
+var Shader_data = function(){
+	this.shaderTpye = undefined; //0为vetex 1为frag
+	this.shaderName = undefined; //shader的实际赋值
+	this.shaderSource = undefined; //shader的源代码（这块是直接用来修改的）
+}
+var ShaderDataMap = [];
+
+
+
+
 //建立buffer的map
 var Buffer_data = function(){
     this.bufferName = undefined;  //bindBuffer 时候使用的名字  

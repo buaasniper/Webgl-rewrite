@@ -52,10 +52,27 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       // Create shaders
       //
       var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+      var vertexShader1 = gl.createShader(gl.VERTEX_SHADER);
+
+      console.log("gl.VERTEX_SHADER",gl.VERTEX_SHADER);
+      console.log("gl.FRAGMENT_SHADER",gl.FRAGMENT_SHADER);
+      if (vertexShader == vertexShader1){
+        console.log("gl.createShader(gl.VERTEX_SHADER)创建的值是一样的");
+      }else{
+        console.log("gl.createShader(gl.VERTEX_SHADER)创建的值是不一样的");
+      }
+      //可以把gl.createShader的返回值当作shader的标志
+
       var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
       gl.shaderSource(vertexShader, vertexShaderText);
       gl.shaderSource(fragmentShader, fragmentShaderText);
+      //vertexShader的值是固定的
+      console.log("vertexShader", vertexShader);
+      console.log("vertexShaderText", vertexShaderText);
+      //fragmentShader的值是固定的
+      console.log("fragmentShader",fragmentShader);
+      console.log("fragmentShaderText",fragmentShaderText);
 
       gl.compileShader(vertexShader);
       if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -301,6 +318,11 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         console.log("UniformDataMap",UniformDataMap);
         //暂时暂停一下
         //AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        //这个还原到原函数，drawElements和drawArrays 
+        console.log("indices.length",indices.length);
+        console.log("indices", indices);
+        //gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
 
         if (count == 50) {
           dataURL = canvas.toDataURL('image/png', 1.0);
