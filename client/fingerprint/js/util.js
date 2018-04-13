@@ -322,13 +322,33 @@ Mat3 = (function() {
 		return 0;
 	}
 
-	//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
+	//考虑了attribute会被重复赋值的情况。
 	//需要判断是否需要重组bufferdata
 	var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,EleFlag,size,offset){
 		var newAttri = new Attri_data;
 		var temData = [];
 		newAttri.shaderName = ShaderData.shaderName;
 		newAttri.programName = ShaderData.programName;
+		for (var i = 0; i < AttriDataMap.length; i++){
+			if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
+				AttriDataMap[i].attriEleNum = size - offset;
+				for (var i = 0; i * size < BufferData.bufferData.length; i++){
+					for (var j = i * size + offset; j < (i + 1) * size; j++)
+					temData = temData.concat(BufferData.bufferData[j]);
+				}
+
+				// 这个是为了重组整个数据
+				if (EleFlag == 0){
+					AttriDataMap[i].uniformData = temData;
+				}else{
+					for (var i = 0; i < EleFlag.length; i++){
+						for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
+							AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(temData[j]);
+					}
+				}
+				return;
+			}
+		}
 		newAttri.attriEleNum = size - offset;
 		for (var i = 0; i * size < BufferData.bufferData.length; i++){
 			for (var j = i * size + offset; j < (i + 1) * size; j++)

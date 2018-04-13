@@ -293,6 +293,12 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.activeTexture(gl.TEXTURE0);
 
+
+
+        //检验一下数据收集情况
+        console.log("检验一下数据收集情况");
+        console.log("AttriDataMap",AttriDataMap);
+        console.log("UniformDataMap",UniformDataMap);
         //暂时暂停一下
         //AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
