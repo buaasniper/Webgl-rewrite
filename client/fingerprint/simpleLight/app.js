@@ -233,7 +233,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       mat4.identity(worldMatrix);
       mat4.identity(viewMatrix);
       mat4.identity(projMatrix);
-
+      console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+		  console.log("worldMatrix",worldMatrix);
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
       gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);

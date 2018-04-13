@@ -621,17 +621,19 @@ Mat3 = (function() {
 	//matrix 
 	//在这里不考虑2*3， 2*4， 3*4 这几种情况
 	gl.my_uniformMatrix2fv = gl.__proto__.uniformMatrix2fv;
-	gl.uniformMatrix2fv = function (uniformLoc, uniformData){
+	gl.uniformMatrix2fv = function (uniformLoc,transpose, uniformData){
 		AddUniformMap(uniformLoc, uniformData, 1, 12);
 	}
 
 	gl.my_uniformMatrix3fv = gl.__proto__.uniformMatrix3fv;
-	gl.uniformMatrix3fv = function (uniformLoc, uniformData){
+	gl.uniformMatrix3fv = function (uniformLoc,transpose, uniformData){
 		AddUniformMap(uniformLoc, uniformData, 1, 13);
 	}
 
 	gl.my_uniformMatrix4fv = gl.__proto__.uniformMatrix4fv;
-	gl.uniformMatrix4fv = function (uniformLoc, uniformData){
+	gl.uniformMatrix4fv = function (uniformLoc,transpose, uniformData){
+		console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+		console.log("uniformData",uniformData);
 		AddUniformMap(uniformLoc, uniformData, 1, 14);
 	}
 
