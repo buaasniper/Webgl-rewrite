@@ -354,12 +354,27 @@ Mat3 = (function() {
 
  /*------------map部分------开头-------------*/
 	//用在gl.uniformXX和gl.uniformMatrix4XX的部分
+	//需要考虑重复赋值的情况
 	var AddUniformMap = function(uniformLoc, uniformData, type, size){
 		var newUniform = new Uniform_data;
 		var newUniformLoc = new Uniform_loc;
-		newUniformLoc = getUniformLoc(uniformLoc.randomNumber);
+		//console.log("**************************************************************");
+		//console.log("uniformLoc", uniformLoc);
+		//console.log("UniformLocMap",UniformLocMap);
+		newUniformLoc = getUniformLoc(uniformLoc);
+		//console.log("**************************************************************");
+		//console.log(newUniformLoc);
 		newUniform.programName = newUniformLoc.programName;
 		newUniform.shaderName = newUniformLoc.shaderName;
+		for (var i = 0; i < UniformDataMap.length; i++){
+			if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
+				UniformDataMap[i].uniformNum = size;
+				UniformDataMap[i].uniformType = type;
+				UniformDataMap[i].uniformData = uniformData;
+				UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+				return;
+			}
+		}
 		newUniform.uniformNum = size;
 		newUniform.uniformType = type;
 		newUniform.uniformData = uniformData;
@@ -489,13 +504,13 @@ Mat3 = (function() {
 	gl.getUniformLocation = function (programName, shaderName){
 		// 如果出现了重复的，就直接返回原始值
 		for (i = 0; i < UniformLocMap.length;i++){
-			if ((UniformLocMap.programName == programName) && (UniformLocMap.shaderName == shaderName))
-				return UniformLocMap.randomNumber;
+			if ((UniformLocMap[i].programName == programName) && (UniformLocMap[i].shaderName == shaderName))
+				return UniformLocMap[i].randomNumber;
 		}
 
 		var newData = new Uniform_loc;
 		newData.randomNumber = creatNumber();
-		NewData.programName = programName;
+		newData.programName = programName;
 		newData.shaderName = shaderName;
 		UniformLocMap.push(newData);
 

@@ -234,10 +234,10 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       mat4.identity(viewMatrix);
       mat4.identity(projMatrix);
 
-      //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-      //gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-      //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+      gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+      gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
       var xRotationMatrix = new Float32Array(16);
       var yRotationMatrix = new Float32Array(16);
@@ -254,7 +254,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       var sunlightIntUniformLocation =
           gl.getUniformLocation(program, 'sun.color');
 
-      gl.uniform3i(ambientUniformLocation, 30, 30, 30);
+  
       gl.uniform3i(ambientUniformLocation, 30, 30, 30);
       gl.uniform3i(sunlightDirUniformLocation, 300, 400, -200);
       gl.uniform3i(sunlightIntUniformLocation, 200, 200, 200);
@@ -275,6 +275,9 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
         console.log("worldMatrix",worldMatrix);
+        console.log("***********************************************");
+        console.log("UniformDataMap",UniformDataMap);
+        console.log("UniformLocMap", UniformLocMap);
         mat4.copy(__Mworld_fs, worldMatrix);
         mat4.copy(__Mworld, worldMatrix);
         mat4.transpose(__Mworld, __Mworld);
@@ -289,7 +292,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.activeTexture(gl.TEXTURE0);
 
-        AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        //暂时暂停一下
+        //AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == 50) {
           dataURL = canvas.toDataURL('image/png', 1.0);
