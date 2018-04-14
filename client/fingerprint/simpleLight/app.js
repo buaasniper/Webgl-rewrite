@@ -54,25 +54,28 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       var vertexShader = gl.createShader(gl.VERTEX_SHADER);
       var vertexShader1 = gl.createShader(gl.VERTEX_SHADER);
 
-      console.log("gl.VERTEX_SHADER",gl.VERTEX_SHADER);
-      console.log("gl.FRAGMENT_SHADER",gl.FRAGMENT_SHADER);
+      //console.log("gl.VERTEX_SHADER",gl.VERTEX_SHADER);
+      //console.log("gl.FRAGMENT_SHADER",gl.FRAGMENT_SHADER);
+      /*
       if (vertexShader == vertexShader1){
         console.log("gl.createShader(gl.VERTEX_SHADER)创建的值是一样的");
       }else{
         console.log("gl.createShader(gl.VERTEX_SHADER)创建的值是不一样的");
       }
+      */
       //可以把gl.createShader的返回值当作shader的标志
 
       var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      var fragmentShader1 = gl.createShader(gl.VERTEX_SHADER);
 
       gl.shaderSource(vertexShader, vertexShaderText);
       gl.shaderSource(fragmentShader, fragmentShaderText);
       //vertexShader的值是固定的
-      console.log("vertexShader", vertexShader);
-      console.log("vertexShaderText", vertexShaderText);
+      //console.log("vertexShader", vertexShader);
+      //console.log("vertexShaderText", vertexShaderText);
       //fragmentShader的值是固定的
-      console.log("fragmentShader",fragmentShader);
-      console.log("fragmentShaderText",fragmentShaderText);
+      //console.log("fragmentShader",fragmentShader);
+      //console.log("fragmentShaderText",fragmentShaderText);
 
       gl.compileShader(vertexShader);
       if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -107,7 +110,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       */
 
   
-
+/*
   var test1 = new Attri_data();
   test1.bufferData = [1,2,3];
   var test2 = new Attri_data();
@@ -116,9 +119,11 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
   map.push(test1);
   map.push(test2);
   console.log(map.length);
+  */
 
 
       var program = gl.createProgram();
+      var program1 = gl.createProgram();
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
@@ -133,6 +138,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         return;
       }
 
+      console.log("ShaderDataMap",ShaderDataMap);
+      console.log("ProgramDataMap",ProgramDataMap);
       //
       // Create buffer
       //
@@ -232,7 +239,10 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bindTexture(gl.TEXTURE_2D, null);
 
       // Tell OpenGL state machine which program should be active.
+      //console.log("我们到了useProgram");
       gl.useProgram(program);
+      console.log("ShaderDataMap",ShaderDataMap);
+      console.log("ProgramDataMap",ProgramDataMap);
 
       var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
       var matViewUniformLocation = gl.getUniformLocation(program, 'mView');

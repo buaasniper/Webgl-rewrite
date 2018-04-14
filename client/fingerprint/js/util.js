@@ -456,6 +456,7 @@ Mat3 = (function() {
 	
 	gl.my_shaderSource = gl.__proto__.shaderSource;
 	gl.shaderSource = function(shaderName,shaderSource){
+		gl.my_shaderSource(shaderName,shaderSource);
 		for (var i = 0; i < ShaderDataMap.length; i++){
 			if (ShaderDataMap[i].shaderName == shaderName){
 				ShaderDataMap[i].shaderSource = shaderSource;
@@ -478,12 +479,15 @@ Mat3 = (function() {
 		gl.my_attachShader(programName, shaderName);
 		var shaderData = new Shader_data;
 		shaderData = getShaderSource(shaderName);
+		//console.log("shaderData",shaderData);
 		for (var i = 0; i < ProgramDataMap.length; i++){
 			if (ProgramDataMap[i].programName == programName){
-				if (shaderData.Type == 35633)
+				if (shaderData.shaderTpye == 35633){
+					//console.log("shaderData.shaderSource -->-->",shaderData.shaderSource);
 					ProgramDataMap[i].vertexSource = shaderData.shaderSource;
+				}	
 				else
-					ProgramDataMap[i].vertexSource = shaderData.shaderSource;
+					ProgramDataMap[i].fragSource = shaderData.shaderSource;
 				ProgramDataMap[i].activeFlag = 0;
 				return;
 			}
@@ -497,6 +501,19 @@ Mat3 = (function() {
 		}
 	}
 
+	gl.my_useProgram =  gl.__proto__.useProgram;
+	gl.useProgram = function (programName){
+		//这块不需要执行原函数，只需要知道使用了哪一个program就可以了
+		for (var i = 0; i < ProgramDataMap.length; i++)
+		//console/log("我们运行了useProgram");
+			if (ProgramDataMap[i].programName == programName){
+				//console.log("我们激活了program的状态");
+				ProgramDataMap[i].activeFlag = 1;
+			}	
+			else
+			ProgramDataMap[i].activeFlag = 0;
+	}
+
 /*------------map部分------结尾-------------*/
 
 /*------------map部分------开头-------------*/
@@ -506,7 +523,7 @@ Mat3 = (function() {
 	//var bindbuffernum = 0;
 	gl.my_bindBuffer = gl.__proto__.bindBuffer;
 	gl.bindBuffer = function (bufferType, bufferName){
-		console.log("bufferName",bufferName);
+		//console.log("bufferName",bufferName);
 		//bindbuffernum ++;
 		initBufferMap(); // 重新把之前所有active的buffer状态归位inactive
 		addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
@@ -994,7 +1011,7 @@ Mat3 = (function() {
 	
 	
 	
-	
+/*	
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function(a){
 		__Program = a;
@@ -1002,6 +1019,7 @@ Mat3 = (function() {
 		//console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
 		//console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
 	}
+*/
 
 	var tri_div_draw = function(){
 		__PointBuffer = [];
