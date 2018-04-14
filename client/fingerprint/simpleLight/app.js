@@ -167,7 +167,11 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
       //console.log("normals",normals);
       //console.log("BufferDataMap","4",BufferDataMap);
-
+      if (susanIndexBufferObject != susanNormalBufferObject){
+        console.log("*************************************");
+        console.log(" gl.createBuffer()的值不一样");
+      }
+      
 
 
       //console.log("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER);

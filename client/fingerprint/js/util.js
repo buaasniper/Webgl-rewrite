@@ -58,7 +58,7 @@ var Program_data = function(){
 var ProgramDataMap = [];
 
 var Shader_data = function(){
-	this.shaderTpye = undefined; //0为vetex 1为frag
+	this.shaderTpye = undefined; //35633为vetex 35632为frag
 	this.shaderName = undefined; //shader的实际赋值
 	this.shaderSource = undefined; //shader的源代码（这块是直接用来修改的）
 }
@@ -438,55 +438,76 @@ Mat3 = (function() {
       __Tem_pointbuffer = [];
       __Tem_colorbuffer = [];
       __ActiveBuffer_vertex = [];
-      __ActiveBuffer_frag = [];
-      
-	  var vertex_div = function(){
-		
-		//将数据分到位置和颜色
-		
-		if (__VertexOffset == 0){	
-			// 将数据处理出来
-			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-				for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
-				__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
-			// 将float系统转换成int系统
-			// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
-			// 在这里vertex是原始数据， 不进行转化
-			//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-			//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-			
+	  __ActiveBuffer_frag = [];
+	  
+	  __My_buffer_flag = 1;
+	//去判断这个是一个是那么状态
+
+/*------------map部分------开头-------------*/
+	//重新定义createShader
+	gl.my_createShader = gl.__proto__.createShader;
+	gl.createShader = function (shaderTpye){
+		var newData = new Shader_data;
+		newData.shaderTpye = shaderTpye;
+		newData.shaderName = gl.my_createShader(shaderTpye);
+		ShaderDataMap.push(newData);
+		return newData.shaderName;
+	}
+	
+	gl.my_shaderSource = gl.__proto__.shaderSource;
+	gl.shaderSource = function(shaderName,shaderSource){
+		for (var i = 0; i < ShaderDataMap.length; i++){
+			if (ShaderDataMap[i].shaderName == shaderName){
+				ShaderDataMap[i].shaderSource = shaderSource;
+				return;
+			}
 		}
-		else{
-			// 判断以后要用颜色
-			__ColorFlag = 1;
-			// 将数据处理出来
-			for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-				for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
-				__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
-			// 将float系统转换成int系统
-			// 颜色不进行转换
-			//for (var i =0; i < __ActiveBuffer_frag.length; i++)
-			//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
-		}
-		
-		//console.log("完成");
-		//console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
-		//console.log("__ActiveBuffer_vertex_texture", __ActiveBuffer_vertex_texture);
-		//console.log("__ActiveBuffer_vertex_normal", __ActiveBuffer_vertex_normal);
 	}
 
-	__My_buffer_flag = 1;
-	//去判断这个是一个是那么状态
+	gl.my_createProgram = gl.__proto__.createProgram;
+	gl.createProgram = function (){
+		var newData = new Program_data;
+		newData.programName = gl.my_createProgram();
+		ProgramDataMap.push(newData);
+		return newData.programName;
+	}
+
+	gl.my_attachShader = gl.__proto__.attachShader;
+	gl.attachShader = function (programName, shaderName){
+		//要先实现原本的功能，要不后面都一直报错
+		gl.my_attachShader(programName, shaderName);
+		var shaderData = new Shader_data;
+		shaderData = getShaderSource(shaderName);
+		for (var i = 0; i < ProgramDataMap.length; i++){
+			if (ProgramDataMap[i].programName == programName){
+				if (shaderData.Type == 35633)
+					ProgramDataMap[i].vertexSource = shaderData.shaderSource;
+				else
+					ProgramDataMap[i].vertexSource = shaderData.shaderSource;
+				ProgramDataMap[i].activeFlag = 0;
+				return;
+			}
+		}
+	}
+
+	getShaderSource = function(shaderName){
+		for (var i = 0; i < ShaderDataMap.length; i++){
+			if (ShaderDataMap[i].shaderName == shaderName)
+				return (ShaderDataMap[i]);
+		}
+	}
+
+/*------------map部分------结尾-------------*/
 
 /*------------map部分------开头-------------*/
 	//重新定义bindbuffer
 	//有两种情况，第一个是第一次出现这个buffer，需要完全加入一个新的attribute变量，第二种情况，只是更新目前到底在修饰哪一个buffer
 	//bindbuffer这块出现了次数远远多于正常情况的情况
-	var bindbuffernum = 0;
+	//var bindbuffernum = 0;
 	gl.my_bindBuffer = gl.__proto__.bindBuffer;
 	gl.bindBuffer = function (bufferType, bufferName){
 		console.log("bufferName",bufferName);
-		bindbuffernum ++;
+		//bindbuffernum ++;
 		initBufferMap(); // 重新把之前所有active的buffer状态归位inactive
 		addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
 		activeBufferMap(bufferType, bufferName); //激活当前的buffer
