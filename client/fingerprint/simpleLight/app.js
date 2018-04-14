@@ -138,8 +138,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         return;
       }
 
-      console.log("ShaderDataMap",ShaderDataMap);
-      console.log("ProgramDataMap",ProgramDataMap);
+      //console.log("ShaderDataMap",ShaderDataMap);
+      //console.log("ProgramDataMap",ProgramDataMap);
       //
       // Create buffer
       //
@@ -174,10 +174,12 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
       //console.log("normals",normals);
       //console.log("BufferDataMap","4",BufferDataMap);
+      /*
       if (susanIndexBufferObject != susanNormalBufferObject){
         console.log("*************************************");
         console.log(" gl.createBuffer()的值不一样");
       }
+      */
       
 
 
@@ -189,7 +191,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
       //console.log("***********************************************************************************");
-      console.log("positionAttribLocation",positionAttribLocation);
+     // console.log("positionAttribLocation",positionAttribLocation);
       gl.vertexAttribPointer(
           positionAttribLocation, // Attribute location
           3,                      // Number of elements per attribute
@@ -206,7 +208,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       //console.log("BufferDataMap","6",BufferDataMap);
       var texCoordAttribLocation =
           gl.getAttribLocation(program, 'vertTexCoord');
-      console.log("texCoordAttribLocation",texCoordAttribLocation);
+      //console.log("texCoordAttribLocation",texCoordAttribLocation);
       gl.vertexAttribPointer(
           texCoordAttribLocation, // Attribute location
           2,                      // Number of elements per attribute
@@ -219,7 +221,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       gl.bindBuffer(gl.ARRAY_BUFFER, susanNormalBufferObject);
       //console.log("BufferDataMap","7",BufferDataMap);
       var normalAttribLocation = gl.getAttribLocation(program, 'vertNormal');
-      console.log("normalAttribLocation",normalAttribLocation);
+      //console.log("normalAttribLocation",normalAttribLocation);
       gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.TRUE,
                              3 * Float32Array.BYTES_PER_ELEMENT, 0);
       gl.enableVertexAttribArray(normalAttribLocation);
@@ -241,8 +243,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       // Tell OpenGL state machine which program should be active.
       //console.log("我们到了useProgram");
       gl.useProgram(program);
-      console.log("ShaderDataMap",ShaderDataMap);
-      console.log("ProgramDataMap",ProgramDataMap);
+      //console.log("ShaderDataMap",ShaderDataMap);
+      //console.log("ProgramDataMap",ProgramDataMap);
 
       var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
       var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
@@ -258,14 +260,15 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
       mat4.perspective(projMatrix, glMatrix.toRadian(45),
                        canvas.width / canvas.height, 0.1, 1000.0);
-
+      
+      /*
       mat4.copy(__Mview,viewMatrix);
       mat4.copy(__Matrix0,projMatrix);
       mat4.identity(worldMatrix);
       mat4.identity(viewMatrix);
       mat4.identity(projMatrix);
-      console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-		  console.log("worldMatrix",worldMatrix);
+      */
+
       gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
       gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
@@ -306,10 +309,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-        console.log("worldMatrix",worldMatrix);
-        console.log("***********************************************");
-        console.log("UniformDataMap",UniformDataMap);
-        console.log("UniformLocMap", UniformLocMap);
+
+        /*
         mat4.copy(__Mworld_fs, worldMatrix);
         mat4.copy(__Mworld, worldMatrix);
         mat4.transpose(__Mworld, __Mworld);
@@ -317,6 +318,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         mat4.transpose(__Matrix0, __Matrix0);
         mat4.mul(__Mview, __Mview, __Matrix0);
         mat4.mul(__Mworld, __Mworld, __Mview);
+        */
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -327,14 +329,14 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
 
 
         //检验一下数据收集情况
-        console.log("检验一下数据收集情况");
-        console.log("AttriDataMap",AttriDataMap);
-        console.log("UniformDataMap",UniformDataMap);
+        //console.log("检验一下数据收集情况");
+        //console.log("AttriDataMap",AttriDataMap);
+       // console.log("UniformDataMap",UniformDataMap);
         //暂时暂停一下
         //AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
         //这个还原到原函数，drawElements和drawArrays 
-        console.log("indices.length",indices.length);
-        console.log("indices", indices);
+        //console.log("indices.length",indices.length);
+        //console.log("indices", indices);
         //gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
 

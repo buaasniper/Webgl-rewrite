@@ -1,125 +1,4 @@
 // Load a text resource from a file over the network
-var __My_buffer;
-var __My_buffer_Texture;
-var __My_buffer_normal;
-var __My_buffer_flag;
-var __My_index;
-var __My_index_flag = 0;  // 0 代表没有index，1代表有index。
-var __VertexPositionAttributeLocation1_flag = 1;
-var __VertexPositionAttributeLocation1;
-var __VertexPositionAttributeLocation2;
-var __VertexSize;
-var __VertexType;
-var __VertexNomalize;
-var __VertexStride;
-var __VertexOffset;
-var __PointBuffer = [];
-var __Test_pointBuffer = [];
-var __ColorBuffer = [];
-var __Tem_pointbuffer = [];
-var __Tem_colorbuffer = [];
-var __ActiveBuffer_vertex = [];
-var __ActiveBuffer_vertex_result = [];
-var __ActiveBuffer_vertex_texture = [];
-var __ActiveBuffer_vertex_normal = [];
-var __ActiveBuffer_frag = [];
-var __Tem_Buffer = [];
-var __ColorFlag = 0;  // 0代表不需要颜色，1代表需要颜色。
-var Point_Number;
-var Test_Point_number;
-var __Mpro_flag = 0;
-var __Matrix0 = new Float32Array(16);  // projection
-var __Matrix1 = new Float32Array(16);
-var __Mworld_flag = 0;
-var __Mworld = new Float32Array(16);  // world
-var __Mworld_fs = new Float32Array(16); // 原版world 
-var __Mview_flag = 0;
-var __Mview = new Float32Array(16);
-var __Program;
-var __Program_1;
-var __x_add; // x,y值的补偿值
-var __y_add;
-var __Error_flag;  // 判断是否进行了误差计算
-var Active_Number;
-var __Drawnumber = 1; //判断这个canvas是第几次用draw函数
-var __tex;
-var __texture_flag;
-
-
-
-/*------------map部分------开头-------------*/
-//建立program的map
-var Program_data = function(){
-	this.programName = undefined; //program的名字
-	this.vertexSource = undefined; //vetex的source
-	this.fragSource = undefined //frag的source
-	this.activeFlag = undefined //这个program是否被激活
-}
-var ProgramDataMap = [];
-
-var Shader_data = function(){
-	this.shaderTpye = undefined; //35633为vetex 35632为frag
-	this.shaderName = undefined; //shader的实际赋值
-	this.shaderSource = undefined; //shader的源代码（这块是直接用来修改的）
-}
-var ShaderDataMap = [];
-
-
-
-
-//建立buffer的map
-var Buffer_data = function(){
-    this.bufferName = undefined;  //bindBuffer 时候使用的名字  
-    this.bufferType = undefined;  //依照这个来判断是array还是element_array
-    this.bufferData = undefined;  //存储buffer本身的数值
-    this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
-    
-}
-var BufferDataMap = [];
-
-// 建立attribute的map
-var Attri_data = function(){
-	this.programName = undefined; //这个位置是在哪一个program的
-    this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
-	this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
-    this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
-}
-var AttriDataMap = [];
-
-//建立random number program 和 shadername对应关系的map
-var Attribute_loc = function(){
-	this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
-	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
-	this.programName = undefined;   //这个位置是在哪一个program的 
-}
-var AttributeLocMap = [];
-
-
-//两个uniform的map
-//存储uniform的数据
-//这块的uniform类行vec2，vec3，vec4为2，3，4，matrix2，3，4为12，13，14
-var Uniform_data = function(){
-	this.programName = undefined; //这个位置是在哪一个program的
-	this.shaderName = undefined;  //在glsl代码中对应的uniform的变量名
-	this.uniformNum = undefined;  //这个uniform是vec2，vec3，vec4
-	this.uniformType = undefined;  //这个类型是int 0 还是 float 1
-	this.uniformData = undefined;  // 这个uniform的数据
-	this.uniformActive = undefined;  //这个uniform是否要被输入到shader
-}
-var UniformDataMap = [];
-
-
-//储存uniform的location
-var Uniform_loc = function(){
-	this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
-	this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
-	this.programName = undefined;   //这个位置是在哪一个program的 
-}
-var UniformLocMap = [];
-
-/*------------map部分------结尾-------------*/
-
-
 getCanvas = function(canvasName) {
   var canvas = $('#' + canvasName);
   if(!canvas[0]){
@@ -243,207 +122,80 @@ Mat3 = (function() {
     return Mat3;
 
   })();
+  
+rewrite = function(gl){
 
-
-
-
-
-/*------------map部分------开头-------------*/
-	//用在bindbuffer 的几个函数
-	  
-	// 重新把之前所有active的buffer状态归位inactive
-	initBufferMap = function(){
-		for (i = 0; i < BufferDataMap.length; i++)
-			BufferDataMap[i].activeFlag = 0;
+/*=============map部分===============================开头============================================*/
+	//建立program的map
+	var Program_data = function(){
+		this.programName = undefined; //program的名字
+		this.vertexSource = undefined; //vetex的source
+		this.fragSource = undefined //frag的source
+		this.activeFlag = undefined //这个program是否被激活
 	}
+	var ProgramDataMap = [];
 
-	//判断是否拥有这条buffer，如果没有的话就直接加入这个attribute
-	addBufferMap = function(bufferType, bufferName){
-		for (i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].bufferName == bufferName)
-				return;
-		}
-		var newData = new Buffer_data();
-		newData.bufferType = bufferType;
-		newData.bufferName = bufferName;
-		BufferDataMap.push(newData);
-		return;
+	var Shader_data = function(){
+		this.shaderTpye = undefined; //35633为vetex 35632为frag
+		this.shaderName = undefined; //shader的实际赋值
+		this.shaderSource = undefined; //shader的源代码（这块是直接用来修改的）
 	}
+	var ShaderDataMap = [];
 
-	//激活当前的buffer
-	activeBufferMap = function(bufferType, bufferName){
-		for (i = 0; i < BufferDataMap.length; i++)
-			if (BufferDataMap[i].bufferName == bufferName){
-				BufferDataMap[i].activeFlag = 1;
-				return;
-			}
+	//建立buffer的map
+	var Buffer_data = function(){
+		this.bufferName = undefined;  //bindBuffer 时候使用的名字  
+		this.bufferType = undefined;  //依照这个来判断是array还是element_array
+		this.bufferData = undefined;  //存储buffer本身的数值
+		this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
+		this.activeElement = undefined;  //判断哪一个Element为最后加入的，也就为激活状态
+		
 	}
+	var BufferDataMap = [];
 
-
-/*------------map部分------结尾-------------*/
-
-
-
-
- /*------------map部分------开头-------------*/
-	//用bufferdata的函数
-	addBufferData = function(bufferData){
-		for (i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].activeFlag == 1){
-				BufferDataMap[i].bufferData = bufferData;
-			}
-		}
+	// 建立attribute的map
+	var Attri_data = function(){
+		this.programName = undefined; //这个位置是在哪一个program的
+		this.shaderName = undefined;  //在glsl代码中对应的attribute的变量名
+		this.attriEleNum = undefined;  //记录attribute最终要变成vec2还是vc3
+		this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
 	}
- /*------------map部分------结尾-------------*/
+	var AttriDataMap = [];
 
-
- /*------------map部分------开头-------------*/
-	//用getAttribLocation的函数
-	var __Locnumber = 100; //初始化函数
-	//单独建立函数的原因是在单个program的时候，单一__Locnumber是可行的，我担心在three.js多program和多attribute的情况下，可能会出问题，先暂时写成这样，调试的时候再做修改。
-	creatNumber = function(){
-		__Locnumber++;
-		return __Locnumber;
-
+	//建立random number program 和 shadername对应关系的map
+	var Attribute_loc = function(){
+		this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
+		this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
+		this.programName = undefined;   //这个位置是在哪一个program的 
 	}
- /*------------map部分------结尾-------------*/ 
+	var AttributeLocMap = [];
 
 
- 
- /*------------map部分------开头-------------*/
-	//用在vertexAttribPointer中的函数
-	//提取getAttribLocation能获得的glsl部分的信息
- 	var getShaderData = function(positionAttributeLocation){
-		 for (var i = 0; i < AttributeLocMap.length; i++){
-			 if (AttributeLocMap[i].randomNumber == positionAttributeLocation)
-			 	return AttributeLocMap[i];
-		 }
-
-	 }
-
-
-	//提取bufferdata中的信息
-	var getBufferData = function(){
-		for (var i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].activeFlag == 1)
-				return BufferDataMap[i];
-		}
+	//两个uniform的map
+	//存储uniform的数据
+	//这块的uniform类行vec2，vec3，vec4为2，3，4，matrix2，3，4为12，13，14
+	var Uniform_data = function(){
+		this.programName = undefined; //这个位置是在哪一个program的
+		this.shaderName = undefined;  //在glsl代码中对应的uniform的变量名
+		this.uniformNum = undefined;  //这个uniform是vec2，vec3，vec4
+		this.uniformType = undefined;  //这个类型是int 0 还是 float 1
+		this.uniformData = undefined;  // 这个uniform的数据
+		this.uniformActive = undefined;  //这个uniform是否要被输入到shader
 	}
+	var UniformDataMap = [];
 
-	//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
-	//gl.ARRAY_BUFFER 34962
-	//gl.ELEMENT_ARRAY_BUFFER 34963
-	var getEleFlag = function(){
-		for (var i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].bufferType == 34963)
-				return BufferDataMap[i].bufferData;
-		}
-		return 0;
+
+	//储存uniform的location
+	var Uniform_loc = function(){
+		this.randomNumber = undefined;  //这块记录的就是随机产生的位置数字
+		this.shaderName = undefined;    //在glsl代码中对应的attribute的变量名
+		this.programName = undefined;   //这个位置是在哪一个program的 
 	}
+	var UniformLocMap = [];
 
-	//考虑了attribute会被重复赋值的情况。
-	//需要判断是否需要重组bufferdata
-	var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,EleFlag,size,offset){
-		var newAttri = new Attri_data;
-		var temData = [];
-		newAttri.shaderName = ShaderData.shaderName;
-		newAttri.programName = ShaderData.programName;
-		for (var i = 0; i < AttriDataMap.length; i++){
-			if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
-				AttriDataMap[i].attriEleNum = size - offset;
-				for (var i = 0; i * size < BufferData.bufferData.length; i++){
-					for (var j = i * size + offset; j < (i + 1) * size; j++)
-					temData = temData.concat(BufferData.bufferData[j]);
-				}
+/*==========================map部分======================================结尾========================*/
 
-				// 这个是为了重组整个数据
-				if (EleFlag == 0){
-					AttriDataMap[i].uniformData = temData;
-				}else{
-					for (var i = 0; i < EleFlag.length; i++){
-						for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
-							AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(temData[j]);
-					}
-				}
-				return;
-			}
-		}
-		newAttri.attriEleNum = size - offset;
-		for (var i = 0; i * size < BufferData.bufferData.length; i++){
-			for (var j = i * size + offset; j < (i + 1) * size; j++)
-			temData = temData.concat(BufferData.bufferData[j]);
-		}
-
-		// 这个是为了重组整个数据
-		if (EleFlag == 0){
-			newAttri.uniformData = temData;
-		}else{
-			for (var i = 0; i < EleFlag.length; i++){
-				for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
-					newAttri.uniformData = newAttri.uniformData.concat(temData[j]);
-			}
-		}
-
-		// 将attribute加入map
-		AttriDataMap.push(newAttri);
-	}
-
- /*------------map部分------结尾-------------*/ 
-
-
- /*------------map部分------开头-------------*/
-	//用在gl.uniformXX和gl.uniformMatrix4XX的部分
-	//需要考虑重复赋值的情况
-	var AddUniformMap = function(uniformLoc, uniformData, type, size){
-		var newUniform = new Uniform_data;
-		var newUniformLoc = new Uniform_loc;
-		//console.log("**************************************************************");
-		//console.log("uniformLoc", uniformLoc);
-		//console.log("UniformLocMap",UniformLocMap);
-		newUniformLoc = getUniformLoc(uniformLoc);
-		//console.log("**************************************************************");
-		//console.log(newUniformLoc);
-		newUniform.programName = newUniformLoc.programName;
-		newUniform.shaderName = newUniformLoc.shaderName;
-		for (var i = 0; i < UniformDataMap.length; i++){
-			if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
-				UniformDataMap[i].uniformNum = size;
-				UniformDataMap[i].uniformType = type;
-				UniformDataMap[i].uniformData = uniformData;
-				UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
-				return;
-			}
-		}
-		newUniform.uniformNum = size;
-		newUniform.uniformType = type;
-		newUniform.uniformData = uniformData;
-		newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
-		UniformDataMap.push(newUniform);
-	}
-
-	var getUniformLoc = function(randomNumber){
-		for (var i = 0; i < UniformLocMap.length; i++)
-			if (randomNumber == UniformLocMap[i].randomNumber)
-				return UniformLocMap[i];
-	}
-
- /*------------map部分------结尾-------------*/ 
-
-
-  rewrite = function(gl){
-			__texture_flag = 1;
-			__My_index_flag = 0;  
-      __PointBuffer = [];
-      __ColorBuffer = [];
-      __Tem_pointbuffer = [];
-      __Tem_colorbuffer = [];
-      __ActiveBuffer_vertex = [];
-	  __ActiveBuffer_frag = [];
-	  
-	  __My_buffer_flag = 1;
-	//去判断这个是一个是那么状态
-
-/*------------map部分------开头-------------*/
+/*====================关于program和shader source部分的代码=================开头=======================*/
 	//重新定义createShader
 	gl.my_createShader = gl.__proto__.createShader;
 	gl.createShader = function (shaderTpye){
@@ -512,11 +264,21 @@ Mat3 = (function() {
 			}	
 			else
 			ProgramDataMap[i].activeFlag = 0;
+
+		//在这里显示map的值
+		console.log("ProgramDataMap",ProgramDataMap);
+		console.log("ShaderDataMap",ShaderDataMap);
+		console.log("BufferDataMap",BufferDataMap);
+		console.log("AttriDataMap",AttriDataMap);
+		console.log("AttributeLocMap",AttributeLocMap);
+		console.log("UniformDataMap",UniformDataMap);
+		console.log("UniformLocMap",UniformLocMap);
+
 	}
 
-/*------------map部分------结尾-------------*/
+/*===================关于program和shader source部分的代码=================结尾================*/
 
-/*------------map部分------开头-------------*/
+/*===============关于Attribute部分的代码=======================开头==========================*/
 	//重新定义bindbuffer
 	//有两种情况，第一个是第一次出现这个buffer，需要完全加入一个新的attribute变量，第二种情况，只是更新目前到底在修饰哪一个buffer
 	//bindbuffer这块出现了次数远远多于正常情况的情况
@@ -534,11 +296,38 @@ Mat3 = (function() {
 		// *******************************这块在去掉另外一套系统后，应该可以删除
 		gl.my_bindBuffer(bufferType, bufferName);
 	}
-/*------------map部分------结尾-------------*/
+
+	/*------------用在bindbuffer 的几个函数-------------*/	  
+	// 重新把之前所有active的buffer状态归位inactive
+	initBufferMap = function(){
+		for (i = 0; i < BufferDataMap.length; i++)
+			BufferDataMap[i].activeFlag = 0;
+	}
+
+	//判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
+	addBufferMap = function(bufferType, bufferName){
+		for (i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].bufferName == bufferName)
+				return;
+		}
+		var newData = new Buffer_data();
+		newData.bufferType = bufferType;
+		newData.bufferName = bufferName;
+		BufferDataMap.push(newData);
+		return;
+	}
+
+	//激活当前的buffer
+	activeBufferMap = function(bufferType, bufferName){
+		for (i = 0; i < BufferDataMap.length; i++)
+			if (BufferDataMap[i].bufferName == bufferName){
+				BufferDataMap[i].activeFlag = 1;
+				return;
+			}
+	}
+	/*----------------------------------------------------*/
 
 
-
-/*------------map部分------开头-------------*/
 	//重新定义getAttribLocation
 	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
 	gl.my_getAttribLocation = gl.__proto__.getAttribLocation;
@@ -553,28 +342,166 @@ Mat3 = (function() {
 		//console.log("buffermap的位数", BufferDataMap.length);
 		//console.log("bindbuffernum的数量", bindbuffernum);
 		
-		console.log("BufferDataMap","确认bindbuffer的激活情况正确",BufferDataMap);
+		//console.log("BufferDataMap","确认bindbuffer的激活情况正确",BufferDataMap);
 
 		var newData = new Attribute_loc;
 		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
 		newData.programName = programName;
 		newData.shaderName = shaderName;
 		AttributeLocMap.push(newData);
-		// 这块两个系统产生了冲突
-
-		console.log("AttributeLocMap", "确认LocBuffer的激活情况正确",AttributeLocMap);
-
-		//开启map系统
 		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
-
-		//开启状态机系统
-		//return gl.my_getAttribLocation(programName, shaderName);
-
-		
 	}
-/*------------map部分------结尾-------------*/
 
-/*------------map部分------开头-------------*/
+	/*------------gl.getAttribLocation------开头-------------*/
+	//用getAttribLocation的函数
+	var __Locnumber = 100; //初始化函数
+	//单独建立函数的原因是在单个program的时候，单一__Locnumber是可行的，我担心在three.js多program和多attribute的情况下，可能会出问题，先暂时写成这样，调试的时候再做修改。
+	creatNumber = function(){
+		__Locnumber++;
+		return __Locnumber;
+	}
+ 	/*--------------------------------------------------------*/ 
+
+
+	
+	gl.my_glbufferData = gl.__proto__.bufferData;
+	gl.bufferData = function (a, bufferData, c){
+		for (i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].activeFlag == 1){
+				BufferDataMap[i].bufferData = bufferData;
+			}
+		}
+	} 
+
+
+
+	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
+	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
+		/*------------map部分------开头-------------*/
+		//这块就需要将两个map进行关连，最终合成到一个map中
+		//此时，bindbuffer已经激活了一个javascript部分的buffer数据类型，现在需要将其合成
+		//在这里要考虑单个buffer最终合成多个attribute这种情况，所以说应该是建立buffer map和attribute map两张表格才可以（上个版本只用了一个表格，是不可以的）
+		//在buffer map转化为attribute map的时候，如果出现了element buffer这种情况，将要直接把重复的部分直接合成成新的data
+
+		//console.log("判断三个map的状态");
+		//console.log("BufferDataMap", BufferDataMap);
+		//console.log("AttriDataMap", AttriDataMap);
+		//console.log("AttributeLocMap", AttributeLocMap);
+
+		//先提取getAttribLocation能获得的glsl部分的信息
+		var ShaderData = new Attribute_loc;
+		ShaderData = getShaderData(positionAttributeLocation);
+
+		//提取bufferdata中的信息
+		var BufferData = new Buffer_data;
+		BufferData = getBufferData();
+		
+		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
+		var EleFlag;
+		EleFlag = getEleFlag();
+		//这一部分放到drawelement中去实现了
+
+		//console.log("ShaderData",ShaderData);
+		//console.log("BufferData",BufferData);
+		//console.log("EleFlag",EleFlag);
+
+		//在这里生成一个新的attribute条目
+		//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
+		// 这个版本需要考虑重复赋值这种情况
+		addAttriMap(ShaderData,BufferData,EleFlag,size,offset);
+	}
+
+	 /*------------gl.vertexAttribPointer------开头-------------*/
+	//用在vertexAttribPointer中的函数
+	//提取getAttribLocation能获得的glsl部分的信息
+	var getShaderData = function(positionAttributeLocation){
+		for (var i = 0; i < AttributeLocMap.length; i++){
+			if (AttributeLocMap[i].randomNumber == positionAttributeLocation)
+				return AttributeLocMap[i];
+		}
+
+	}
+
+
+   //提取bufferdata中的信息
+   var getBufferData = function(){
+	   for (var i = 0; i < BufferDataMap.length; i++){
+		   if (BufferDataMap[i].activeFlag == 1)
+			   return BufferDataMap[i];
+	   }
+   }
+
+   //判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
+   //gl.ARRAY_BUFFER 34962
+   //gl.ELEMENT_ARRAY_BUFFER 34963
+   var getEleFlag = function(){
+	   for (var i = 0; i < BufferDataMap.length; i++){
+		   if (BufferDataMap[i].bufferType == 34963)
+			   return BufferDataMap[i].bufferData;
+	   }
+	   return 0;
+   }
+
+   //考虑了attribute会被重复赋值的情况。
+   //需要判断是否需要重组bufferdata
+   var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,EleFlag,size,offset){
+	   var newAttri = new Attri_data;
+	   var temData = [];
+	   newAttri.shaderName = ShaderData.shaderName;
+	   newAttri.programName = ShaderData.programName;
+	   for (var i = 0; i < AttriDataMap.length; i++){
+		   if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
+			   AttriDataMap[i].attriEleNum = size - offset;
+			   for (var i = 0; i * size < BufferData.bufferData.length; i++){
+				   for (var j = i * size + offset; j < (i + 1) * size; j++)
+				   temData = temData.concat(BufferData.bufferData[j]);
+			   }
+
+			   // 这个是为了重组整个数据
+			   if (EleFlag == 0){
+				   AttriDataMap[i].uniformData = temData;
+			   }else{
+				   for (var i = 0; i < EleFlag.length; i++){
+					   for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
+						   AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(temData[j]);
+				   }
+			   }
+			   return;
+		   }
+	   }
+	   newAttri.attriEleNum = size - offset;
+	   for (var i = 0; i * size < BufferData.bufferData.length; i++){
+		   for (var j = i * size + offset; j < (i + 1) * size; j++)
+		   temData = temData.concat(BufferData.bufferData[j]);
+	   }
+
+	   // 这个是为了重组整个数据
+	   if (EleFlag == 0){
+		   newAttri.uniformData = temData;
+	   }else{
+		   for (var i = 0; i < EleFlag.length; i++){
+			   for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
+				   newAttri.uniformData = newAttri.uniformData.concat(temData[j]);
+		   }
+	   }
+
+	   // 将attribute加入map
+	   AttriDataMap.push(newAttri);
+   }
+
+	/*----------------------------------------------------------------------*/ 
+	
+
+
+
+
+
+
+/*===================关于Attribute部分的代码========================结尾===============*/
+
+
+
+/*====================关于uniform部分的代码==========================开头============*/
 	//重新定义getAttribLocation
 	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
 	gl.my_getUniformLocation = gl.__proto__.getUniformLocation;
@@ -594,14 +521,9 @@ Mat3 = (function() {
 
 		//开启map状态
 		return newData.randomNumber;   
-
-
-		
+	
 	}
-/*------------map部分------结尾-------------*/
 
-
-/*------------map部分------开头-------------*/
 //进入uniform 赋值区域  需要重新定义大量函数， 放在一起定义就好了
 	//这个类型是int 0 还是 float 1
 	//传入loc，data，type, num
@@ -709,405 +631,58 @@ Mat3 = (function() {
 
 	gl.my_uniformMatrix4fv = gl.__proto__.uniformMatrix4fv;
 	gl.uniformMatrix4fv = function (uniformLoc,transpose, uniformData){
-		console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-		console.log("uniformData",uniformData);
+		//console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+		//console.log("uniformData",uniformData);
 		AddUniformMap(uniformLoc, uniformData, 1, 14);
 	}
 
-/*------------map部分------结尾-------------*/
 
-
-
-	gl.my_glbufferData = gl.__proto__.bufferData;
-	gl.bufferData = function (a, b, c){
-		/*------------map部分------开头-------------*/
-		addBufferData(b);
-		/*------------map部分------结尾-------------*/
-
-
-
-		if (__texture_flag == 0){
-			if (a == gl.ELEMENT_ARRAY_BUFFER){
-				__My_index = b;
-				__My_index_flag = 1;
-				this.my_glbufferData(a, b, c);
-				//console.log("__My_index", b);
-			}
-			else{
-				__My_buffer = b;
-				this.my_glbufferData(a, b, c);
-				//console.log("__My_buffer", b);
-			}
-			return;
-		}
-
-		if (a == gl.ELEMENT_ARRAY_BUFFER){
-			__My_index = b;
-			__My_index_flag = 1;
-			this.my_glbufferData(a, b, c);
-		}
-		else{
-			if (__My_buffer_flag == 1){
-				__My_buffer = b;
-				__My_buffer_flag++;
-			}
-			else if (__My_buffer_flag == 2){
-				__My_buffer_Texture = b;
-				__My_buffer_flag++;
-			}
-			else{
-				__My_buffer_normal = b;
-				__My_buffer_flag++;
-			}
-			
-			this.my_glbufferData(a, b, c);
-			//console.log("__My_buffer", b);
-		}
-	} 
-
-
-
-
-
-
-
-	gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
-	gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
-		/*------------map部分------开头-------------*/
-		//这块就需要将两个map进行关连，最终合成到一个map中
-		//此时，bindbuffer已经激活了一个javascript部分的buffer数据类型，现在需要将其合成
-		//在这里要考虑单个buffer最终合成多个attribute这种情况，所以说应该是建立buffer map和attribute map两张表格才可以（上个版本只用了一个表格，是不可以的）
-		//在buffer map转化为attribute map的时候，如果出现了element buffer这种情况，将要直接把重复的部分直接合成成新的data
-
-		console.log("判断三个map的状态");
-		console.log("BufferDataMap", BufferDataMap);
-		console.log("AttriDataMap", AttriDataMap);
-		console.log("AttributeLocMap", AttributeLocMap);
-
-		//先提取getAttribLocation能获得的glsl部分的信息
-		var ShaderData = new Attribute_loc;
-		ShaderData = getShaderData(positionAttributeLocation);
-
-		//提取bufferdata中的信息
-		var BufferData = new Buffer_data;
-		BufferData = getBufferData();
-		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
-		var EleFlag;
-		EleFlag = getEleFlag();
-
-		console.log("ShaderData",ShaderData);
-		console.log("BufferData",BufferData);
-		console.log("EleFlag",EleFlag);
-
-		//在这里生成一个新的attribute条目
-		//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
-		addAttriMap(ShaderData,BufferData,EleFlag,size,offset);
-
-		
-
-
-
-
-		/*------------map部分------结尾-------------*/
-
-		if (__texture_flag == 0){
-				// 在这里无法智能的判断位置和颜色
-			//console.log("进入");
-			
-			if (offset == 0){
-				__VertexPositionAttributeLocation1 = positionAttributeLocation;
-				__VertexSize = size;
-			}
-			else{
-				__VertexPositionAttributeLocation2 = positionAttributeLocation;
-			}
-
-			__VertexType = type;
-			__VertexNomalize = normalize;
-			__VertexStride = stride;
-			__VertexOffset = offset;
-			//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
-
-			// 这个是因为传入的数据内容大小，转换成数据个数
-			stride = stride / 4;  
-			offset = offset / 4;
-
-			// 重新重构数据
-			if (__My_index_flag == 1){
-				var __Tem_my_buffer = [];
-				for (var i = 0; i < __My_index.length; i++){
-					for (var j = __My_index[i] * stride; j < (__My_index[i] + 1) * stride; j++)
-						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer[j]);
-				}
-				__My_buffer = __Tem_my_buffer;
-				__My_index_flag = 0;
-				//console.log("重新赴值__My_buffer", __My_buffer);
-			}
-
-			// 这是一个合法的写法，stride等于0，即位没有总长就是数据的长度
-			if (stride == 0)
-			stride = size;
-
-			//将数据分到位置和颜色
-			if (__VertexOffset == 0){	
-				// 将数据处理出来
-				for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-					for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
-					__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
-				// 将float系统转换成int系统
-				// 在这里256是需要转化的   以后要变成canvas的真实数值，这个以后再来做
-
-				// 在这里vertex是原始数据， 不进行转化
-
-				//for (var i =0; i < __ActiveBuffer_vertex.length; i++)
-				//	__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
-				
-			}
-			else{
-				// 判断以后要用颜色
-				__ColorFlag = 1;
-				// 将数据处理出来
-				for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-					for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
-					__ActiveBuffer_frag = __ActiveBuffer_frag.concat( Math.round(__My_buffer[j] * 1000) /1000);
-				// 将float系统转换成int系统
-				// 颜色不进行转换
-				//for (var i =0; i < __ActiveBuffer_frag.length; i++)
-				//	__ActiveBuffer_frag[i] = Math.floor(__ActiveBuffer_frag[i] * 255);	
-			}
-			//console.log("完成");
+	/*------------gl.uniformXX和gl.uniformMatrix4XX------开头-------------*/
+	//需要考虑重复赋值的情况
+	var AddUniformMap = function(uniformLoc, uniformData, type, size){
+		var newUniform = new Uniform_data;
+		var newUniformLoc = new Uniform_loc;
+		//console.log("**************************************************************");
+		//console.log("uniformLoc", uniformLoc);
+		//console.log("UniformLocMap",UniformLocMap);
+		newUniformLoc = getUniformLoc(uniformLoc);
+		//console.log("**************************************************************");
+		//console.log(newUniformLoc);
+		newUniform.programName = newUniformLoc.programName;
+		newUniform.shaderName = newUniformLoc.shaderName;
+		for (var i = 0; i < UniformDataMap.length; i++){
+			if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
+				UniformDataMap[i].uniformNum = size;
+				UniformDataMap[i].uniformType = type;
+				UniformDataMap[i].uniformData = uniformData;
+				UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
 				return;
-		}
-
-
-
-		// 在这里无法智能的判断位置和颜色
-		//console.log("进入");
-		if (offset == 0){
-			if (__VertexPositionAttributeLocation1_flag == 1){
-				__VertexPositionAttributeLocation1 = positionAttributeLocation;
-				__VertexPositionAttributeLocation1_flag = 2;
 			}
-			__VertexSize = size;
 		}
-		else{
-			__VertexPositionAttributeLocation2 = positionAttributeLocation;
-		}
-
-		__VertexType = type;
-		__VertexNomalize = normalize;
-		__VertexStride = stride;
-		__VertexOffset = offset;
-		//this.my_vertexAttribPointer(positionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
-
-		// 这个是因为传入的数据内容大小，转换成数据个数
-		stride = stride / 4;  
-		offset = offset / 4;
-/*
-		console.log("*********************************");
-		console.log("__My_index", __My_index);
-		console.log("__My_buffer",__My_buffer);
-		console.log("__My_buffer_Texture",__My_buffer_Texture);
-*/
-		// 重新重构数据
-		if (__My_index_flag == 1){
-			var __Tem_my_buffer = [];
-			for (var i = 0; i < __My_index.length; i++){
-				for (var j = __My_index[i] * 3; j < (__My_index[i] + 1) * 3; j++)
-					__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer[j]);
-			}
-			__My_buffer = __Tem_my_buffer;
-
-			__Tem_my_buffer = [];
-			for (var i = 0; i < __My_index.length; i++){
-				for (var j = __My_index[i] * 2; j < (__My_index[i] + 1) * 2; j++)
-					__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer_Texture[j]);
-			}
-			__My_buffer_Texture = __Tem_my_buffer;
-
-
-			// 确认这一块出现了向量这个新的参数
-			if (__My_buffer_flag == 4){
-				__Tem_my_buffer = [];
-				for (var i = 0; i < __My_index.length; i++){
-					for (var j = __My_index[i] * 3; j < (__My_index[i] + 1) * 3; j++)
-						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer_normal[j]);
-				}
-				__My_buffer_normal = __Tem_my_buffer;
-			}
-
-			__My_index_flag = 0;
-			//console.log("重新赴值__My_buffer", __My_buffer);
-		}
-
-		// 这是一个合法的写法，stride等于0，即位没有总长就是数据的长度
-		if (stride == 0)
-		stride = size;
-
-		__ActiveBuffer_vertex = __My_buffer;
-		__ActiveBuffer_vertex_texture = __My_buffer_Texture;
-		if (__My_buffer_flag == 4)
-			__ActiveBuffer_vertex_normal = __My_buffer_normal;
-
+		newUniform.uniformNum = size;
+		newUniform.uniformType = type;
+		newUniform.uniformData = uniformData;
+		newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+		UniformDataMap.push(newUniform);
 	}
-	
 
-	var draw_line = function(){		
-				var t1 = [];
-				var t2 = [];
-				var t3 = [];
-				var t4 = [];
-			
-				for (var i = 990; i <1026; i++){
-					t1 = t1.concat(tri_result[i * 3]);
-					t1 = t1.concat(tri_result[i * 3 + 1]);
-					t1 = t1.concat(tri_result[i * 3 + 2]);
-					t2 = t2.concat(tri_texture[i * 2]); 
-					t2 = t2.concat(tri_texture[i * 2 + 1]); 
-					t2 = t2.concat(tri_texture[i * 2 + 2]); 
-				}
-				var new_vertex_buffer = gl.createBuffer();
-				gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
-				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-				gl.my_useProgram(__Program);
-				var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-				var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-				gl.uniform3fv(traingles_vex_loc, t1);
-				gl.uniform2fv(traingles_text_loc, t2);
-				console.log("更改过了");
-				gl.drawArrays(gl.TRIANGLES, 0, 6);
-				console.log("this.my_drawArrays",gl.my_drawArrays);
-				console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-				gl.bindTexture(gl.TEXTURE_2D, __tex);
-				gl.activeTexture(gl.TEXTURE0);
-					
-				var t1 = [];
-				var t2 = [];
-				for (var i = 513; i <1017; i++){
-					t1 = t1.concat(tri_result[i * 3]);
-					t1 = t1.concat(tri_result[i * 3 + 1]);
-					t1 = t1.concat(tri_result[i * 3 + 2]);
-					t2 = t2.concat(tri_texture[i * 2]); 
-					t2 = t2.concat(tri_texture[i * 2 + 1]); 
-					t2 = t2.concat(tri_texture[i * 2 + 2]); 
-				}
-				var new_vertex_buffer = gl.createBuffer();
-				gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer1), gl.STATIC_DRAW);
-				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-				gl.my_useProgram(__Program);
-				var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-				var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-				gl.uniform3fv(traingles_vex_loc, t1);
-				gl.uniform2fv(traingles_text_loc, t2);
-				console.log("更改过了");
-				gl.drawArrays(gl.TRIANGLES, 0, 6);
-				console.log("this.my_drawArrays",gl.my_drawArrays);
-				console.log("gl.__proto__.drawArrays",gl.__proto__.drawArrays);
-		}
-
-	
-	
-	
-	
-/*	
-	gl.my_useProgram =  gl.__proto__.useProgram;
-	gl.useProgram = function(a){
-		__Program = a;
-		this.my_useProgram(a);
-		//console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
-		//console.log("__ActiveBuffer_frag",__ActiveBuffer_frag);
+	var getUniformLoc = function(randomNumber){
+		for (var i = 0; i < UniformLocMap.length; i++)
+			if (randomNumber == UniformLocMap[i].randomNumber)
+				return UniformLocMap[i];
 	}
-*/
 
-	var tri_div_draw = function(){
-		__PointBuffer = [];
-		__ColorBuffer = [];
-		switch (primitiveType){
-			case gl.TRIANGLES:
-				for (var i = offset; i < offset + count; i += 3){
-					switch (__VertexSize){
-						case 3:
-							console.log("开始画图");
-							//console.log("i的数值", i);
-							//console.log("__ColorFlag",__ColorFlag)
-							//tri_3(i);
-						break;
-					}
-				}
-			break;
-		}
-		// 在这里重新将值转化回来
-		//matrix_mut(__Matrix1);
-		//__PointBuffer = my_m4.vec_max_mul(__PointBuffer, __Matrix1);
-		for (var i = 0; i < __PointBuffer.length; i++){
-			__PointBuffer[i] = __PointBuffer[i] / 128 - 1;
-		}
-			
-		// 数据传递到__PointBuffer, 开始在这里进行画图
-		Point_Number = __PointBuffer.length;
-		//console.log("Point_Number", Point_Number);
-		//console.log("转化完成的__PointBuffer",__PointBuffer);	
-		// 这个一会会进行修改
-		
-		if (__ColorFlag == 0){
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__PointBuffer), gl.STATIC_DRAW);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);		
-			gl.useProgram(__Program);
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
-			//console.log("=====================================");
-		
-		}else{
-			for (var i = 0; i < __ColorBuffer.length; i++){
-				__ColorBuffer[i] = __ColorBuffer[i] / 255.0;
-			}
-			console.log("__PointBuffer",__PointBuffer);
-			console.log("__ColorBuffer",__ColorBuffer);
-			var result_buffer = [];
-			var j = 0;
-			var k = 0;
-			for (var i = 0; i < Point_Number/__VertexSize; i++){
-			  while (j < (i+1) * __VertexSize){
-				result_buffer = result_buffer.concat(__PointBuffer[j]);
-				j++;
-			  }
-			  while (k < (i+1) * 3){
-				result_buffer = result_buffer.concat(__ColorBuffer[k]);
-				k++;
-			  }
-				
-			}
-		
-			
-			console.log("result_buffer",result_buffer);
-			
-			
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
-			console.log("__VertexSize",__VertexSize);
-			
-			//var new_frag_buffer = gl.createBuffer();
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-			//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
-			//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
-			//console.log("__VertexPositionAttributeLocation2",__VertexPositionAttributeLocation2);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);		
-			gl.my_useProgram(__Program);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
-			this.my_drawArrays(gl.POINTS, 0, Point_Number/__VertexSize);
-			console.log("画点的数量", Point_Number/__VertexSize);
-			console.log("=====================================");
-		}
-	}
+ 	/*---------------------------------------------------------------*/ 
+
+/*=========================关于uniform部分的代码================结尾==================*/
+
+
+
+
+
+
+
+
 	//gl.my_drawElements = gl.__proto__.drawElements;
 	AAA = function (a , b, c, d){
 	  // 这里暂时默认是三角形
