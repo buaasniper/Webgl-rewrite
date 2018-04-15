@@ -308,13 +308,25 @@ Mat3 = (function() {
 
 	//判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
 	addBufferMap = function(bufferType, bufferName){
+		//如果出现了重复的buffer，要在原始基础上直接赋值
 		for (i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].bufferName == bufferName)
+			if (BufferDataMap[i].bufferName == bufferName){
+				if (bufferType == 34963){
+					for (var j = 0; j < BufferDataMap.length; j++)
+						BufferDataMap[j].activeElement = 0;
+					BufferDataMap[i].activeElement = 1;
+				}
 				return;
+			}	
 		}
 		var newData = new Buffer_data();
 		newData.bufferType = bufferType;
 		newData.bufferName = bufferName;
+		if (bufferType == 34963){
+			for (var i = 0; i < BufferDataMap.length; i++)
+				BufferDataMap[i].activeElement = 0;
+			newData.activeElement = 1;
+		}
 		BufferDataMap.push(newData);
 		return;
 	}
@@ -329,6 +341,16 @@ Mat3 = (function() {
 	}
 	/*----------------------------------------------------*/
 
+	//重新定义bufferData
+	gl.my_glbufferData = gl.__proto__.bufferData;
+	gl.bufferData = function (a, bufferData, c){
+		for (i = 0; i < BufferDataMap.length; i++){
+			if (BufferDataMap[i].activeFlag == 1){
+				BufferDataMap[i].bufferData = bufferData;
+			}
+		}
+	} 
+
 
 	//重新定义getAttribLocation
 	//这块需要建立一个新的map，记录随机产生的数字和其对应关系的
@@ -337,21 +359,14 @@ Mat3 = (function() {
 		for (i = 0; i < AttributeLocMap.length; i++){
 			if ((AttributeLocMap[i].programName == programName) && (AttributeLocMap[i].shaderName == shaderName))
 				return AttributeLocMap[i].randomNumber;
-		}
-		
-		// 在这里测试buffermap有没有问题
-		//console.log("buffermap", BufferDataMap);
-		//console.log("buffermap的位数", BufferDataMap.length);
-		//console.log("bindbuffernum的数量", bindbuffernum);
-		
-		//console.log("BufferDataMap","确认bindbuffer的激活情况正确",BufferDataMap);
-
+		}	
 		var newData = new Attribute_loc;
 		newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
 		newData.programName = programName;
 		newData.shaderName = shaderName;
 		AttributeLocMap.push(newData);
 		return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
+
 	}
 
 	/*------------gl.getAttribLocation------开头-------------*/
@@ -365,15 +380,6 @@ Mat3 = (function() {
  	/*--------------------------------------------------------*/ 
 
 
-	
-	gl.my_glbufferData = gl.__proto__.bufferData;
-	gl.bufferData = function (a, bufferData, c){
-		for (i = 0; i < BufferDataMap.length; i++){
-			if (BufferDataMap[i].activeFlag == 1){
-				BufferDataMap[i].bufferData = bufferData;
-			}
-		}
-	} 
 
 
 
@@ -383,12 +389,7 @@ Mat3 = (function() {
 		//这块就需要将两个map进行关连，最终合成到一个map中
 		//此时，bindbuffer已经激活了一个javascript部分的buffer数据类型，现在需要将其合成
 		//在这里要考虑单个buffer最终合成多个attribute这种情况，所以说应该是建立buffer map和attribute map两张表格才可以（上个版本只用了一个表格，是不可以的）
-		//在buffer map转化为attribute map的时候，如果出现了element buffer这种情况，将要直接把重复的部分直接合成成新的data
 
-		//console.log("判断三个map的状态");
-		//console.log("BufferDataMap", BufferDataMap);
-		//console.log("AttriDataMap", AttriDataMap);
-		//console.log("AttributeLocMap", AttributeLocMap);
 
 		//先提取getAttribLocation能获得的glsl部分的信息
 		var ShaderData = new Attribute_loc;
@@ -399,8 +400,9 @@ Mat3 = (function() {
 		BufferData = getBufferData();
 		
 		//判断是否需要有element array存在,0 表示不存在， bufferdata 表示存在
-		var EleFlag;
-		EleFlag = getEleFlag();
+		//这个函数实在drawelement里面实现的
+		//var EleFlag;
+		//EleFlag = getEleFlag();
 		//这一部分放到drawelement中去实现了
 
 		//console.log("ShaderData",ShaderData);
@@ -410,7 +412,7 @@ Mat3 = (function() {
 		//在这里生成一个新的attribute条目
 		//？？？？？？？？？？？？？？？？？？需要在three.js中调试，到底什么时候会被初始化，是否attribute会被重复赋值（这个版本我先不考虑这个问题）。
 		// 这个版本需要考虑重复赋值这种情况
-		addAttriMap(ShaderData,BufferData,EleFlag,size,offset);
+		addAttriMap(ShaderData,BufferData,size,offset);
 	}
 
 	 /*------------gl.vertexAttribPointer------开头-------------*/
@@ -446,7 +448,7 @@ Mat3 = (function() {
 
    //考虑了attribute会被重复赋值的情况。
    //需要判断是否需要重组bufferdata
-   var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,EleFlag,size,offset){
+   var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,size,offset){
 	   var newAttri = new Attri_data;
 	   var temData = [];
 	   newAttri.shaderName = ShaderData.shaderName;
@@ -458,8 +460,10 @@ Mat3 = (function() {
 				   for (var j = i * size + offset; j < (i + 1) * size; j++)
 				   temData = temData.concat(BufferData.bufferData[j]);
 			   }
+			   AttriDataMap[i].uniformData = temData;
 
 			   // 这个是为了重组整个数据
+			   /*
 			   if (EleFlag == 0){
 				   AttriDataMap[i].uniformData = temData;
 			   }else{
@@ -468,6 +472,7 @@ Mat3 = (function() {
 						   AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(temData[j]);
 				   }
 			   }
+			*/
 			   return;
 		   }
 	   }
@@ -476,8 +481,10 @@ Mat3 = (function() {
 		   for (var j = i * size + offset; j < (i + 1) * size; j++)
 		   temData = temData.concat(BufferData.bufferData[j]);
 	   }
+	   newAttri.uniformData = temData;
 
 	   // 这个是为了重组整个数据
+	   /*
 	   if (EleFlag == 0){
 		   newAttri.uniformData = temData;
 	   }else{
@@ -486,6 +493,7 @@ Mat3 = (function() {
 				   newAttri.uniformData = newAttri.uniformData.concat(temData[j]);
 		   }
 	   }
+	   */
 
 	   // 将attribute加入map
 	   AttriDataMap.push(newAttri);

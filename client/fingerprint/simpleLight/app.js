@@ -337,6 +337,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         //这个还原到原函数，drawElements和drawArrays 
         //console.log("indices.length",indices.length);
         //console.log("indices", indices);
+        console.log("gl.TRIANGLES", gl.TRIANGLES);
         //gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
 
