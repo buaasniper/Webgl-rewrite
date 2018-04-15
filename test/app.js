@@ -1,48 +1,25 @@
-var vertexShaderText = 
-[
-'precision mediump float;',
-'',
-'attribute vec2 vertPosition;',
-'attribute vec3 vertColor;',
-'varying vec3 fragColor;',
-'',
-'void main()',
-'{',
-'  fragColor = vertColor;',
-'  gl_Position = vec4(vertPosition, 0.0, 1.0);',
-'}'
-].join('\n');
-
-var fragmentShaderText =
-[
-'precision mediump float;',
-'',
-'varying vec3 fragColor;',
-'void main()',
-'{',
-'  gl_FragColor = vec4(fragColor, 1.0);',
-'}'
-].join('\n');
-
 var testShader = 
 `
 attribute vec3 vertPosition;
 attribute vec2 vertTexCoord;
-attribute vec3 vertNormal;
+attribute vec3 vertNormal = vec3(4);
 
 varying vec2 fragTexCoord;
 varying vec3 fragNormal;
 
 uniform mat4 mWorld = mat4(2);
-uniform mat4 mView;
+uniform mat4 mView = mat4(5);
 uniform mat4 mProj;
 
 void main()
 {
   fragTexCoord = vertTexCoord;
-  fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
+  fragNormal = (mWorld * vec4(vertNormal, 1.0));
+  console.log(fragNormal.toString());
+  console.log((mWorld * mView).toString());
   mProj += mProj;
   mProj /= mProj;
+  console.log(mProj.toString());
   if (fragTexCoord == vertNormal) {
     gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
     gl_Position = gl_Position + gl_Position;
@@ -50,7 +27,10 @@ void main()
     gl_Position = mProj;
     gl_Position = mProj - mView;
   }
+  gl_Position = mProj - mView;
+  console.log(gl_Position.toString());
 }
+main();
 `
 
 var Demo = function () {
@@ -62,8 +42,8 @@ var Demo = function () {
 		gl = canvas.getContext('experimental-webgl');
 	}
   var Compiler = GLSL();
-  //console.log(Compiler.compile(fragmentShaderText));
-  //console.log(Compiler.compile(vertexShaderText));
   console.log(testShader);
-  console.log(Compiler.compile(testShader));
+  compiled = Compiler.compile(testShader);
+  console.log(compiled);
+  eval(compiled);
 }
