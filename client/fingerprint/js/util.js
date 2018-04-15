@@ -130,6 +130,8 @@ Mat3 = (function() {
 		this.vertexSource = undefined; //vetex的source
 		this.fragSource = undefined //frag的source
 		this.activeFlag = undefined //这个program是否被激活
+		this.attriData = [];  //重新建立一个新的Attri_data object的array
+		this.uniformData = [] //重新建立一个新的Uniform_data object的array
 	}
 	var ProgramDataMap = [];
 
@@ -687,7 +689,62 @@ Mat3 = (function() {
 /*=========================关于uniform部分的代码================结尾==================*/
 
 
+/*=========================关于draw部分的代码====================开头==================*/
+	gl.my_drawElements = gl.__proto__.drawElements;
+	//mode
+	//gl.POINTS 0
+	//gl.LINES 1
+	//gl.LINE_LOOP 2
+	//gl.LINE_STRIP 3
+	//gl.TRIANGLES 4
+	gl.drawElements = function(mode, count, type, offset){
+		var elementArray = [];
+		var activeProgram;
+		var activeProgramNum;
+		var newData = new AttriDataMap;
+		activeProgram = getactiveProgram();
+		activeProgramNum = getactiveProgramNum();
+		elementArray = getElementArray(offset);
+		for (var i = 0; i < AttriDataMap.length; i++){
+			if( AttriDataMap[i].programName == activeProgram){
+				newData =  AttriDataMap[i]; 
+				newData.uniformData = [];
+				for (var j = 0; j < elementArray.length; j++){
+					for (var k = elementArray[i] * newData.attriEleNum; k <  (elementArray[i] + 1) * newData.attriEleNum; k++)
+						newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[k]);
+				}
+				ProgramDataMap[activeProgramNum].attriData.push(newData);
+			}
+		}
+		//jiajasidjijsdi
+		console.log("ProgramDataMap",ProgramDataMap);	
+	}
 
+	getactiveProgram = function(){
+		for (var i = 0; i < ProgramDataMap.length; i++)
+			if (ProgramDataMap[i].activeFlag == 1)
+				return ProgramDataMap[i].programName;
+	}
+
+	getactiveProgramNum = function(){
+		for (var i = 0; i < ProgramDataMap.length; i++)
+			if (ProgramDataMap[i].activeFlag == 1)
+				return i;
+	}
+
+	getElementArray = function(offset){
+		var elementArray = [];
+		var returnArray = [];
+		for (var i = 0; i < BufferDataMap.length; i++)
+			if (BufferDataMap[i].activeElement == 1)
+				elementArray = BufferDataMap[i].bufferData;
+		for (var i = offset; i < elementArray.length; i++)
+			returnArray = returnArray.concat(elementArray[i]);
+		return returnArray;
+	}
+
+
+/*=========================关于draw部分的代码====================结尾==================*/
 
 
 
