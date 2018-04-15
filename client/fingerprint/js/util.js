@@ -691,17 +691,11 @@ Mat3 = (function() {
 
 /*=========================关于draw部分的代码====================开头==================*/
 	gl.my_drawElements = gl.__proto__.drawElements;
-	//mode
-	//gl.POINTS 0
-	//gl.LINES 1
-	//gl.LINE_LOOP 2
-	//gl.LINE_STRIP 3
-	//gl.TRIANGLES 4
 	gl.drawElements = function(mode, count, type, offset){
 		var elementArray = [];
 		var activeProgram;
 		var activeProgramNum;
-		var newData = new AttriDataMap;
+		var newData = new Attri_data;
 		activeProgram = getactiveProgram();
 		activeProgramNum = getactiveProgramNum();
 		elementArray = getElementArray(offset);
@@ -716,8 +710,9 @@ Mat3 = (function() {
 				ProgramDataMap[activeProgramNum].attriData.push(newData);
 			}
 		}
-		//jiajasidjijsdi
 		console.log("ProgramDataMap",ProgramDataMap);	
+		gl.drawArrays(mode, 0 , count);
+
 	}
 
 	getactiveProgram = function(){
@@ -743,43 +738,32 @@ Mat3 = (function() {
 		return returnArray;
 	}
 
+	//mode
+	//gl.POINTS 0
+	//gl.LINES 1
+	//gl.LINE_LOOP 2
+	//gl.LINE_STRIP 3
+	//gl.TRIANGLES 4
+	gl.my_drawArrays = gl.__proto__.drawArrays;
+	gl.drawArrays = function(mode, first, count){
+		var activeProgram;
+		var activeProgramNum;
+		activeProgram = getactiveProgram();
+		activeProgramNum = getactiveProgramNum();
+		//没有进入gl.element直接进入这个gl.drawelement
+		if (ProgramDataMap[activeProgramNum].attriData.length == 0){
+			for (var i = 0; i < AttriDataMap.length; i++)
+				if( AttriDataMap[i].programName == activeProgram)
+					ProgramDataMap[activeProgramNum].attriData.push(AttriDataMap[i]);
+		}
+
+	}
+
 
 /*=========================关于draw部分的代码====================结尾==================*/
 
 
 
-
-
-	//gl.my_drawElements = gl.__proto__.drawElements;
-	AAA = function (a , b, c, d){
-	  // 这里暂时默认是三角形
-	  BBB(a , 0, b);
-	  //console.log("my_drawElements  b * 3", b * 3);
-	}
-
-	var tri_loc = function(){
-		for (var i = 0; i < 510; i++){
-			t1 = t1.concat(tri_result[i * 3]);
-			t1 = t1.concat(tri_result[i * 3 + 1]);
-			t1 = t1.concat(tri_result[i * 3 + 2]);
-			t2 = t2.concat(tri_texture[i * 2]); 
-			t2 = t2.concat(tri_texture[i * 2 + 1]); 
-			t2 = t2.concat(tri_texture[i * 2 + 2]); 
-		}
-		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
-		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3fv(traingles_vex_loc, t1);
-		gl.uniform2fv(traingles_text_loc, t2);
-		console.log("更改过了");
-		this.my_drawArrays(gl.TRIANGLES, 0, 6);
-	}
-
-	//gl.my_drawArrays = gl.__proto__.drawArrays;
 	BBB = function(primitiveType, offset, count){
 		if (primitiveType == gl.LINE_STRIP){
 			var line_buffer = [];
@@ -1850,93 +1834,6 @@ Mat4 = (function() {
     return Mat4;
 
   })();
-
-
-
-function tri_3(i){
-	var x1 = __ActiveBuffer_vertex[i * __VertexSize];
-	var y1 = __ActiveBuffer_vertex[i * __VertexSize + 1];
-	var z1 = __ActiveBuffer_vertex[i * __VertexSize + 2];
-	var x2 = __ActiveBuffer_vertex[i * __VertexSize + 3];
-	var y2 = __ActiveBuffer_vertex[i * __VertexSize + 4];
-	var z2 = __ActiveBuffer_vertex[i * __VertexSize + 5];
-	var x3 = __ActiveBuffer_vertex[i * __VertexSize + 6];
-	var y3 = __ActiveBuffer_vertex[i * __VertexSize + 7];
-	var z3 = __ActiveBuffer_vertex[i * __VertexSize + 8];
-	if (__ColorFlag == 1){
-		var r1 = __ActiveBuffer_frag[i * 3];
-		var g1 = __ActiveBuffer_frag[i * 3 + 1];
-		var b1 = __ActiveBuffer_frag[i * 3 + 2];
-		var r2 = __ActiveBuffer_frag[i * 3 + 3];
-		var g2 = __ActiveBuffer_frag[i * 3 + 4];
-		var b2 = __ActiveBuffer_frag[i * 3 + 5];
-		var r3 = __ActiveBuffer_frag[i * 3 + 6];
-		var g3 = __ActiveBuffer_frag[i * 3 + 7];
-		var b3 = __ActiveBuffer_frag[i * 3 + 8];
-	}
-	//console.log("三个点的坐标",x1, y1, x2, y2, x3, y3);
-	//这块假设把matrix已经弄完了
-	var x_min = min(x1, x2, x3);
-	var x_max = max(x1, x2, x3);
-	var y_min = min(y1, y2, y3);
-	var y_max = max(y1, y2, y3);
-	//console.log("x的范围区间", x_min, x_max);
-	//console.log("y的范围区间", y_min, y_max);
-	if (x1 == x_min) x1--;
-	if (x1 == x_max) x1++;
-	if (x2 == x_min) x2--;
-	if (x2 == x_max) x2++;
-	if (x3 == x_min) x3--;
-	if (x3 == x_max) x3++;
-	if (y1 == y_min) y1--;
-	if (y1 == y_max) y1++;
-	if (y2 == y_min) y2--;
-	if (y2 == y_max) y2++;
-	if (y3 == y_min) y3--;
-	if (y3 == y_max) y3++;
-		
-
-	for (var i = x_min; i <= x_max; i++){
-		for (var j = y_min; j <= y_max; j++){
-			if (judgment(i, j, x1, y1, x2, y2, x3, y3)){
-				//在这里面计算z值，然后输入进去
-				//console.log("符合输入的值", i , j);
-				var A = (y3 - y1)*(z3 - z1) - (z2 -z1)*(y3 - y1);
-				var B = (x3 - x1)*(z2 - z1) - (x2 - x1)*(z3 - z1);
-				var C = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
-				var D = -1 * (A * x1 + B * y1 + C * z1);
-				var k = Math.floor(-1 * (A * i + B * j + D) / C);
-				__PointBuffer = __PointBuffer.concat(i);
-				__PointBuffer = __PointBuffer.concat(j);
-				__PointBuffer = __PointBuffer.concat(k);
-				if (__ColorFlag == 1){
-					//console.log("进入颜色计算");
-					var dis_1 = Math.pow(0.9, Math.sqrt((x1 - i)*(x1 - i)+(y1 - j)*(y1 - j)));
-					var dis_2 = Math.pow(0.9, Math.sqrt((x2 - i)*(x2 - i)+(y2 - j)*(y2 - j)));
-					var dis_3 = Math.pow(0.9, Math.sqrt((x3 - i)*(x3 - i)+(y3 - j)*(y3 - j)));
-					var dis_mun = dis_1 + dis_2 + dis_3;
-					var wei_1 = dis_1 / dis_mun;
-					var wei_2 = dis_2 / dis_mun;
-					var wei_3 = dis_3 / dis_mun;
-					// 颜色这块的转换需要弄明白
-					var r = Math.floor(wei_1 * r1 + wei_2 * r2 + wei_3 * r3);
-					var g = Math.floor(wei_1 * g1 + wei_2 * g2 + wei_3 * g3);
-					var b = Math.floor(wei_1 * b1 + wei_2 * b2 + wei_3 * b3);
-					__ColorBuffer = __ColorBuffer.concat(r);
-					__ColorBuffer = __ColorBuffer.concat(g);
-					__ColorBuffer =__ColorBuffer.concat(b);
-				}
-			}
-		}
-	}
-
-}
-
-function max(x,y,z){
-	x > y ? x = x : x = y;
-	x > z ? x = x : x = z;
-	return x;
-}
 
 
 
