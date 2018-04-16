@@ -31,12 +31,6 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var gl = getGL(canvas);
       var WebGL = true;
       
-      
-      __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
-      __Mworld_flag = 1;
-      __Mview_flag = 1;
-      __Mpro_flag = 1;
-      __Drawnumber = 1
 
       gl.clearColor(1.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -184,15 +178,10 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       mat4.perspective(projMatrix, glMatrix.toRadian(45),
                        canvas.width / canvas.height, 0.1, 1000.0);
       
-                       mat4.copy(__Mworld, worldMatrix);
-      mat4.copy(__Mview,viewMatrix);
-      mat4.copy(__Matrix0,projMatrix);
-      mat4.identity(worldMatrix);
-      mat4.identity(viewMatrix);
-      mat4.identity(projMatrix);
-      //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-      //gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-      //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+      gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+      gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
       var xRotationMatrix = new Float32Array(16);
       var yRotationMatrix = new Float32Array(16);
@@ -214,15 +203,9 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
         mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
-        //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+        gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
         //console.log("jfhjdkhsfjkdshfjhdsjfhdsjkhfdskjhfjksdhfkjsdhkfjh");
-        mat4.copy(__Mworld, worldMatrix);
-        mat4.transpose(__Mworld, __Mworld);
-        mat4.transpose(__Mview, __Mview);
-        mat4.transpose(__Matrix0, __Matrix0);
-        mat4.mul(__Mview, __Mview, __Matrix0);
-        //console.log("第一次计算", __Mview);
-        mat4.mul(__Mworld, __Mworld, __Mview);
+
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -230,7 +213,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         gl.bindTexture(gl.TEXTURE_2D, __tex);
         gl.activeTexture(gl.TEXTURE0);
 
-        AAA(gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements (gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
         if (count == 50) {
           dataURL = canvas.toDataURL('image/png', 1.0);
           console.log("texture test result:", calcSHA1(dataURL));

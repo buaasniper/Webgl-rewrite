@@ -198,6 +198,14 @@ Mat3 = (function() {
 /*==========================map部分======================================结尾========================*/
 
   rewrite = function(gl){
+	ProgramDataMap = [];
+	ShaderDataMap = [];
+	BufferDataMap = [];
+	AttriDataMap = [];
+	AttributeLocMap = [];
+	UniformDataMap = [];
+	UniformLocMap = [];
+
 
 
 
