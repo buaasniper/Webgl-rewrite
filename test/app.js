@@ -32,23 +32,26 @@ void main()
   console.log(gl_Position.toString());
 }
 main();
-`
+`;
 
 var Demo = function () {
-	var canvas = document.getElementById('game-surface');
-	var gl = canvas.getContext('webgl');
+  var canvas = document.getElementById('game-surface');
+  var gl = canvas.getContext('webgl');
 
-	if (!gl) {
-		console.log('WebGL not supported, falling back on experimental-webgl');
-		gl = canvas.getContext('experimental-webgl');
-	}
-  
   var Compiler = GLSL();
   console.log(testShader);
   compiled = Compiler.compile(testShader);
   console.log(compiled);
 
-  compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled);
+  value_dict = {
+    'vertNormal': [2,3,4],
+    'mWorld': [[1,2,3,4], [2,3,4,5], [3,4,5,6], [7,8,9,10]],
+    'mView': [[4,3,2,1], [5,4,3,2], [6,5,4,3], [9,8,7,6]],
+    'mProj': [[1,5,2,4], [5,7,4,6], [8,6,9,7], [12,3,4,5]]
+  }
+
+  // set the init value of compiled shader
+  compiled = set_values(value_dict, compiled);
 
   console.log(compiled);
   eval(compiled);
