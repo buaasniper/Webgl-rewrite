@@ -947,7 +947,7 @@ Mat3 = (function() {
 			console.log("tri_normal",tri_normal);
 
 
-			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
+			devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 
 			
 
@@ -987,7 +987,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 				left_result =  left_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				left_texture = left_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
+			if (tri_normal.length > 0){
 				for (var j = 0; j < 9; j++)
 					left_normal =  left_normal.concat(tri_normal[i * 9 + j]);
 			}
@@ -1001,7 +1001,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 				right_result = right_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				right_texture = right_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
+			if (tri_normal.length > 0){
 					for (var j = 0; j < 9; j++)
 						right_normal =  right_normal.concat(tri_normal[i * 9 + j]);
 				}
@@ -1021,22 +1021,22 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
-		gl.uniform3iv(traingles_vex_loc, left_result);
-		gl.uniform2iv(traingles_text_loc, left_texture);
-		gl.uniform1i(traingles_num_loc, left_number);
+		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		gl.my_uniform3iv(traingles_vex_loc, left_result);
+		gl.my_uniform2iv(traingles_text_loc, left_texture);
+		gl.my_uniform1i(traingles_num_loc, left_number);
 		transUniform(__Program);
 
 
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, left_normal);
+		if (tri_normal.length > 0){
+			var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			gl.my_uniform3iv(traingles_nor_loc, left_normal);
 		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 	}
 	else{
@@ -1058,23 +1058,25 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 			right * 2 / 255 - 1.0, -1.0, 
 			right * 2 / 255 - 1.0,  1.0]; 
 		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
 
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
-		gl.uniform3iv(traingles_vex_loc, right_result);
-		gl.uniform2iv(traingles_text_loc, right_texture);
-		gl.uniform1i(traingles_num_loc, right_number);
+		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		gl.my_uniform3iv(traingles_vex_loc, right_result);
+		gl.my_uniform2iv(traingles_text_loc, right_texture);
+		gl.my_uniform1i(traingles_num_loc, right_number);
+		transUniform(__Program);
 
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, right_normal);
+		if (tri_normal.length > 0){
+			var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			gl.my_uniform3iv(traingles_nor_loc, right_normal);
 		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 	}
 	else{
 		if (mid == left){
@@ -1102,6 +1104,9 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 	var mid = Math.floor((bot + top) / 2);
 	var bot_number = 0;
 	var top_number = 0;
+	var __Program;
+	var __VertexPositionAttributeLocation1;
+	__Program = getactiveProgram();
 	//console.log("接受的数据", left, right, bot, top, tri_number);
 
 	//console.log("中间点", mid);
@@ -1114,7 +1119,7 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 				bot_result =  bot_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				bot_texture = bot_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
+			if (tri_normal.length > 0){
 				for (var j = 0; j < 9; j++)
 					bot_normal =  bot_normal.concat(tri_normal[i * 9 + j]);
 			}
@@ -1128,7 +1133,7 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 				top_result = top_result.concat(tri_result[i * 9 + j]);
 			for (var j = 0; j < 6; j++)
 				top_texture = top_texture.concat(tri_texture[i * 6 + j]);
-			if (__My_buffer_flag == 4){
+			if (tri_normal.length > 0){
 					for (var j = 0; j < 9; j++)
 						top_normal =  top_normal.concat(tri_normal[i * 9 + j]);
 				}
@@ -1147,19 +1152,24 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			right * 2 / 255 - 1.0,    mid * 2 / 255 -1.0]; 
 
 		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
-		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3iv(traingles_vex_loc, bot_result);
-		gl.uniform2iv(traingles_text_loc, bot_texture);
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, bot_normal);
+		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		gl.my_uniform3iv(traingles_vex_loc, bot_result);
+		gl.my_uniform2iv(traingles_text_loc, bot_texture);
+		gl.my_uniform1i(traingles_num_loc, bot_number);
+		transUniform(__Program);
+
+		if (tri_normal.length > 0){
+			var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			gl.my_uniform3iv(traingles_nor_loc, bot_normal);
 		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 	}
 	else{
@@ -1180,19 +1190,24 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			right * 2 / 255 - 1.0,  top * 2 / 255 -1.0]; 
 
 		var new_vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,__VertexType, __VertexNomalize, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-		gl.uniform3iv(traingles_vex_loc, top_result);
-		gl.uniform2iv(traingles_text_loc, top_texture);
-		if (__My_buffer_flag == 4){
-			var traingles_nor_loc = gl.getUniformLocation(__Program, "nor_point");
-			gl.uniform3iv(traingles_nor_loc, top_normal);
+		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
+		gl.my_uniform3iv(traingles_vex_loc, top_result);
+		gl.my_uniform2iv(traingles_text_loc, top_texture);
+		gl.my_uniform1i(traingles_num_loc, top_number);
+		transUniform(__Program);
+
+		if (tri_normal.length > 0){
+			var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			gl.my_uniform3iv(traingles_nor_loc, top_normal);
 		}
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 	}
 	else{
 		if (mid == left){
@@ -1203,6 +1218,20 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 	}
 	return;
 }
+
+	transUniform = function(__Program){
+		for (var i = 0; i < ProgramDataMap.length; i++){
+			if (ProgramDataMap[i].activeFlag == 1){
+				for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
+					var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
+					if (loc != null){
+						//这块没有补全，需要在进行添加，暂时先这样了
+						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0], ProgramDataMap[i].uniformData[j].uniformData[1], ProgramDataMap[i].uniformData[j].uniformData[2]);
+					}
+				}
+			}
+		}
+	}
 
 
 
