@@ -1027,7 +1027,8 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
 		console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
@@ -1067,7 +1068,8 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 		gl.my_useProgram(__Program);
 
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
@@ -1161,7 +1163,8 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
@@ -1199,7 +1202,8 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
@@ -1230,11 +1234,11 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			if (ProgramDataMap[i].activeFlag == 1){
 				for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
 					var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
-					//console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
-					//console.log("loc",loc);
+					console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
+					console.log("loc",loc);
 					if (loc != null){
 						//这块没有补全，需要在进行添加，暂时先这样了
-						//console.log("开始给uniform 赋值");
+						console.log("开始给uniform 赋值");
 						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0], ProgramDataMap[i].uniformData[j].uniformData[1], ProgramDataMap[i].uniformData[j].uniformData[2]);
 					}
 				}
