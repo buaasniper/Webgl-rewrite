@@ -23,6 +23,7 @@ void main()
   if (fragTexCoord == vertNormal) {
     gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
     gl_Position = gl_Position + gl_Position;
+    console.log(gl_Position.toString());
   }else {
     gl_Position = mProj;
     gl_Position = mProj - mView;
@@ -41,9 +42,14 @@ var Demo = function () {
 		console.log('WebGL not supported, falling back on experimental-webgl');
 		gl = canvas.getContext('experimental-webgl');
 	}
+  
   var Compiler = GLSL();
   console.log(testShader);
   compiled = Compiler.compile(testShader);
+  console.log(compiled);
+
+  compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled);
+
   console.log(compiled);
   eval(compiled);
 }
