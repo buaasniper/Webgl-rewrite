@@ -8,7 +8,7 @@ getCanvas = function(canvasName) {
 }
 
 var vetexID;
-
+var tem_program;
 Mat3 = (function() {
     function Mat3(data1) {
       this.data = data1;
@@ -261,7 +261,8 @@ Mat3 = (function() {
 
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function (programName){
-		//这块不需要执行原函数，只需要知道使用了哪一个program就可以了
+		//这块执行原函数，只需要知道使用了哪一个program就可以了
+		gl.my_useProgram(programName);
 		for (var i = 0; i < ProgramDataMap.length; i++)
 		//console/log("我们运行了useProgram");
 			if (ProgramDataMap[i].programName == programName){
@@ -945,6 +946,10 @@ Mat3 = (function() {
 			console.log("tri_result",tri_result);
 			console.log("tri_texture",tri_texture);
 			console.log("tri_normal",tri_normal);
+			if (getactiveProgram() == tem_program)
+				console.log("program数值一样");
+			else
+				console.log("program数值不一样");
 
 
 			devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
@@ -1021,6 +1026,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+		console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
 		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);		
 		gl.my_useProgram(__Program);
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
@@ -1224,8 +1230,11 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			if (ProgramDataMap[i].activeFlag == 1){
 				for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
 					var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
+					//console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
+					//console.log("loc",loc);
 					if (loc != null){
 						//这块没有补全，需要在进行添加，暂时先这样了
+						//console.log("开始给uniform 赋值");
 						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0], ProgramDataMap[i].uniformData[j].uniformData[1], ProgramDataMap[i].uniformData[j].uniformData[2]);
 					}
 				}

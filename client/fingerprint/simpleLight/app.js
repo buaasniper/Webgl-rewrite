@@ -180,7 +180,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         console.log(" gl.createBuffer()的值不一样");
       }
       */
-      
+    
 
 
       //console.log("gl.ARRAY_BUFFER", gl.ARRAY_BUFFER);
@@ -190,6 +190,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       //console.log("BufferDataMap","5",BufferDataMap);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
+      console.log("**************判断之前的猜想");
+      console.log( gl.my_getAttribLocation(program, 'vertPosition') );
       //console.log("***********************************************************************************");
      // console.log("positionAttribLocation",positionAttribLocation);
       gl.vertexAttribPointer(
@@ -208,6 +210,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       //console.log("BufferDataMap","6",BufferDataMap);
       var texCoordAttribLocation =
           gl.getAttribLocation(program, 'vertTexCoord');
+      
       //console.log("texCoordAttribLocation",texCoordAttribLocation);
       gl.vertexAttribPointer(
           texCoordAttribLocation, // Attribute location
@@ -243,6 +246,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       // Tell OpenGL state machine which program should be active.
       //console.log("我们到了useProgram");
       gl.useProgram(program);
+      //只是用来测试的
+      tem_program = program;
       //console.log("ShaderDataMap",ShaderDataMap);
       //console.log("ProgramDataMap",ProgramDataMap);
 
