@@ -221,7 +221,18 @@ ivec3 D_normalize(ivec3 a){
   return int(c * 1000);
 }
 
+//I - 2.0 * dot(N, I) * N
+ivec3 D_reflect(ivec3 x, ivec3 y)
+{
+	return ivec3(x[0] - 2 * D_dot(x,y)*y[0],x[1] - 2 * D_dot(x,y)*y[1], x[2] - 2 * D_dot(x,y)*y[2]);
+}
 
-
-
+int D_pow(int a, int b)
+{
+    int ans = 1;
+    for (int i = 0; i < b; i++) {
+        ans = division(ans * a, 10);
+    }
+    return ans;
+}
 			
