@@ -906,7 +906,7 @@ Mat3 = (function() {
 				y3 = __ActiveBuffer_vertex_result[i * 3 + 7];
 				z3 = __ActiveBuffer_vertex_result[i * 3 + 8];
 				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
-					console.log("进入了");
+					//console.log("进入了");
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3]);
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 1]);
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 2]);
