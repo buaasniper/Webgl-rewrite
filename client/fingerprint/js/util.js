@@ -709,9 +709,10 @@ Mat3 = (function() {
 				//newData =  AttriDataMap[i]; 
 
 				newData.uniformData = [];
-
+				console.log("AttriDataMap[i].uniformData",AttriDataMap[i].uniformData);
+				console.log("elementArray", elementArray);
 				for (var j = 0; j < elementArray.length; j++){
-					for (var k = elementArray[i] * newData.attriEleNum; k <  (elementArray[i] + 1) * newData.attriEleNum; k++)
+					for (var k = elementArray[j] * newData.attriEleNum; k <  (elementArray[j] + 1) * newData.attriEleNum; k++)
 						newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[k]);
 				}
 				//console.log("newData",newData);
@@ -833,15 +834,19 @@ Mat3 = (function() {
         	mat4.transpose(mProj, mProj);
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
-			//console.log("mWorld_fs",mWorld_fs);
-			//console.log("mWorld",mWorld);
+			console.log("mWorld_fs",mWorld_fs);
+			console.log("mWorld",mWorld);
+			console.log("BufferDataMap",BufferDataMap);
 
 			var __ActiveBuffer_vertex_result = [];
 			var __ActiveBuffer_vertex_texture = [];
 			var __ActiveBuffer_vertex_normal = [];
-			__ActiveBuffer_vertex_texture = vertTexCoord;
-			__ActiveBuffer_vertex_normal = vertNormal;
+			for (var i = 0; i < vertTexCoord.length; i++)
+				__ActiveBuffer_vertex_texture = __ActiveBuffer_vertex_texture.concat(vertTexCoord[i]);
+			for (var i = 0; i < vertNormal.length; i++)
+				__ActiveBuffer_vertex_normal = __ActiveBuffer_vertex_normal.concat(vertNormal[i]);
 
+			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
 				__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
@@ -878,13 +883,19 @@ Mat3 = (function() {
 				0.0, -1.0, 
 				0.0,  1.0]; 
 			
-				//在这里判断是否是猴子的正面
+			//在这里判断是否是猴子的正面
 			var tri_result= [];
 			var tri_texture = [];
 			var tri_normal = [];
+
+
+			//这里没有什么延展性，需要判断总长度的时候
+			//默认，这里，都是画三角形，并且都是vec3，一般情况都是这个样子的
+			var __My_index = __ActiveBuffer_vertex_result.length / 3;
+			
+			console.log("__My_index", __My_index);
 			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
-			//console.log("__My_index.length",__My_index.length);
-			for (var i = 0; i < __My_index.length; i+= 3){
+			for (var i = 0; i < __My_index; i+= 3){
 				x1 = __ActiveBuffer_vertex_result[i * 3];
 				y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
 				z1 = __ActiveBuffer_vertex_result[i * 3 + 2];
@@ -895,6 +906,7 @@ Mat3 = (function() {
 				y3 = __ActiveBuffer_vertex_result[i * 3 + 7];
 				z3 = __ActiveBuffer_vertex_result[i * 3 + 8];
 				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+					console.log("进入了");
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3]);
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 1]);
 					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 2]);
@@ -935,7 +947,7 @@ Mat3 = (function() {
 			console.log("tri_normal",tri_normal);
 
 
-			devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
+			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 
 			
 
