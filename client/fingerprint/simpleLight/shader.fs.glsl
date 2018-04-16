@@ -32,6 +32,11 @@ int cal_z(tri_p tri);
 int division(int a, int b);  
 int mod(int a, int b);  
 int isqrt(int a);
+int D_dot(ivec3 x, ivec3 y);
+int D_max(int a, int b);
+int D_multiple(int a, int b);
+
+
 txt_coord calCoord(txt_p f, tri_p t);
 ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
 ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y); 
@@ -59,8 +64,8 @@ void main()
         ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
 		  	//ivec3 surfaceNormal = D_normalize(vertNormal);
 		  	ivec3 normSunDir = D_normalize(sun.direction);
-			  //vec3 lightIntensity = ambientLightIntensity +
-			  //sun.color * max(dot(vertNormal, normSunDir), 0.0);
+			  //vec3 lightIntensity = ambientLightIntensity + sun.color * max(dot(vertNormal, normSunDir), 0.0);
+        ivec3 lightIntensity = ambientLightIntensity + sun.color * D_max(D_dot(vertNormal, normSunDir), 0);
 			  //gl_FragColor = vec4(texel.rgb * lightIntensity, texel.a);
         //gl_FragColor = vec4(texel.rgb, texel.a);
         gl_FragColor = vec4(float(normSunDir[0])/100.0, float(normSunDir[1])/100.0,float(normSunDir[2])/100.0, 1.0);
@@ -184,12 +189,35 @@ vec4 col_transfer( ivec4 c){
 }
 
 ivec3 D_normalize(ivec3 a){
-  int rate = isqrt (division(a[0] * a[0] + a[1] * a[1] + a[2] * a[2], 100)) ;
-  return ivec3( division( a[0] * rate, 10),  division( a[1] * rate, 10), division( a[2] * rate, 10));
+  int rate = isqrt (division(1000000, a[0] * a[0] + a[1] * a[1] + a[2] * a[2])) ;
+  return ivec3(division(a[0] * rate, 10), division(a[1] * rate,10), division(a[2] * rate,10));
 }
 
 int isqrt(int a){
   for (int i = 0; i < 1000; i++)
     if (i * i >= a)
       return i;
+}
+
+int D_multiple(int a, int b)
+{
+  return division((a * b),100);
+}
+
+int D_max(int a, int b)
+{
+  if (a > b)
+    return a;
+  else
+    return b;
+}
+
+int D_dot(ivec3 x, ivec3 y)
+{
+  int sum = 0;
+  for (int i = 0; i < 3; i++)
+  {
+    sum += x[i] * y[i];
+  }
+  return sum;
 }
