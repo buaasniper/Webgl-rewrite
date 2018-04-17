@@ -856,11 +856,21 @@ Mat3 = (function() {
 				__ActiveBuffer_vertex_normal = __ActiveBuffer_vertex_normal.concat(vertNormal[i]);
 
 			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
+
+			//现在加入判断值 
+			/* 原始版本
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
 				__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 			else
 				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+			*/
+
+			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
+			if (i % 3 != 2)
+				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
+			else
+				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			
 			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
 				__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
@@ -960,7 +970,7 @@ Mat3 = (function() {
 				console.log("program数值不一样");
 
 
-			devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
+			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 
 			
 
