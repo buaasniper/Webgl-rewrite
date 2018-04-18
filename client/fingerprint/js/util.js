@@ -893,7 +893,7 @@ Mat3 = (function() {
 					t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[10])) ;
 				}
 				for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
-					__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 100);
+					__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
 			}
 
 			var canvas_buffer = [
