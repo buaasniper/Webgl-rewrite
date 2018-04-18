@@ -1037,8 +1037,8 @@ Mat3 = (function() {
 			//console.log("tri_result",tri_result);
 			//console.log("tri_texture", tri_texture);
 			//console.log("tri_normal",tri_normal);
-			
-			devide_draw(-1000, 1000, tri_result, tri_texture, tri_normal, gl);
+
+			devide_draw(-1000, 1000, tem_varying, gl);
 
 
 			
@@ -1054,7 +1054,7 @@ Mat3 = (function() {
 
 var uniform_number  = 111;
 
-function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
+function devide_draw(left, right, tem_varying, gl){
 	var left_result = [];
 	var left_texture = [];
 	var left_normal = [];
@@ -1062,41 +1062,62 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	var right_texture = [];
 	var right_normal = [];
 	var tri_number = tri_result.length / 9;
+
+	var tem = [];
+	var left_varying = [];
+	var right_varying = [];
+	var tri_number = tem_varying[0].length / 9;
 	var mid = Math.floor((left + right) / 2);
 	var left_number = 0;
 	var right_number = 0;
 	var __Program;
+	var activeProgramNum;
 	var __VertexPositionAttributeLocation1;
 	__Program = getactiveProgram();
+	activeProgramNum = getactiveProgramNum();
 
 	//console.log("中间点", mid);
+	for (var i = 0; i < tem_varying.length; i++){
+		left_varying.push(tem);
+		right_varying.push(tem);
+	}
 	for (var i = 0; i < tri_number; i++){
-		if (!((tri_result[i * 9] >= mid) && (tri_result[i * 9 + 3] >= mid) && (tri_result[i * 9 + 6] >= mid))){
-			
+		if (!((tem_varying[0][i * 9] >= mid) && (tem_varying[0][i * 9 + 3] >= mid) && (tem_varying[0][i * 9 + 6] >= mid))){
 			left_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				left_result =  left_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				left_texture = left_texture.concat(tri_texture[i * 6 + j]);
-			if (tri_normal.length > 0){
-				for (var j = 0; j < 9; j++)
-					left_normal =  left_normal.concat(tri_normal[i * 9 + j]);
+			//后加入同一化的代码
+			for (var j = 0; j < tem_varying.length; j++){
+				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+					left_varying[j] = left_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}
+
+			//之前的变化的代码
+			// for (var j = 0; j < 9; j++)
+			// 	left_result =  left_result.concat(tri_result[i * 9 + j]);
+			// for (var j = 0; j < 6; j++)
+			// 	left_texture = left_texture.concat(tri_texture[i * 6 + j]);
+			// if (tri_normal.length > 0){
+			// 	for (var j = 0; j < 9; j++)
+			// 		left_normal =  left_normal.concat(tri_normal[i * 9 + j]);
+			// }
 			
 		}		
-		if (!((tri_result[i * 9] <= mid) && (tri_result[i * 9 + 3] <= mid) && (tri_result[i * 9 + 6] <= mid))){
+		if (!((tem_varying[i * 9] <= mid) && (tem_varying[i * 9 + 3] <= mid) && (tem_varying[i * 9 + 6] <= mid))){
 			
 			right_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				right_result = right_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				right_texture = right_texture.concat(tri_texture[i * 6 + j]);
-			if (tri_normal.length > 0){
-					for (var j = 0; j < 9; j++)
-						right_normal =  right_normal.concat(tri_normal[i * 9 + j]);
-				}
+			//后加入的代码
+			for (var j = 0; j < tem_varying.length; j++){
+				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+					right_varying[j] = right_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+			}
+			//之前的代码
+			// for (var j = 0; j < 9; j++)
+			// 	right_result = right_result.concat(tri_result[i * 9 + j]);
+			// for (var j = 0; j < 6; j++)
+			// 	right_texture = right_texture.concat(tri_texture[i * 6 + j]);
+			// if (tri_normal.length > 0){
+			// 		for (var j = 0; j < 9; j++)
+			// 			right_normal =  right_normal.concat(tri_normal[i * 9 + j]);
+			// 	}
 			
 		}
 	}
@@ -1118,32 +1139,42 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 			gl.my_useProgram(__Program);
-			var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 			var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
-			// for (var i = 0; i < left_result.length; i++)
-			// 	left_result[i] = left_result[i] * 2;
-			gl.my_uniform3iv(traingles_vex_loc, left_result);
-			gl.my_uniform2iv(traingles_text_loc, left_texture);
 			gl.my_uniform1i(traingles_num_loc, left_number);
 			transUniform(__Program);
-
-
-			if (tri_normal.length > 0){
-				var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-				gl.my_uniform3iv(traingles_nor_loc, left_normal);
+			//要实现自动化的代码
+			var loc_array = [];
+			for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+					gl.my_uniform2iv(loc_array[i], left_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+					gl.my_uniform3iv(loc_array[i], left_varying[i]);
+				else 
+					console.log("暂时还没有写这种情况");
 			}
+			
+			//更改前的代码
+			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+			// gl.my_uniform3iv(traingles_vex_loc, left_result);
+			// gl.my_uniform2iv(traingles_text_loc, left_texture);
+			// if (tri_normal.length > 0){
+			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			// 	gl.my_uniform3iv(traingles_nor_loc, left_normal);
+			// }
+
+
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
 	else{
 		if (mid == right){
 			//console.log("分割左右的","left", left, "right", right, "number", left_number);
-			devide_draw_height(left, right, -1000, 1000, tri_result, tri_texture, tri_normal, gl);
-			
+			devide_draw_height(left, right, -1000, 1000, tem_varying , gl);
 			return;
 		}	
-		devide_draw(left, mid, left_result, left_texture, left_normal, gl);
+		devide_draw(left, mid, left_varying, gl);
 	}
 
 	if (right_number <= uniform_number){
@@ -1162,32 +1193,42 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 			gl.my_useProgram(__Program);
-
-			var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 			var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
-			// for (var i = 0; i < right_result.length; i++)
-			// 	right_result[i] = right_result[i] * 2;
-			gl.my_uniform3iv(traingles_vex_loc, right_result);
-			gl.my_uniform2iv(traingles_text_loc, right_texture);
 			gl.my_uniform1i(traingles_num_loc, right_number);
 			transUniform(__Program);
-
-			if (tri_normal.length > 0){
-				var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-				gl.my_uniform3iv(traingles_nor_loc, right_normal);
+			//要实现自动化的代码
+			var loc_array = [];
+			for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+					gl.my_uniform2iv(loc_array[i], right_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+					gl.my_uniform3iv(loc_array[i], right_varying[i]);
+				else 
+					console.log("暂时还没有写这种情况");
 			}
+
+			//更改前的代码
+			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+			// gl.my_uniform3iv(traingles_vex_loc, right_result);
+			// gl.my_uniform2iv(traingles_text_loc, right_texture);
+			// if (tri_normal.length > 0){
+			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			// 	gl.my_uniform3iv(traingles_nor_loc, right_normal);
+			// }
+
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
 	else{
 		if (mid == left){
 			//console.log("分割左右的","left", left, "right", right, "number", right_number);
-			devide_draw_height(left, right, -1000, 1000, tri_result, tri_texture, tri_normal, gl);
+			devide_draw_height(left, right, -1000, 1000, tem_varying, gl);
 			
 			return;
 		}	
-		devide_draw(mid, right, right_result, right_texture, right_normal, gl);
+		devide_draw(mid, right, right_varying, gl);
 	}
 	return;
 }
@@ -1195,7 +1236,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 
 
-function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_normal, gl){
+function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	var bot_result = [];
 	var bot_texture = [];
 	var bot_normal = [];
@@ -1203,42 +1244,63 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 	var top_texture = [];
 	var top_normal = [];
 	var tri_number = tri_result.length / 9;
+
+	var tem = [];
+	var bot_varying = [];
+	var top_varying = [];
 	var mid = Math.floor((bot + top) / 2);
 	var bot_number = 0;
 	var top_number = 0;
 	var __Program;
+	var activeProgramNum;
 	var __VertexPositionAttributeLocation1;
 	__Program = getactiveProgram();
+	activeProgramNum = getactiveProgramNum();
 	//console.log("接受的数据", left, right, bot, top, tri_number);
 
 	//console.log("中间点", mid);
+	for (var i = 0; i < tem_varying.length; i++){
+		left_varying.push(tem);
+		right_varying.push(tem);
+	}
 	for (var i = 0; i < tri_number; i++){
-		if (!((tri_result[i * 9 + 1] >= mid) && (tri_result[i * 9 + 4] >= mid) && (tri_result[i * 9 + 7] >= mid))){
-			
+		if (!((tem_varying[i * 9 + 1] >= mid) && (tem_varying[i * 9 + 4] >= mid) && (tem_varying[i * 9 + 7] >= mid))){
 			bot_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				bot_result =  bot_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				bot_texture = bot_texture.concat(tri_texture[i * 6 + j]);
-			if (tri_normal.length > 0){
-				for (var j = 0; j < 9; j++)
-					bot_normal =  bot_normal.concat(tri_normal[i * 9 + j]);
+			//后加入同一化的代码
+			for (var j = 0; j < tem_varying.length; j++){
+				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+					bot_varying[j] = bot_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}
 			
+			//之前的变化的代码
+			// for (var j = 0; j < 9; j++)
+			// 	bot_result =  bot_result.concat(tri_result[i * 9 + j]);
+			// for (var j = 0; j < 6; j++)
+			// 	bot_texture = bot_texture.concat(tri_texture[i * 6 + j]);
+			// if (tri_normal.length > 0){
+			// 	for (var j = 0; j < 9; j++)
+			// 		bot_normal =  bot_normal.concat(tri_normal[i * 9 + j]);
+			// }
+			
 		}		
-		if (!((tri_result[i * 9 + 1] <= mid) && (tri_result[i * 9 + 4] <= mid) && (tri_result[i * 9 + 7] <= mid))){
+		if (!((tem_varying[i * 9 + 1] <= mid) && (tem_varying[i * 9 + 4] <= mid) && (tem_varying[i * 9 + 7] <= mid))){
 			
 			top_number ++;
-			
-			for (var j = 0; j < 9; j++)
-				top_result = top_result.concat(tri_result[i * 9 + j]);
-			for (var j = 0; j < 6; j++)
-				top_texture = top_texture.concat(tri_texture[i * 6 + j]);
-			if (tri_normal.length > 0){
-					for (var j = 0; j < 9; j++)
-						top_normal =  top_normal.concat(tri_normal[i * 9 + j]);
-				}
+			//后加入同一化的代码
+			for (var j = 0; j < tem_varying.length; j++){
+				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+					top_varying[j] = top_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+			}
+
+			//之前的变化的代码
+			// for (var j = 0; j < 9; j++)
+			// 	top_result = top_result.concat(tri_result[i * 9 + j]);
+			// for (var j = 0; j < 6; j++)
+			// 	top_texture = top_texture.concat(tri_texture[i * 6 + j]);
+			// if (tri_normal.length > 0){
+			// 		for (var j = 0; j < 9; j++)
+			// 			top_normal =  top_normal.concat(tri_normal[i * 9 + j]);
+			// 	}
 			
 		}
 	}
@@ -1260,20 +1322,31 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 			gl.my_useProgram(__Program);
-			var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 			var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
-			// for (var i = 0; i < bot_result.length; i++)
-			// 	bot_result[i] = bot_result[i] * 2;
-			gl.my_uniform3iv(traingles_vex_loc, bot_result);
-			gl.my_uniform2iv(traingles_text_loc, bot_texture);
 			gl.my_uniform1i(traingles_num_loc, bot_number);
 			transUniform(__Program);
-
-			if (tri_normal.length > 0){
-				var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-				gl.my_uniform3iv(traingles_nor_loc, bot_normal);
+			//要实现自动化的代码
+			var loc_array = [];
+			for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+					gl.my_uniform2iv(loc_array[i], bot_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+					gl.my_uniform3iv(loc_array[i], bot_varying[i]);
+				else 
+					console.log("暂时还没有写这种情况");
 			}
+			
+			//更改前的代码
+			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+			// gl.my_uniform3iv(traingles_vex_loc, bot_result);
+			// gl.my_uniform2iv(traingles_text_loc, bot_texture);
+			// if (tri_normal.length > 0){
+			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			// 	gl.my_uniform3iv(traingles_nor_loc, bot_normal);
+			// }
+
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
@@ -1282,7 +1355,7 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			//console.log("left", left, "right", right, "bot", bot, "top", top, "number", bot_number);
 			return;
 		}	
-		devide_draw_height(left, right, bot, mid, bot_result, bot_texture, bot_normal, gl);
+		devide_draw_height(left, right, bot, mid, bot_varying, gl);
 	}	
 
 	if (top_number <= uniform_number){
@@ -1303,20 +1376,32 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 			gl.my_useProgram(__Program);
-			var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-			var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
 			var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
-			// for (var i = 0; i < top_result.length; i++)
-			// 	top_result[i] = top_result[i] * 2;
-			gl.my_uniform3iv(traingles_vex_loc, top_result);
-			gl.my_uniform2iv(traingles_text_loc, top_texture);
 			gl.my_uniform1i(traingles_num_loc, top_number);
 			transUniform(__Program);
-
-			if (tri_normal.length > 0){
-				var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-				gl.my_uniform3iv(traingles_nor_loc, top_normal);
+			//要实现自动化的代码
+			var loc_array = [];
+			for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+					gl.my_uniform2iv(loc_array[i], top_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+					gl.my_uniform3iv(loc_array[i], top_varying[i]);
+				else 
+					console.log("暂时还没有写这种情况");
 			}
+
+			//更改前的代码
+			// var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
+			// var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
+			// gl.my_uniform3iv(traingles_vex_loc, top_result);
+			// gl.my_uniform2iv(traingles_text_loc, top_texture);
+			// if (tri_normal.length > 0){
+			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
+			// 	gl.my_uniform3iv(traingles_nor_loc, top_normal);
+			// }
+
+
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
@@ -1325,7 +1410,7 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			//console.log("left", left, "right", right, "bot", bot, "top", top, "number", top_number);
 			return;
 		}	
-		devide_draw_height(left, right, mid, top, top_result, top_texture, top_normal, gl);
+		devide_draw_height(left, right, mid, top, top_varying, gl);
 	}
 	return;
 }
