@@ -959,8 +959,18 @@ Mat3 = (function() {
 					}
 				}
 			}
+			
 
-			console.log("tem_varying",tem_varying);
+			//把数值赋给了ProgramDataMap
+			for (var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				ProgramDataMap[activeProgramNum].varyingData[i].uniformData = [];
+				for(var j = 0; j < tem_varying[i].length; j++)
+					ProgramDataMap[activeProgramNum].varyingData[i].uniformData = ProgramDataMap[activeProgramNum].varyingData[i].uniformData.concat(tem_varying[i][j]);
+			}
+			//console.log("tem_varying",tem_varying);
+			//console.log("ProgramDataMap",ProgramDataMap);
+
+
 
 
 
@@ -1024,9 +1034,10 @@ Mat3 = (function() {
 				}
 			}
 
-			console.log("tri_result",tri_result);
-			console.log("tri_texture", tri_texture);
-			console.log("tri_normal",tri_normal);
+			//console.log("tri_result",tri_result);
+			//console.log("tri_texture", tri_texture);
+			//console.log("tri_normal",tri_normal);
+			
 			devide_draw(-1000, 1000, tri_result, tri_texture, tri_normal, gl);
 
 
