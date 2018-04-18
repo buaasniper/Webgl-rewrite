@@ -855,13 +855,9 @@ Mat3 = (function() {
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
 
-			var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
-			var traingles_num_loc = gl.my_getUniformLocation(__Program, "nor_point");
-
 			//进入计算阶段
 			//手工去完成自动化的那部分
-			/*
+			
 			var newData1 = new varying_data;
 			newData1.shaderName = "tri_point";
 			newData1.varyEleNum = 3;
@@ -883,10 +879,10 @@ Mat3 = (function() {
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
-			if(__ActiveBuffer_vertex_normal.length != 0){
+			if(vertNormal.length != 0){
 				var newData3 = new varying_data;
 				newData3.shaderName = "nor_point";
-				newData3.varyEleNum = 2;
+				newData3.varyEleNum = 3;
 				//只是一个中间替代值为了让后面的值不变
 				var tem = [];
 				for (var i = 0; i < vertNormal.length; i++)
@@ -900,14 +896,7 @@ Mat3 = (function() {
 					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
-			*/
 			
-
-
-
-
-
-
 			var __ActiveBuffer_vertex_result = [];
 			var __ActiveBuffer_vertex_texture = [];
 			var __ActiveBuffer_vertex_normal = [];
@@ -942,10 +931,39 @@ Mat3 = (function() {
 					__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
 			}
 
-			console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
-			console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
-			console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
-			console.log("ProgramDataMap",ProgramDataMap);
+			//console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
+			//console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
+			//console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
+			//console.log("ProgramDataMap",ProgramDataMap);
+
+			var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
+			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+			var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+			var tem = [];
+			for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+				tem_varying.push(tem);
+			for (var i = 0; i < index_num; i+= 3){
+				x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
+				y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
+				z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 2];
+				x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 3];
+				y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 4];
+				z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 5];
+				x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 6];
+				y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 7];
+				z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 8];
+				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+					for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
+						for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+							tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * 3 + k]);	
+					}
+				}
+			}
+
+			console.log("tem_varying",tem_varying);
+
+
+
 
 			
 			//在这里判断是否是猴子的正面
@@ -961,7 +979,7 @@ Mat3 = (function() {
 			//console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 			//console.log("__My_index", __My_index);
 
-			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+			
 			for (var i = 0; i < __My_index; i+= 3){
 				x1 = __ActiveBuffer_vertex_result[i * 3];
 				y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
@@ -1005,6 +1023,10 @@ Mat3 = (function() {
 
 				}
 			}
+
+			console.log("tri_result",tri_result);
+			console.log("tri_texture", tri_texture);
+			console.log("tri_normal",tri_normal);
 			devide_draw(-1000, 1000, tri_result, tri_texture, tri_normal, gl);
 
 
