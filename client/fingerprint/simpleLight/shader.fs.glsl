@@ -20,6 +20,7 @@ struct txt_coord{
 #define uniformNumber 336
 #define init tri_p tri; txt_p texcoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; txt_coord fragTexCoord;
 #define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];texcoord.x1 = text_point[i][0]; texcoord.y1 = text_point[i][1];texcoord.x2 = text_point[i+1][0]; texcoord.y2 = text_point[i+1][1];texcoord.x3 = text_point[i+2][0]; texcoord.y3 = text_point[i+2][1];
+#define changePosition tri = changevalue(tri);
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
 #define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > z)
@@ -39,6 +40,7 @@ ivec3 D_multiple(ivec3 x, int b);
 ivec3 D_multiple(ivec3 x, ivec3 y);
 ivec3 D_division(ivec3 x, int y);
 int D_division(int x, int y);
+tri_p changevalue(tri_p tri);
 
 
 txt_coord calCoord(txt_p f, tri_p t);
@@ -60,6 +62,7 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
+    changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
@@ -240,4 +243,18 @@ int D_dot(ivec3 x, ivec3 y)
     sum += x[i] * y[i];
   }
   return division(sum, 100);
+}
+
+tri_p changevalue(tri_p t)
+{
+  t.x1 = division(t.x1, 2);
+  t.y1 = division(t.y1, 2);
+  t.z1 = division(t.z1, 2);
+  t.x2 = division(t.x2, 2);
+  t.y2 = division(t.y2, 2);
+  t.z2 = division(t.z2, 2);
+  t.x3 = division(t.x3, 2);
+  t.y3 = division(t.y3, 2);
+  t.z3 = division(t.z3, 2);
+  return t;
 }

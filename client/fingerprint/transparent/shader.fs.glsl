@@ -88,6 +88,15 @@ void main()
 }
 
 int judge(tri_p t) {
+    t.x1 = division(t.x1, 2);
+    t.y1 = division(t.y1, 2);
+    t.z1 = division(t.z1, 2);
+    t.x2 = division(t.x1, 2);
+    t.y2 = division(t.y1, 2);
+    t.z2 = division(t.z1, 2);
+    t.x3 = division(t.x3, 2);
+    t.y3 = division(t.y3, 2);
+    t.z3 = division(t.z3, 2);
     if (( PinAB(t.x0 - t.x1, t.y0 - t.y1, t.x2 - t.x1, t.y2 - t.y1, t.x3 - t.x1, t.y3 - t.y1)+ PinAB(t.x0 - t.x2, t.y0 - t.y2, t.x3 - t.x2, t.y3 - t.y2, t.x1 - t.x2, t.y1 - t.y2) 
     + PinAB(t.x0 - t.x3, t.y0 - t.y3, t.x2 - t.x3, t.y2 - t.y3, t.x1 - t.x3, t.y1 - t.y3) == 3)  )
       {return 1;}

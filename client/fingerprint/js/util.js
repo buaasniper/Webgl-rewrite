@@ -858,22 +858,22 @@ Mat3 = (function() {
 			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
 
 			//现在加入判断值 
-			/* 原始版本
+			//原始版本
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
 				__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 			else
 				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
-			*/
-
-			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
-			if (i % 3 != 2)
-				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
-			else
-				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			
-			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-				__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+
+			// for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
+			// if (i % 3 != 2)
+			// 	__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
+			// else
+			// 	__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
+			
+			 for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
+			 	__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
 			
 			var t_nor = [];	
 			if (__ActiveBuffer_vertex_normal.length != 0){
@@ -970,7 +970,7 @@ Mat3 = (function() {
 				console.log("program数值不一样");
 
 
-			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
+			devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 
 			
 
@@ -1051,6 +1051,8 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		for (var i = 0; i < left_result.length; i++)
+			left_result[i] = left_result[i] * 2;
 		gl.my_uniform3iv(traingles_vex_loc, left_result);
 		gl.my_uniform2iv(traingles_text_loc, left_texture);
 		gl.my_uniform1i(traingles_num_loc, left_number);
@@ -1093,6 +1095,8 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		for (var i = 0; i < right_result.length; i++)
+			right_result[i] = right_result[i] * 2;
 		gl.my_uniform3iv(traingles_vex_loc, right_result);
 		gl.my_uniform2iv(traingles_text_loc, right_texture);
 		gl.my_uniform1i(traingles_num_loc, right_number);
@@ -1187,6 +1191,8 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 		var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
 		var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+		for (var i = 0; i < bot_result.length; i++)
+			bot_result[i] = bot_result[i] * 2;
 		gl.my_uniform3iv(traingles_vex_loc, bot_result);
 		gl.my_uniform2iv(traingles_text_loc, bot_texture);
 		gl.my_uniform1i(traingles_num_loc, bot_number);
@@ -1226,6 +1232,8 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 		var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
 		var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
 		var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
+		for (var i = 0; i < top_result.length; i++)
+			top_result[i] = top_result[i] * 2;
 		gl.my_uniform3iv(traingles_vex_loc, top_result);
 		gl.my_uniform2iv(traingles_text_loc, top_texture);
 		gl.my_uniform1i(traingles_num_loc, top_number);
