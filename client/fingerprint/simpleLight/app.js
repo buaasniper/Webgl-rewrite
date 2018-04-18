@@ -190,8 +190,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       //console.log("BufferDataMap","5",BufferDataMap);
       var positionAttribLocation =
           gl.getAttribLocation(program, 'vertPosition');
-      console.log("**************判断之前的猜想");
-      console.log( gl.my_getAttribLocation(program, 'vertPosition') );
+      //console.log("**************判断之前的猜想");
+      //console.log( gl.my_getAttribLocation(program, 'vertPosition') );
       //console.log("***********************************************************************************");
      // console.log("positionAttribLocation",positionAttribLocation);
       gl.vertexAttribPointer(
@@ -342,11 +342,11 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         //这个还原到原函数，drawElements和drawArrays 
         //console.log("indices.length",indices.length);
         //console.log("indices", indices);
-        console.log("gl.POINTS", gl.POINTS);
-        console.log("gl.LINE_STRIP", gl.LINE_STRIP);
-        console.log("gl.LINE_LOOP", gl.LINE_LOOP);
-        console.log("gl.LINES", gl.LINES);
-        console.log("gl.TRIANGLES", gl.TRIANGLES);
+        //console.log("gl.POINTS", gl.POINTS);
+        //console.log("gl.LINE_STRIP", gl.LINE_STRIP);
+        //console.log("gl.LINE_LOOP", gl.LINE_LOOP);
+        //console.log("gl.LINES", gl.LINES);
+        //console.log("gl.TRIANGLES", gl.TRIANGLES);
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
 

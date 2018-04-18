@@ -419,7 +419,7 @@ Mat3 = (function() {
 		//在这里生成一个新的attribute条目
 		// 这个版本需要考虑重复赋值这种情况
 		addAttriMap(ShaderData,BufferData,size,offset);
-		console.log("AttriDataMap",AttriDataMap);
+		//console.log("AttriDataMap",AttriDataMap);
 	}
 
 	 /*------------gl.vertexAttribPointer------开头-------------*/
@@ -718,8 +718,8 @@ Mat3 = (function() {
 				//newData =  AttriDataMap[i]; 
 
 				newData.uniformData = [];
-				console.log("AttriDataMap[i].uniformData",AttriDataMap[i].uniformData);
-				console.log("elementArray", elementArray);
+				//console.log("AttriDataMap[i].uniformData",AttriDataMap[i].uniformData);
+				//console.log("elementArray", elementArray);
 				for (var j = 0; j < elementArray.length; j++){
 					for (var k = elementArray[j] * newData.attriEleNum; k <  (elementArray[j] + 1) * newData.attriEleNum; k++)
 						newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[k]);
@@ -843,13 +843,14 @@ Mat3 = (function() {
         	mat4.transpose(mProj, mProj);
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
-			console.log("mWorld_fs",mWorld_fs);
-			console.log("mWorld",mWorld);
-			console.log("BufferDataMap",BufferDataMap);
+			//console.log("mWorld_fs",mWorld_fs);
+			//console.log("mWorld",mWorld);
+			//console.log("BufferDataMap",BufferDataMap);
 
 			var __ActiveBuffer_vertex_result = [];
 			var __ActiveBuffer_vertex_texture = [];
 			var __ActiveBuffer_vertex_normal = [];
+
 			for (var i = 0; i < vertTexCoord.length; i++)
 				__ActiveBuffer_vertex_texture = __ActiveBuffer_vertex_texture.concat(vertTexCoord[i]);
 			for (var i = 0; i < vertNormal.length; i++)
@@ -921,7 +922,9 @@ Mat3 = (function() {
 			//默认，这里，都是画三角形，并且都是vec3，一般情况都是这个样子的
 			var __My_index = __ActiveBuffer_vertex_result.length / 3;
 			
-			console.log("__My_index", __My_index);
+			//console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			//console.log("__My_index", __My_index);
+
 			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
 			for (var i = 0; i < __My_index; i+= 3){
 				x1 = __ActiveBuffer_vertex_result[i * 3];
@@ -966,17 +969,17 @@ Mat3 = (function() {
 
 				}
 			}
-			console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
-			console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
-			console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
+			//console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
+			//console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
+			//console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
 
-			console.log("tri_result",tri_result);
-			console.log("tri_texture",tri_texture);
-			console.log("tri_normal",tri_normal);
-			if (getactiveProgram() == tem_program)
-				console.log("program数值一样");
-			else
-				console.log("program数值不一样");
+			//console.log("tri_result",tri_result);
+			// console.log("tri_texture",tri_texture);
+			// console.log("tri_normal",tri_normal);
+			// if (getactiveProgram() == tem_program)
+			// 	console.log("program数值一样");
+			// else
+			// 	console.log("program数值不一样");
 
 
 			//  for (var i = 0; i < tri_result.length; i++)
@@ -1059,7 +1062,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-		console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
+		//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
 		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 		gl.my_useProgram(__Program);
@@ -1275,11 +1278,11 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 			if (ProgramDataMap[i].activeFlag == 1){
 				for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
 					var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
-					console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
-					console.log("loc",loc);
+					//console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
+					//console.log("loc",loc);
 					if (loc != null){
 						//这块没有补全，需要在进行添加，暂时先这样了
-						console.log("开始给uniform 赋值");
+						//console.log("开始给uniform 赋值");
 						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0], ProgramDataMap[i].uniformData[j].uniformData[1], ProgramDataMap[i].uniformData[j].uniformData[2]);
 					}
 				}
