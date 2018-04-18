@@ -874,9 +874,9 @@ Mat3 = (function() {
 			//测试100的版本
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
-				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 100);
+				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			else
-				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 100);
+				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			
 				
 			//  for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
@@ -987,7 +987,7 @@ Mat3 = (function() {
 
 			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 			//devide_draw(0, 255 * 2, tri_result, tri_texture, tri_normal, gl);
-			devide_draw(-100, 100, tri_result, tri_texture, tri_normal, gl);
+			devide_draw(-1000, 1000, tri_result, tri_texture, tri_normal, gl);
 
 
 			
@@ -1051,12 +1051,12 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	}
 	if (left_number <= uniform_number){
 		var right_canvas_buffer = [
-			left / 100,     -1.0, 
-			mid / 100,      -1.0, 
-			left  / 100,      1.0, 
-			left  / 100,      1.0,
-			mid/ 100,      -1.0, 
-			mid / 100,       1.0]; 
+			left / 1000,     -1.0, 
+			mid / 1000,      -1.0, 
+			left  / 1000,      1.0, 
+			left  / 1000,      1.0,
+			mid/ 1000,      -1.0, 
+			mid / 1000,       1.0]; 
 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1087,7 +1087,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	else{
 		if (mid == right){
 			//console.log("分割左右的","left", left, "right", right, "number", left_number);
-			devide_draw_height(left, right, -100, 100, tri_result, tri_texture, tri_normal, gl);
+			devide_draw_height(left, right, -1000, 1000, tri_result, tri_texture, tri_normal, gl);
 			
 			return;
 		}	
@@ -1096,12 +1096,12 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 
 	if (right_number <= uniform_number){
 		var right_canvas_buffer = [
-			mid  / 100, -1.0, 
-			right  / 100, -1.0, 
-			mid / 100,  1.0, 
-			mid  / 100,  1.0,
-			right  / 100, -1.0, 
-			right / 100,  1.0]; 
+			mid  / 1000, -1.0, 
+			right  / 1000, -1.0, 
+			mid / 1000,  1.0, 
+			mid  / 1000,  1.0,
+			right  / 1000, -1.0, 
+			right / 1000,  1.0]; 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -1129,7 +1129,7 @@ function devide_draw(left, right, tri_result, tri_texture, tri_normal, gl){
 	else{
 		if (mid == left){
 			//console.log("分割左右的","left", left, "right", right, "number", right_number);
-			devide_draw_height(left, right, -100, 100, tri_result, tri_texture, tri_normal, gl);
+			devide_draw_height(left, right, -1000, 1000, tri_result, tri_texture, tri_normal, gl);
 			
 			return;
 		}	
@@ -1192,12 +1192,12 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 		//console.log("bot开始画了", bot_number, bot * 2 / 255 -1.0, mid * 2 / 255 -1.0);
 		
 		var right_canvas_buffer = [
-			left  / 100,   bot  / 100, 
-			right  / 100,    bot  / 100, 
-			left  / 100,    mid  / 100, 
-			left  / 100,    mid  / 100,
-			right  / 100,    bot  / 100, 
-			right  / 100,    mid  / 100]; 
+			left  / 1000,   bot  / 1000, 
+			right  / 1000,    bot  / 1000, 
+			left  / 1000,    mid  / 1000, 
+			left  / 1000,    mid  / 1000,
+			right  / 1000,    bot  / 1000, 
+			right  / 1000,    mid  / 1000]; 
 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1233,12 +1233,12 @@ function devide_draw_height(left, right, bot, top, tri_result, tri_texture, tri_
 	if (top_number <= uniform_number){
 		//console.log("top开始画了", top_number, mid * 2 / 255 -1.0, top * 2 / 255 -1.0);
 		var right_canvas_buffer = [
-			left  / 100, mid  / 100, 
-			right  /100,  mid  / 100, 
-			left  / 100,  top  / 100, 
-			left  / 100,  top  / 100,
-			right  / 100,  mid  / 100, 
-			right  / 100,  top  / 100]; 
+			left  / 1000, mid  / 1000, 
+			right  /1000,  mid  / 1000, 
+			left  / 1000,  top  / 1000, 
+			left  / 1000,  top  / 1000,
+			right  / 1000,  mid  / 1000, 
+			right  / 1000,  top  / 1000]; 
 
 		var new_vertex_buffer = gl.createBuffer();
 		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);

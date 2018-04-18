@@ -254,14 +254,14 @@ int D_dot(ivec3 x, ivec3 y)
 
 tri_p changevalue(tri_p t)
 {
-  t.x1 = division( (t.x1 + 100) * 32, 25);
-  t.y1 = division( (t.y1 + 100) * 32, 25);
-  t.z1 = division( (t.z1 + 100) * 32, 25);
-  t.x2 = division( (t.x2 + 100) * 32, 25);
-  t.y2 = division( (t.y2 + 100) * 32, 25);
-  t.z2 = division( (t.z2 + 100) * 32, 25);
-  t.x3 = division( (t.x3 + 100) * 32, 25);
-  t.y3 = division( (t.y3 + 100) * 32, 25);
-  t.z3 = division( (t.z3 + 100) * 32, 25);
+  t.x1 = division( (t.x1 + 1000) * 32, 250);
+  t.y1 = division( (t.y1 + 1000) * 32, 250);
+  t.z1 = division( (t.z1 + 1000) * 32, 250);
+  t.x2 = division( (t.x2 + 1000) * 32, 250);
+  t.y2 = division( (t.y2 + 1000) * 32, 250);
+  t.z2 = division( (t.z2 + 1000) * 32, 250);
+  t.x3 = division( (t.x3 + 1000) * 32, 250);
+  t.y3 = division( (t.y3 + 1000) * 32, 250);
+  t.z3 = division( (t.z3 + 1000) * 32, 250);
   return t;
 }
