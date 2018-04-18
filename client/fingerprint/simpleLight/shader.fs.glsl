@@ -20,7 +20,7 @@ struct txt_coord{
 #define uniformNumber 336
 #define init tri_p tri; txt_p texcoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; txt_coord fragTexCoord;
 #define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];texcoord.x1 = text_point[i][0]; texcoord.y1 = text_point[i][1];texcoord.x2 = text_point[i+1][0]; texcoord.y2 = text_point[i+1][1];texcoord.x3 = text_point[i+2][0]; texcoord.y3 = text_point[i+2][1];
-#define changePosition tri = changevalue(tri);
+#define changePosition tri = changevalue(tri); 
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
 #define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > z)
@@ -163,6 +163,13 @@ txt_coord calCoord(txt_p f, tri_p t){
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
   // 在这里还是256000这样一个系数
+
+  f.x1 = division( f.x1 * 51, 200);
+  f.y1 = division( f.y1 * 51, 200);
+  f.x2 = division( f.x2 * 51, 200);
+  f.y2 = division( f.y2 * 51, 200);
+  f.x3 = division( f.x3 * 51, 200);
+  f.y3 = division( f.y3 * 51, 200); 
 
   tt.x = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
   tt.y = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;

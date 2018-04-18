@@ -878,8 +878,11 @@ Mat3 = (function() {
 				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 100);
 			
 				
-			 for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-			 	__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+			//  for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
+			// 	 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+			
+			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
+			 	__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
 			
 			var t_nor = [];	
 			if (__ActiveBuffer_vertex_normal.length != 0){
