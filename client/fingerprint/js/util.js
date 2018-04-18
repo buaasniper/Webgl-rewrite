@@ -133,7 +133,8 @@ Mat3 = (function() {
 		this.vertexSource = undefined; //vetex的source
 		this.fragSource = undefined //frag的source
 		this.attriData = [];  //重新建立一个新的Attri_data object的array
-		this.uniformData = [] //重新建立一个新的Uniform_data object的array
+		this.uniformData = []; //重新建立一个新的Uniform_data object的array
+		this.varyingData = []; //重新建立一个新的varying_data object的array
 	}
 	var ProgramDataMap = [];
 
@@ -194,6 +195,13 @@ Mat3 = (function() {
 		this.programName = undefined;   //这个位置是在哪一个program的 
 	}
 	var UniformLocMap = [];
+
+	// 建立varying的map
+	var varying_data = function(){
+		this.shaderName = undefined;  //在glsl代码中对应的varying的变量名
+		this.varyEleNum = undefined;  //记录varying最终要变成vec2还是vc3
+		this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
+	}
 
 /*==========================map部分======================================结尾========================*/
 
@@ -765,6 +773,7 @@ Mat3 = (function() {
 	//gl.LINE_LOOP 2
 	//gl.LINE_STRIP 3
 	//gl.TRIANGLES 4
+	var varyingmap = [];
 	gl.my_drawArrays = gl.__proto__.drawArrays;
 	gl.drawArrays = function(mode, first, count){
 		var activeProgram;
@@ -809,7 +818,8 @@ Mat3 = (function() {
 
 		//建立了一个全局变量，vetexID
 		//理论上进入vetex的部分，假设有东西
-		vetexID = 4;
+		
+		
 		if (vetexID == 4){
 			var mWorld = new Float32Array(16);
 			var mWorld_fs = new Float32Array(16);
@@ -818,6 +828,7 @@ Mat3 = (function() {
 			var vertPosition = [];
 			var vertTexCoord = [];
 			var vertNormal = [];
+			var varyingmap = [];
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertPosition")
@@ -843,9 +854,59 @@ Mat3 = (function() {
         	mat4.transpose(mProj, mProj);
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
-			//console.log("mWorld_fs",mWorld_fs);
-			//console.log("mWorld",mWorld);
-			//console.log("BufferDataMap",BufferDataMap);
+
+			var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
+			var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
+			var traingles_num_loc = gl.my_getUniformLocation(__Program, "nor_point");
+
+			//进入计算阶段
+			//手工去完成自动化的那部分
+			/*
+			var newData1 = new varying_data;
+			newData1.shaderName = "tri_point";
+			newData1.varyEleNum = 3;
+			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+			for (var i =0; i < newData1.uniformData.length; i++)
+				if (i % 3 != 2)
+					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+				else
+					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+
+
+			var newData2 = new varying_data;
+			newData2.shaderName = "text_point";
+			newData2.varyEleNum = 2;
+			for (var i = 0; i < vertTexCoord.length; i++){
+				newData2.uniformData = newData2.uniformData.concat(vertTexCoord[i]);
+				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
+			}	
+			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+
+			if(__ActiveBuffer_vertex_normal.length != 0){
+				var newData3 = new varying_data;
+				newData3.shaderName = "nor_point";
+				newData3.varyEleNum = 2;
+				//只是一个中间替代值为了让后面的值不变
+				var tem = [];
+				for (var i = 0; i < vertNormal.length; i++)
+					tem = tem.concat(vertNormal[i]);
+				for (var i = 0; i < tem.length; i += 3){
+					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[0] + tem[i+1] * mWorld_fs[4] + tem[i+2] * mWorld_fs[8]));
+					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[1] + tem[i+1] * mWorld_fs[5] + tem[i+2] * mWorld_fs[9]) );
+					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[2] + tem[i+1] * mWorld_fs[6] + tem[i+2] * mWorld_fs[10])) ;
+				}
+				for (var i = 0; i < newData3.uniformData.length; i++)
+					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
+				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
+			}
+			*/
+			
+
+
+
+
+
 
 			var __ActiveBuffer_vertex_result = [];
 			var __ActiveBuffer_vertex_texture = [];
@@ -858,29 +919,14 @@ Mat3 = (function() {
 
 			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
 
-			//现在加入判断值 
-			//原始版本
-			// for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
-			// if (i % 3 != 2)
-			// 	__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
-			// else
-			// 	__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
-			
 
-			// for (var i = 0; i < __ActiveBuffer_vertex_result.length; i++)
-			// 	__ActiveBuffer_vertex_result[i] = __ActiveBuffer_vertex_result[i] * 2;
-
-
-			//测试100的版本
+			//测试1000的版本
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
 				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			else
 				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			
-				
-			//  for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-			// 	 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
 			
 			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
 			 	__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
@@ -896,21 +942,11 @@ Mat3 = (function() {
 					__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
 			}
 
-			var canvas_buffer = [
-				0.0, -1.0, 
-				1.0, -1.0, 
-				0.0,  1.0, 
-				0.0,  1.0,
-				1.0, -1.0, 
-				1.0,  1.0]; 
-	
-			var canvas_buffer1 = [
-				-1.0, -1.0, 
-				0.0, -1.0, 
-				-1.0,  1.0, 
-				-1.0,  1.0,
-				0.0, -1.0, 
-				0.0,  1.0]; 
+			console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
+			console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
+			console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
+			console.log("ProgramDataMap",ProgramDataMap);
+
 			
 			//在这里判断是否是猴子的正面
 			var tri_result= [];
@@ -969,24 +1005,6 @@ Mat3 = (function() {
 
 				}
 			}
-			//console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
-			//console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
-			//console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
-
-			//console.log("tri_result",tri_result);
-			// console.log("tri_texture",tri_texture);
-			// console.log("tri_normal",tri_normal);
-			// if (getactiveProgram() == tem_program)
-			// 	console.log("program数值一样");
-			// else
-			// 	console.log("program数值不一样");
-
-
-			//  for (var i = 0; i < tri_result.length; i++)
-			//  	tri_result[i] = tri_result[i] * 2;
-
-			//devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
-			//devide_draw(0, 255 * 2, tri_result, tri_texture, tri_normal, gl);
 			devide_draw(-1000, 1000, tri_result, tri_texture, tri_normal, gl);
 
 

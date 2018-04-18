@@ -34,12 +34,8 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
     this.begin = function(canvas) {
       var gl = getGL(canvas);
       var WebGL = true;
+      vetexID = 4;
 
-      __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
-      __Mworld_flag = 1;
-      __Mview_flag = 1;
-      __Mpro_flag = 1;
-      __Drawnumber = 1
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
