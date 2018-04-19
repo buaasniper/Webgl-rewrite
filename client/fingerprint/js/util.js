@@ -812,8 +812,8 @@ Mat3 = (function() {
 			}
 				
 		} 
-		console.log("数据处理区域完毕");
-		console.log("ProgramDataMap", ProgramDataMap);
+		//console.log("数据处理区域完毕");
+		//console.log("ProgramDataMap", ProgramDataMap);
 
 
 		//建立了一个全局变量，vetexID
@@ -881,8 +881,8 @@ Mat3 = (function() {
 				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
-			console.log("vertTexCoord",vertTexCoord);
-			console.log("newData2",newData2);
+			//console.log("vertTexCoord",vertTexCoord);
+			//console.log("newData2",newData2);
 
 
 
@@ -905,55 +905,56 @@ Mat3 = (function() {
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
 
-			console.log("ProgramDataMap",ProgramDataMap);
+			//console.log("ProgramDataMap",ProgramDataMap);
 
 
 
 			
-			var __ActiveBuffer_vertex_result = [];
-			var __ActiveBuffer_vertex_texture = [];
-			var __ActiveBuffer_vertex_normal = [];
+			// var __ActiveBuffer_vertex_result = [];
+			// var __ActiveBuffer_vertex_texture = [];
+			// var __ActiveBuffer_vertex_normal = [];
 
-			for (var i = 0; i < vertTexCoord.length; i++)
-				__ActiveBuffer_vertex_texture = __ActiveBuffer_vertex_texture.concat(vertTexCoord[i]);
-			for (var i = 0; i < vertNormal.length; i++)
-				__ActiveBuffer_vertex_normal = __ActiveBuffer_vertex_normal.concat(vertNormal[i]);
+			// for (var i = 0; i < vertTexCoord.length; i++)
+			// 	__ActiveBuffer_vertex_texture = __ActiveBuffer_vertex_texture.concat(vertTexCoord[i]);
+			// for (var i = 0; i < vertNormal.length; i++)
+			// 	__ActiveBuffer_vertex_normal = __ActiveBuffer_vertex_normal.concat(vertNormal[i]);
 
-			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
+			// __ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
 
 
 
 
 			//测试1000的版本
-			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
-			if (i % 3 != 2)
-				__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
-			else
-				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
+			// for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
+			// if (i % 3 != 2)
+			// 	__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
+			// else
+			// 	__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
 			
 			
-			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-				 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
-			console.log("vertTexCoord",vertTexCoord);	 
-			console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);	 
+			// for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
+			// 	 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
+			// console.log("vertTexCoord",vertTexCoord);	 
+			// console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);	 
 			
 			
-			var t_nor = [];	
-			if (__ActiveBuffer_vertex_normal.length != 0){
-				for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
-					t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[8]));
-					t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[9]) );
-					t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[10])) ;
-				}
-				for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
-					__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
-			}
+			// var t_nor = [];	
+			// if (__ActiveBuffer_vertex_normal.length != 0){
+			// 	for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
+			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[8]));
+			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[9]) );
+			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[10])) ;
+			// 	}
+			// 	for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
+			// 		__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
+			// }
 
 			//console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
 			//console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
 			//console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
 			//console.log("ProgramDataMap",ProgramDataMap);
-
+			
+			//判断是否是正面
 			var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
 			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
 			var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
@@ -978,7 +979,7 @@ Mat3 = (function() {
 				}
 			}
 			
-
+			
 			//把数值赋给了ProgramDataMap
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
 				ProgramDataMap[activeProgramNum].varyingData[i].uniformData = [];
@@ -995,69 +996,69 @@ Mat3 = (function() {
 
 			
 			//在这里判断是否是猴子的正面
-			var tri_result= [];
-			var tri_texture = [];
-			var tri_normal = [];
+			// var tri_result= [];
+			// var tri_texture = [];
+			// var tri_normal = [];
 
 
 			//这里没有什么延展性，需要判断总长度的时候
 			//默认，这里，都是画三角形，并且都是vec3，一般情况都是这个样子的
-			var __My_index = __ActiveBuffer_vertex_result.length / 3;
+			//var __My_index = __ActiveBuffer_vertex_result.length / 3;
 			
 			//console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 			//console.log("__My_index", __My_index);
 
 			
-			for (var i = 0; i < __My_index; i+= 3){
-				x1 = __ActiveBuffer_vertex_result[i * 3];
-				y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
-				z1 = __ActiveBuffer_vertex_result[i * 3 + 2];
-				x2 = __ActiveBuffer_vertex_result[i * 3 + 3];
-				y2 = __ActiveBuffer_vertex_result[i * 3 + 4];
-				z2 = __ActiveBuffer_vertex_result[i * 3 + 5];
-				x3 = __ActiveBuffer_vertex_result[i * 3 + 6];
-				y3 = __ActiveBuffer_vertex_result[i * 3 + 7];
-				z3 = __ActiveBuffer_vertex_result[i * 3 + 8];
-				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
-					//console.log("进入了");
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 1]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 2]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 3]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 4]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 5]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 6]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 7]);
-					tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 8]);
+			// for (var i = 0; i < __My_index; i+= 3){
+			// 	x1 = __ActiveBuffer_vertex_result[i * 3];
+			// 	y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
+			// 	z1 = __ActiveBuffer_vertex_result[i * 3 + 2];
+			// 	x2 = __ActiveBuffer_vertex_result[i * 3 + 3];
+			// 	y2 = __ActiveBuffer_vertex_result[i * 3 + 4];
+			// 	z2 = __ActiveBuffer_vertex_result[i * 3 + 5];
+			// 	x3 = __ActiveBuffer_vertex_result[i * 3 + 6];
+			// 	y3 = __ActiveBuffer_vertex_result[i * 3 + 7];
+			// 	z3 = __ActiveBuffer_vertex_result[i * 3 + 8];
+			// 	if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+			// 		//console.log("进入了");
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 1]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 2]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 3]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 4]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 5]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 6]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 7]);
+			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 8]);
 
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2]);
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 1]);
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 2]);
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 3]);
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 4]);
-					tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 5]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 1]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 2]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 3]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 4]);
+			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 5]);
 
-					if (__ActiveBuffer_vertex_normal.length != 0){
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 1]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 2]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 3]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 4]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 5]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 6]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 7]);
-						tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 8]);
-					}
+			// 		if (__ActiveBuffer_vertex_normal.length != 0){
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 1]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 2]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 3]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 4]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 5]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 6]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 7]);
+			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 8]);
+			// 		}
 
-				}
-			}
+			// 	}
+			// }
 
-			console.log("tri_result",tri_result);
-			console.log("tri_texture", tri_texture);
-			console.log("tri_normal",tri_normal);
+			// console.log("tri_result",tri_result);
+			// console.log("tri_texture", tri_texture);
+			// console.log("tri_normal",tri_normal);
 
-			console.log("进入");
-			console.log("tem_varying",tem_varying);
+			// console.log("进入");
+			// console.log("tem_varying",tem_varying);
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
@@ -1096,7 +1097,7 @@ function devide_draw(left, right, tem_varying, gl){
 	__Program = getactiveProgram();
 	activeProgramNum = getactiveProgramNum();
 
-	console.log("tem_varying",tem_varying);
+	//console.log("tem_varying",tem_varying);
 	//console.log("中间点", mid);
 	for (var i = 0; i < tem_varying.length; i++){
 		left_varying.push(tem);
