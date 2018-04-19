@@ -870,6 +870,9 @@ Mat3 = (function() {
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 
 
+
+
+
 			var newData2 = new varying_data;
 			newData2.shaderName = "text_point";
 			newData2.varyEleNum = 2;
@@ -878,6 +881,11 @@ Mat3 = (function() {
 				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+			console.log("vertTexCoord",vertTexCoord);
+			console.log("newData2",newData2);
+
+
+
 
 			if(vertNormal.length != 0){
 				var newData3 = new varying_data;
@@ -896,6 +904,11 @@ Mat3 = (function() {
 					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
+
+			console.log("ProgramDataMap",ProgramDataMap);
+
+
+
 			
 			var __ActiveBuffer_vertex_result = [];
 			var __ActiveBuffer_vertex_texture = [];
@@ -909,6 +922,8 @@ Mat3 = (function() {
 			__ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
 
 
+
+
 			//测试1000的版本
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
@@ -918,7 +933,10 @@ Mat3 = (function() {
 			
 			
 			for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-			 	__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
+				 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
+			console.log("vertTexCoord",vertTexCoord);	 
+			console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);	 
+			
 			
 			var t_nor = [];	
 			if (__ActiveBuffer_vertex_normal.length != 0){
@@ -955,7 +973,7 @@ Mat3 = (function() {
 				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
 					for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
 						for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
-							tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * 3 + k]);	
+							tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);	
 					}
 				}
 			}
@@ -1034,10 +1052,12 @@ Mat3 = (function() {
 				}
 			}
 
-			//console.log("tri_result",tri_result);
-			//console.log("tri_texture", tri_texture);
-			//console.log("tri_normal",tri_normal);
+			console.log("tri_result",tri_result);
+			console.log("tri_texture", tri_texture);
+			console.log("tri_normal",tri_normal);
 
+			console.log("进入");
+			console.log("tem_varying",tem_varying);
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
@@ -1055,13 +1075,13 @@ Mat3 = (function() {
 var uniform_number  = 111;
 
 function devide_draw(left, right, tem_varying, gl){
-	var left_result = [];
-	var left_texture = [];
-	var left_normal = [];
-	var right_result = [];
-	var right_texture = [];
-	var right_normal = [];
-	var tri_number = tri_result.length / 9;
+	// var left_result = [];
+	// var left_texture = [];
+	// var left_normal = [];
+	// var right_result = [];
+	// var right_texture = [];
+	// var right_normal = [];
+	// var tri_number = tri_result.length / 9;
 
 	var tem = [];
 	var left_varying = [];
@@ -1076,6 +1096,7 @@ function devide_draw(left, right, tem_varying, gl){
 	__Program = getactiveProgram();
 	activeProgramNum = getactiveProgramNum();
 
+	console.log("tem_varying",tem_varying);
 	//console.log("中间点", mid);
 	for (var i = 0; i < tem_varying.length; i++){
 		left_varying.push(tem);
@@ -1101,7 +1122,7 @@ function devide_draw(left, right, tem_varying, gl){
 			// }
 			
 		}		
-		if (!((tem_varying[i * 9] <= mid) && (tem_varying[i * 9 + 3] <= mid) && (tem_varying[i * 9 + 6] <= mid))){
+		if (!((tem_varying[0][i * 9] <= mid) && (tem_varying[0][i * 9 + 3] <= mid) && (tem_varying[0][i * 9 + 6] <= mid))){
 			
 			right_number ++;
 			//后加入的代码
@@ -1121,6 +1142,9 @@ function devide_draw(left, right, tem_varying, gl){
 			
 		}
 	}
+	 //console.log("left_varying",left_varying);
+	 //console.log("right_varying",right_varying);
+	 //return;
 	if (left_number <= uniform_number){
 		if (left_number > 0){
 			var right_canvas_buffer = [
@@ -1237,17 +1261,18 @@ function devide_draw(left, right, tem_varying, gl){
 
 
 function devide_draw_height(left, right, bot, top, tem_varying, gl){
-	var bot_result = [];
-	var bot_texture = [];
-	var bot_normal = [];
-	var top_result = [];
-	var top_texture = [];
-	var top_normal = [];
-	var tri_number = tri_result.length / 9;
+	// var bot_result = [];
+	// var bot_texture = [];
+	// var bot_normal = [];
+	// var top_result = [];
+	// var top_texture = [];
+	// var top_normal = [];
+	// var tri_number = tri_result.length / 9;
 
 	var tem = [];
 	var bot_varying = [];
 	var top_varying = [];
+	var tri_number = tem_varying[0].length / 9;
 	var mid = Math.floor((bot + top) / 2);
 	var bot_number = 0;
 	var top_number = 0;
@@ -1260,11 +1285,11 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 
 	//console.log("中间点", mid);
 	for (var i = 0; i < tem_varying.length; i++){
-		left_varying.push(tem);
-		right_varying.push(tem);
+		bot_varying.push(tem);
+		top_varying.push(tem);
 	}
 	for (var i = 0; i < tri_number; i++){
-		if (!((tem_varying[i * 9 + 1] >= mid) && (tem_varying[i * 9 + 4] >= mid) && (tem_varying[i * 9 + 7] >= mid))){
+		if (!((tem_varying[0][i * 9 + 1] >= mid) && (tem_varying[0][i * 9 + 4] >= mid) && (tem_varying[0][i * 9 + 7] >= mid))){
 			bot_number ++;
 			//后加入同一化的代码
 			for (var j = 0; j < tem_varying.length; j++){
@@ -1283,7 +1308,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 			// }
 			
 		}		
-		if (!((tem_varying[i * 9 + 1] <= mid) && (tem_varying[i * 9 + 4] <= mid) && (tem_varying[i * 9 + 7] <= mid))){
+		if (!((tem_varying[0][i * 9 + 1] <= mid) && (tem_varying[0][i * 9 + 4] <= mid) && (tem_varying[0][i * 9 + 7] <= mid))){
 			
 			top_number ++;
 			//后加入同一化的代码
