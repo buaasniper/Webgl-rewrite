@@ -988,13 +988,7 @@ Mat3 = (function() {
 			}
 			//console.log("tem_varying",tem_varying);
 			//console.log("ProgramDataMap",ProgramDataMap);
-
-
-
-
-
-
-			
+	
 			//在这里判断是否是猴子的正面
 			// var tri_result= [];
 			// var tri_texture = [];
@@ -1059,6 +1053,8 @@ Mat3 = (function() {
 
 			// console.log("进入");
 			// console.log("tem_varying",tem_varying);
+
+			console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
@@ -1706,6 +1702,8 @@ BBB = function(primitiveType, offset, count){
 		console.log("tri_normal",tri_normal);
 
 
+
+		
 		devide_draw(0, 255, tri_result, tri_texture, tri_normal, gl);
 		
 

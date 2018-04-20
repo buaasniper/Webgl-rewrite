@@ -4,9 +4,10 @@ struct DirectionalLight
 	ivec3 direction;
 	ivec3 color;
 };
-
+#define uniformNumber 336
 uniform ivec3 tri_point[333];
 uniform ivec2 text_point[333];
+uniform ivec3 nor_point[333];
 uniform int tri_number;
 struct tri_p {
   int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
@@ -17,7 +18,7 @@ struct txt_p {
 struct txt_coord{
   int x, y;
 };
-#define uniformNumber 336
+
 #define init tri_p tri; txt_p texcoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; txt_coord fragTexCoord;
 #define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];texcoord.x1 = text_point[i][0]; texcoord.y1 = text_point[i][1];texcoord.x2 = text_point[i+1][0]; texcoord.y2 = text_point[i+1][1];texcoord.x3 = text_point[i+2][0]; texcoord.y3 = text_point[i+2][1];
 #define changePosition tri = changevalue(tri); 
@@ -51,7 +52,7 @@ vec4 col_transfer(ivec4 color);
 vec4 col_transfer(ivec3 color, int a);   
 // r,g,b 0 - 255   a 0 - 100      
 
-uniform ivec3 nor_point[333];
+
 uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
 uniform sampler2D sampler;
