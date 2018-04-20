@@ -820,9 +820,10 @@ Mat3 = (function() {
 		//理论上进入vetex的部分，假设有东西
 		
 		
-		if (vetexID == 4){
+		if ((vetexID == 4) ||  (vetexID == 5)){
 			var mWorld = new Float32Array(16);
 			var mWorld_fs = new Float32Array(16);
+			var mView_fs = new Float32Array(16);
 			var mView = new Float32Array(16);
 			var mProj = new Float32Array(16);
 			var vertPosition = [];
@@ -849,11 +850,15 @@ Mat3 = (function() {
 			}
 			//进入vetex计算部分
 			mat4.copy(mWorld_fs, mWorld);
+			mat4.copy(mView_fs, mView);
 			mat4.transpose(mWorld, mWorld);
         	mat4.transpose(mView, mView);
         	mat4.transpose(mProj, mProj);
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
+
+			console.log("mWorld_fs",mWorld_fs);
+			console.log("mView_fs",mView_fs);
 
 			//进入计算阶段
 			//手工去完成自动化的那部分
@@ -904,55 +909,29 @@ Mat3 = (function() {
 					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
+			/*
+			if(vetexID == 5){
+				var newData4 = new varying_data;
+				newData4.shaderName = "vPosition";
+				newData4.varyEleNum = 4;
+				//只是一个中间替代值为了让后面的值不变
+				var tem = [];
+				for (var i = 0; i < vertPosition.length; i++)
+					tem = tem.concat(vertPosition[i]);
+				for (var i = 0; i < tem.length; i += 3){
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8]));
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9]) );
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]));
 
-			//console.log("ProgramDataMap",ProgramDataMap);
+				}
+				for (var i = 0; i < newData4.uniformData.length; i++)
+					newData4.uniformData[i] = Math.floor(((newData4.uniformData[i] )) * 1000);
+				ProgramDataMap[activeProgramNum].varyingData.push(newData4);
+			}
+
+			*/
 
 
-
-			
-			// var __ActiveBuffer_vertex_result = [];
-			// var __ActiveBuffer_vertex_texture = [];
-			// var __ActiveBuffer_vertex_normal = [];
-
-			// for (var i = 0; i < vertTexCoord.length; i++)
-			// 	__ActiveBuffer_vertex_texture = __ActiveBuffer_vertex_texture.concat(vertTexCoord[i]);
-			// for (var i = 0; i < vertNormal.length; i++)
-			// 	__ActiveBuffer_vertex_normal = __ActiveBuffer_vertex_normal.concat(vertNormal[i]);
-
-			// __ActiveBuffer_vertex_result = my_m4.vec_max_mul(vertPosition, mWorld);
-
-
-
-
-			//测试1000的版本
-			// for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
-			// if (i % 3 != 2)
-			// 	__ActiveBuffer_vertex_result[i] = Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
-			// else
-			// 	__ActiveBuffer_vertex_result[i] = -1 * Math.floor(__ActiveBuffer_vertex_result[i] * 1000);
-			
-			
-			// for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-			// 	 __ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 1000);
-			// console.log("vertTexCoord",vertTexCoord);	 
-			// console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);	 
-			
-			
-			// var t_nor = [];	
-			// if (__ActiveBuffer_vertex_normal.length != 0){
-			// 	for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
-			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[8]));
-			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[9]) );
-			// 		t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[10])) ;
-			// 	}
-			// 	for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
-			// 		__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 1000);
-			// }
-
-			//console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
-			//console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
-			//console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
-			//console.log("ProgramDataMap",ProgramDataMap);
 			
 			//判断是否是正面
 			var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
@@ -986,76 +965,11 @@ Mat3 = (function() {
 				for(var j = 0; j < tem_varying[i].length; j++)
 					ProgramDataMap[activeProgramNum].varyingData[i].uniformData = ProgramDataMap[activeProgramNum].varyingData[i].uniformData.concat(tem_varying[i][j]);
 			}
-			//console.log("tem_varying",tem_varying);
-			//console.log("ProgramDataMap",ProgramDataMap);
-	
-			//在这里判断是否是猴子的正面
-			// var tri_result= [];
-			// var tri_texture = [];
-			// var tri_normal = [];
 
-
-			//这里没有什么延展性，需要判断总长度的时候
-			//默认，这里，都是画三角形，并且都是vec3，一般情况都是这个样子的
-			//var __My_index = __ActiveBuffer_vertex_result.length / 3;
-			
-			//console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-			//console.log("__My_index", __My_index);
-
-			
-			// for (var i = 0; i < __My_index; i+= 3){
-			// 	x1 = __ActiveBuffer_vertex_result[i * 3];
-			// 	y1 = __ActiveBuffer_vertex_result[i * 3 + 1];
-			// 	z1 = __ActiveBuffer_vertex_result[i * 3 + 2];
-			// 	x2 = __ActiveBuffer_vertex_result[i * 3 + 3];
-			// 	y2 = __ActiveBuffer_vertex_result[i * 3 + 4];
-			// 	z2 = __ActiveBuffer_vertex_result[i * 3 + 5];
-			// 	x3 = __ActiveBuffer_vertex_result[i * 3 + 6];
-			// 	y3 = __ActiveBuffer_vertex_result[i * 3 + 7];
-			// 	z3 = __ActiveBuffer_vertex_result[i * 3 + 8];
-			// 	if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
-			// 		//console.log("进入了");
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 1]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 2]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 3]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 4]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 5]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 6]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 7]);
-			// 		tri_result = tri_result.concat(__ActiveBuffer_vertex_result[i * 3 + 8]);
-
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2]);
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 1]);
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 2]);
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 3]);
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 4]);
-			// 		tri_texture = tri_texture.concat(__ActiveBuffer_vertex_texture[i * 2 + 5]);
-
-			// 		if (__ActiveBuffer_vertex_normal.length != 0){
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 1]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 2]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 3]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 4]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 5]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 6]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 7]);
-			// 			tri_normal = tri_normal.concat(__ActiveBuffer_vertex_normal[i * 3 + 8]);
-			// 		}
-
-			// 	}
-			// }
-
-			// console.log("tri_result",tri_result);
-			// console.log("tri_texture", tri_texture);
-			// console.log("tri_normal",tri_normal);
-
-			// console.log("进入");
-			// console.log("tem_varying",tem_varying);
 
 			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
-			devide_draw(-1000, 1000, tem_varying, gl);
+			
+			//devide_draw(-1000, 1000, tem_varying, gl);
 
 
 			
@@ -1107,16 +1021,6 @@ function devide_draw(left, right, tem_varying, gl){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
 					left_varying[j] = left_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}
-
-			//之前的变化的代码
-			// for (var j = 0; j < 9; j++)
-			// 	left_result =  left_result.concat(tri_result[i * 9 + j]);
-			// for (var j = 0; j < 6; j++)
-			// 	left_texture = left_texture.concat(tri_texture[i * 6 + j]);
-			// if (tri_normal.length > 0){
-			// 	for (var j = 0; j < 9; j++)
-			// 		left_normal =  left_normal.concat(tri_normal[i * 9 + j]);
-			// }
 			
 		}		
 		if (!((tem_varying[0][i * 9] <= mid) && (tem_varying[0][i * 9 + 3] <= mid) && (tem_varying[0][i * 9 + 6] <= mid))){
@@ -1126,17 +1030,7 @@ function devide_draw(left, right, tem_varying, gl){
 			for (var j = 0; j < tem_varying.length; j++){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
 					right_varying[j] = right_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
-			}
-			//之前的代码
-			// for (var j = 0; j < 9; j++)
-			// 	right_result = right_result.concat(tri_result[i * 9 + j]);
-			// for (var j = 0; j < 6; j++)
-			// 	right_texture = right_texture.concat(tri_texture[i * 6 + j]);
-			// if (tri_normal.length > 0){
-			// 		for (var j = 0; j < 9; j++)
-			// 			right_normal =  right_normal.concat(tri_normal[i * 9 + j]);
-			// 	}
-			
+			}			
 		}
 	}
 	 //console.log("left_varying",left_varying);
@@ -1174,17 +1068,6 @@ function devide_draw(left, right, tem_varying, gl){
 				else 
 					console.log("暂时还没有写这种情况");
 			}
-			
-			//更改前的代码
-			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
-			// gl.my_uniform3iv(traingles_vex_loc, left_result);
-			// gl.my_uniform2iv(traingles_text_loc, left_texture);
-			// if (tri_normal.length > 0){
-			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-			// 	gl.my_uniform3iv(traingles_nor_loc, left_normal);
-			// }
-
 
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
@@ -1229,16 +1112,6 @@ function devide_draw(left, right, tem_varying, gl){
 					console.log("暂时还没有写这种情况");
 			}
 
-			//更改前的代码
-			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
-			// gl.my_uniform3iv(traingles_vex_loc, right_result);
-			// gl.my_uniform2iv(traingles_text_loc, right_texture);
-			// if (tri_normal.length > 0){
-			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-			// 	gl.my_uniform3iv(traingles_nor_loc, right_normal);
-			// }
-
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
@@ -1258,13 +1131,6 @@ function devide_draw(left, right, tem_varying, gl){
 
 
 function devide_draw_height(left, right, bot, top, tem_varying, gl){
-	// var bot_result = [];
-	// var bot_texture = [];
-	// var bot_normal = [];
-	// var top_result = [];
-	// var top_texture = [];
-	// var top_normal = [];
-	// var tri_number = tri_result.length / 9;
 
 	var tem = [];
 	var bot_varying = [];
@@ -1292,18 +1158,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 			for (var j = 0; j < tem_varying.length; j++){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
 					bot_varying[j] = bot_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
-			}
-			
-			//之前的变化的代码
-			// for (var j = 0; j < 9; j++)
-			// 	bot_result =  bot_result.concat(tri_result[i * 9 + j]);
-			// for (var j = 0; j < 6; j++)
-			// 	bot_texture = bot_texture.concat(tri_texture[i * 6 + j]);
-			// if (tri_normal.length > 0){
-			// 	for (var j = 0; j < 9; j++)
-			// 		bot_normal =  bot_normal.concat(tri_normal[i * 9 + j]);
-			// }
-			
+			}	
 		}		
 		if (!((tem_varying[0][i * 9 + 1] <= mid) && (tem_varying[0][i * 9 + 4] <= mid) && (tem_varying[0][i * 9 + 7] <= mid))){
 			
@@ -1313,17 +1168,6 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
 					top_varying[j] = top_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}
-
-			//之前的变化的代码
-			// for (var j = 0; j < 9; j++)
-			// 	top_result = top_result.concat(tri_result[i * 9 + j]);
-			// for (var j = 0; j < 6; j++)
-			// 	top_texture = top_texture.concat(tri_texture[i * 6 + j]);
-			// if (tri_normal.length > 0){
-			// 		for (var j = 0; j < 9; j++)
-			// 			top_normal =  top_normal.concat(tri_normal[i * 9 + j]);
-			// 	}
-			
 		}
 	}
 	if (bot_number <= uniform_number){
@@ -1358,16 +1202,6 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 				else 
 					console.log("暂时还没有写这种情况");
 			}
-			
-			//更改前的代码
-			// var traingles_vex_loc = gl.my_getUniformLocation(__Program, "tri_point");
-			// var traingles_text_loc = gl.my_getUniformLocation(__Program, "text_point");
-			// gl.my_uniform3iv(traingles_vex_loc, bot_result);
-			// gl.my_uniform2iv(traingles_text_loc, bot_texture);
-			// if (tri_normal.length > 0){
-			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-			// 	gl.my_uniform3iv(traingles_nor_loc, bot_normal);
-			// }
 
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
@@ -1412,18 +1246,6 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 				else 
 					console.log("暂时还没有写这种情况");
 			}
-
-			//更改前的代码
-			// var traingles_vex_loc = gl.getUniformLocation(__Program, "tri_point");
-			// var traingles_text_loc = gl.getUniformLocation(__Program, "text_point");
-			// gl.my_uniform3iv(traingles_vex_loc, top_result);
-			// gl.my_uniform2iv(traingles_text_loc, top_texture);
-			// if (tri_normal.length > 0){
-			// 	var traingles_nor_loc = gl.my_getUniformLocation(__Program, "nor_point");
-			// 	gl.my_uniform3iv(traingles_nor_loc, top_normal);
-			// }
-
-
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
