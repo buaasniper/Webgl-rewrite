@@ -67,16 +67,10 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        //vec4 texel = col_transfer( D_texture2D(sampler, fragTexCoord));
         ivec4 texel = D_texture2D(sampler, fragTexCoord);
         ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 10000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 10000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],10000)    );
-		  	//ivec3 surfaceNormal = D_normalize(vertNormal);
 		  	ivec3 normSunDir = D_normalize(sun.direction);
-			  //vec3 lightIntensity = ambientLightIntensity + sun.color * max(dot(vertNormal, normSunDir), 0.0);
         ivec3 lightIntensity = ambientLightIntensity + D_multiple(sun.color, D_max(D_dot(vertNormal, normSunDir), 0));
-			  //gl_FragColor = vec4(texel.rgb * lightIntensity, texel.a);
-        //gl_FragColor = vec4(texel.rgb, texel.a);
-        //gl_FragColor = vec4(float(lightIntensity[0])/100000.0, float(lightIntensity[1])/100000.0,float(lightIntensity[2])/100000.0, 1.0);
         gl_FragColor =vec4(col_transfer( D_multiple(texel.rgb , lightIntensity), texel.a));
       } 
     }
