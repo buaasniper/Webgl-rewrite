@@ -1054,7 +1054,7 @@ Mat3 = (function() {
 			// console.log("进入");
 			// console.log("tem_varying",tem_varying);
 
-			console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
+			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
