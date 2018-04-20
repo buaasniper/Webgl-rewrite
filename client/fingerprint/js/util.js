@@ -909,7 +909,7 @@ Mat3 = (function() {
 					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
-			/*
+			
 			if(vetexID == 5){
 				var newData4 = new varying_data;
 				newData4.shaderName = "vPosition";
@@ -919,17 +919,17 @@ Mat3 = (function() {
 				for (var i = 0; i < vertPosition.length; i++)
 					tem = tem.concat(vertPosition[i]);
 				for (var i = 0; i < tem.length; i += 3){
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8]));
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9]) );
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]));
-
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8] +  mView_fs[12]));
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9] +  mView_fs[13]));
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]+  mView_fs[14]));
+					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[3] + tem[i+1] * mView_fs[7] + tem[i+2] * mView_fs[11]+  mView_fs[15]));
 				}
 				for (var i = 0; i < newData4.uniformData.length; i++)
 					newData4.uniformData[i] = Math.floor(((newData4.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData4);
 			}
 
-			*/
+			
 
 
 			
@@ -969,6 +969,7 @@ Mat3 = (function() {
 
 			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
 			console.log("tem_varying",tem_varying);
+			console.log("ProgramDataMap",ProgramDataMap);
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
@@ -983,7 +984,7 @@ Mat3 = (function() {
 
 	/*-------------------------draw array--------------------------------------*/
 
-var uniform_number  = 111;
+var uniform_number  = 75;
 
 function devide_draw(left, right, tem_varying, gl){
 	// var left_result = [];
@@ -1065,7 +1066,9 @@ function devide_draw(left, right, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], left_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
 					gl.my_uniform3iv(loc_array[i], left_varying[i]);
-				else 
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+					gl.my_uniform4iv(loc_array[i], left_varying[i]);
+				else
 					console.log("暂时还没有写这种情况");
 			}
 
@@ -1108,6 +1111,8 @@ function devide_draw(left, right, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], right_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
 					gl.my_uniform3iv(loc_array[i], right_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+					gl.my_uniform4iv(loc_array[i], right_varying[i]);
 				else 
 					console.log("暂时还没有写这种情况");
 			}
@@ -1199,6 +1204,8 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], bot_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
 					gl.my_uniform3iv(loc_array[i], bot_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+					gl.my_uniform4iv(loc_array[i], bot_varying[i]);
 				else 
 					console.log("暂时还没有写这种情况");
 			}
@@ -1243,6 +1250,8 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], top_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
 					gl.my_uniform3iv(loc_array[i], top_varying[i]);
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+					gl.my_uniform4iv(loc_array[i], top_varying[i]);
 				else 
 					console.log("暂时还没有写这种情况");
 			}
