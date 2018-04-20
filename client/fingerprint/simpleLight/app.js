@@ -291,9 +291,14 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
           gl.getUniformLocation(program, 'sun.color');
 
   
-      gl.uniform3i(ambientUniformLocation, 30, 30, 30);
-      gl.uniform3i(sunlightDirUniformLocation, 300, 400, -200);
-      gl.uniform3i(sunlightIntUniformLocation, 200, 200, 200);
+      // gl.uniform3i(ambientUniformLocation, 30, 30, 30);
+      // gl.uniform3i(sunlightDirUniformLocation, 300, 400, -200);
+      // gl.uniform3i(sunlightIntUniformLocation, 200, 200, 200);
+
+      gl.uniform3i(ambientUniformLocation, 0.3, 0.3, 0.3);
+      gl.uniform3i(sunlightDirUniformLocation, 3, 4, -2);
+      gl.uniform3i(sunlightIntUniformLocation, 2, 2, 2);
+
 
       //
       // Main render loop

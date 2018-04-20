@@ -1451,7 +1451,9 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 					if (loc != null){
 						//这块没有补全，需要在进行添加，暂时先这样了
 						//console.log("开始给uniform 赋值");
-						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0], ProgramDataMap[i].uniformData[j].uniformData[1], ProgramDataMap[i].uniformData[j].uniformData[2]);
+						//在这里完成1000倍的转化，这里还需要扩充，当前只需要这么多
+						var multiple = 1000;
+						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0] * multiple, ProgramDataMap[i].uniformData[j].uniformData[1] * multiple, ProgramDataMap[i].uniformData[j].uniformData[2] * multiple);
 					}
 				}
 			}
