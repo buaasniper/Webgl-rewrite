@@ -37,6 +37,7 @@ ivec3 D_multiple(ivec3 x, ivec3 y);
 ivec3 D_division(ivec3 x, int y);
 int D_division(int x, int y);
 tri_p changevalue(tri_p tri);
+int  wei_1, wei_2, wei_3;
 
 
 txt_coord calCoord(txt_p f, tri_p t);
@@ -129,7 +130,7 @@ int mod(int a, int b){
 
 txt_coord calCoord(txt_p f, tri_p t){
   txt_coord tt;
-  int bcs1, bcs2, bcs3, cs1, cs2, cs3, wei_1, wei_2, wei_3;
+  int bcs1, bcs2, bcs3, cs1, cs2, cs3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
   cs1 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_1 = division(bcs1 * 1000, cs1);
@@ -142,6 +143,13 @@ txt_coord calCoord(txt_p f, tri_p t){
   cs3 =  (t.x1 * t.y2 + t.x2 * t.y3 + t.x3 * t.y1) - (t.x3 * t.y2 + t.x2 * t.y1 + t.x1 * t.y3);
   wei_3 = division(bcs3 * 1000, cs3);
   // 在这里还是256000这样一个系数
+
+  f.x1 = division( f.x1 * 51, 200);
+  f.y1 = division( f.y1 * 51, 200);
+  f.x2 = division( f.x2 * 51, 200);
+  f.y2 = division( f.y2 * 51, 200);
+  f.x3 = division( f.x3 * 51, 200);
+  f.y3 = division( f.y3 * 51, 200); 
 
   tt.x = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
   tt.y = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;

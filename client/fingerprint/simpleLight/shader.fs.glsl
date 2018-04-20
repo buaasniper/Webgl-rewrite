@@ -42,6 +42,7 @@ ivec3 D_multiple(ivec3 x, ivec3 y);
 ivec3 D_division(ivec3 x, int y);
 int D_division(int x, int y);
 tri_p changevalue(tri_p tri);
+int  wei_1, wei_2, wei_3;
 
 
 txt_coord calCoord(txt_p f, tri_p t);
@@ -57,7 +58,7 @@ uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
 uniform sampler2D sampler;
 
-int  wei_1, wei_2, wei_3;
+
 void main()
 {
   init;

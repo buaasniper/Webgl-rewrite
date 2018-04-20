@@ -31,7 +31,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var gl = getGL(canvas);
       var WebGL = true;
       
-
+      vetexID = 4;
       gl.clearColor(1.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST);
@@ -212,7 +212,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
 
         gl.bindTexture(gl.TEXTURE_2D, __tex);
         gl.activeTexture(gl.TEXTURE0);
-
+        console.log("进入drawElements");
         gl.drawElements (gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
         if (count == 50) {
           dataURL = canvas.toDataURL('image/png', 1.0);

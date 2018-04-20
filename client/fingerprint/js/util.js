@@ -737,7 +737,7 @@ Mat3 = (function() {
 			}
 		}
 		//console.log("**********************************");
-		//console.log("ProgramDataMap",ProgramDataMap);
+		console.log("ProgramDataMap",ProgramDataMap);
 		//console.log("AttriDataMap",AttriDataMap);	
 		//console.log("BufferDataMap",BufferDataMap);	
 		gl.drawArrays(mode, 0 , count);
@@ -968,8 +968,8 @@ Mat3 = (function() {
 
 
 			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
-			
-			//devide_draw(-1000, 1000, tem_varying, gl);
+			console.log("tem_varying",tem_varying);
+			devide_draw(-1000, 1000, tem_varying, gl);
 
 
 			
