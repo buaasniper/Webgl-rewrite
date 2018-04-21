@@ -6,11 +6,11 @@ struct DirectionalLight
 	ivec3 diffuse;
 	ivec3 specular;
 };
-#define uniformNumber 336
+#define uniformNumber 228
 uniform ivec3 tri_point[225];
-uniform ivec2 text_point[150];
+uniform ivec2 text_point[225];
 uniform ivec3 nor_point[225];
-uniform ivec4 vPositionVary[300];
+uniform ivec4 vPositionVary[225];
 uniform int tri_number;
 struct tri_p {
   int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
@@ -91,8 +91,8 @@ void main()
                 D_multiple(sun.diffuse , diffuseLightWeighting);
                 
 
-        gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        //gl_FragColor = col_transfer( texel);
+        //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
+        gl_FragColor = col_transfer( texel);
 
 
       } 

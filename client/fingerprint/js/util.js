@@ -737,7 +737,7 @@ Mat3 = (function() {
 			}
 		}
 		//console.log("**********************************");
-		console.log("ProgramDataMap",ProgramDataMap);
+		//console.log("ProgramDataMap",ProgramDataMap);
 		//console.log("AttriDataMap",AttriDataMap);	
 		//console.log("BufferDataMap",BufferDataMap);	
 		gl.drawArrays(mode, 0 , count);
@@ -968,8 +968,9 @@ Mat3 = (function() {
 
 
 			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
-			console.log("tem_varying",tem_varying);
-			console.log("ProgramDataMap",ProgramDataMap);
+			//console.log("tem_varying",tem_varying);
+			//console.log("ProgramDataMap",ProgramDataMap);
+			//console.log("数据准备完毕，开始画图");
 			devide_draw(-1000, 1000, tem_varying, gl);
 
 
@@ -987,13 +988,6 @@ Mat3 = (function() {
 var uniform_number  = 75;
 
 function devide_draw(left, right, tem_varying, gl){
-	// var left_result = [];
-	// var left_texture = [];
-	// var left_normal = [];
-	// var right_result = [];
-	// var right_texture = [];
-	// var right_normal = [];
-	// var tri_number = tri_result.length / 9;
 
 	var tem = [];
 	var left_varying = [];
@@ -1008,8 +1002,7 @@ function devide_draw(left, right, tem_varying, gl){
 	__Program = getactiveProgram();
 	activeProgramNum = getactiveProgramNum();
 
-	//console.log("tem_varying",tem_varying);
-	//console.log("中间点", mid);
+
 	for (var i = 0; i < tem_varying.length; i++){
 		left_varying.push(tem);
 		right_varying.push(tem);
@@ -1025,7 +1018,6 @@ function devide_draw(left, right, tem_varying, gl){
 			
 		}		
 		if (!((tem_varying[0][i * 9] <= mid) && (tem_varying[0][i * 9 + 3] <= mid) && (tem_varying[0][i * 9 + 6] <= mid))){
-			
 			right_number ++;
 			//后加入的代码
 			for (var j = 0; j < tem_varying.length; j++){
@@ -1034,9 +1026,7 @@ function devide_draw(left, right, tem_varying, gl){
 			}			
 		}
 	}
-	 //console.log("left_varying",left_varying);
-	 //console.log("right_varying",right_varying);
-	 //return;
+
 	if (left_number <= uniform_number){
 		if (left_number > 0){
 			var right_canvas_buffer = [
@@ -1051,7 +1041,7 @@ function devide_draw(left, right, tem_varying, gl){
 			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
 			__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
-			//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
+
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 			gl.my_useProgram(__Program);
@@ -1071,13 +1061,14 @@ function devide_draw(left, right, tem_varying, gl){
 				else
 					console.log("暂时还没有写这种情况");
 			}
-
+			//console.log("left");
+			//console.log("left_varying",left_varying);
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 		}
 	}
 	else{
 		if (mid == right){
-			//console.log("分割左右的","left", left, "right", right, "number", left_number);
+
 			devide_draw_height(left, right, -1000, 1000, tem_varying , gl);
 			return;
 		}	
@@ -1122,7 +1113,7 @@ function devide_draw(left, right, tem_varying, gl){
 	}
 	else{
 		if (mid == left){
-			//console.log("分割左右的","left", left, "right", right, "number", right_number);
+
 			devide_draw_height(left, right, -1000, 1000, tem_varying, gl);
 			
 			return;
@@ -1149,7 +1140,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	var __VertexPositionAttributeLocation1;
 	__Program = getactiveProgram();
 	activeProgramNum = getactiveProgramNum();
-	//console.log("接受的数据", left, right, bot, top, tri_number);
+
 
 	//console.log("中间点", mid);
 	for (var i = 0; i < tem_varying.length; i++){
@@ -1176,7 +1167,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 		}
 	}
 	if (bot_number <= uniform_number){
-		//console.log("bot开始画了", bot_number, bot * 2 / 255 -1.0, mid * 2 / 255 -1.0);
+
 		if (bot_number > 0){
 			var right_canvas_buffer = [
 				left  / 1000,   bot  / 1000, 
@@ -1215,14 +1206,14 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	}
 	else{
 		if (mid == top){
-			//console.log("left", left, "right", right, "bot", bot, "top", top, "number", bot_number);
+
 			return;
 		}	
 		devide_draw_height(left, right, bot, mid, bot_varying, gl);
 	}	
 
 	if (top_number <= uniform_number){
-		//console.log("top开始画了", top_number, mid * 2 / 255 -1.0, top * 2 / 255 -1.0);
+
 		if (top_number > 0){
 			var right_canvas_buffer = [
 				left  / 1000, mid  / 1000, 
@@ -1273,12 +1264,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 			if (ProgramDataMap[i].activeFlag == 1){
 				for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
 					var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
-					//console.log("ProgramDataMap[i].uniformData[j].shaderName",ProgramDataMap[i].uniformData[j].shaderName);
-					//console.log("loc",loc);
-					if (loc != null){
-						//这块没有补全，需要在进行添加，暂时先这样了
-						//console.log("开始给uniform 赋值");
-						//在这里完成1000倍的转化，这里还需要扩充，当前只需要这么多
+					if (loc != null){	
 						var multiple = 1000;
 						gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0] * multiple, ProgramDataMap[i].uniformData[j].uniformData[1] * multiple, ProgramDataMap[i].uniformData[j].uniformData[2] * multiple);
 					}
