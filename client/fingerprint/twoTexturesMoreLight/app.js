@@ -35,12 +35,8 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
     this.begin = function(canvas) {
       var gl = getGL(canvas);
       var WebGL = true;
+      vetexID = 5;
 
-      __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
-      __Mworld_flag = 1;
-      __Mview_flag = 1;
-      __Mpro_flag = 1;
-      __Drawnumber = 1
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -187,15 +183,17 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
       mat4.perspective(projMatrix, glMatrix.toRadian(45),
               canvas.width / canvas.height, 0.1, 1000.0);
 
+      /*
       mat4.copy(__Mview,viewMatrix);
       mat4.copy(__Matrix0,projMatrix);
       mat4.identity(worldMatrix);
       mat4.identity(viewMatrix);
       mat4.identity(projMatrix);
+      */
 
-      //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
       gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-      //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+      gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
       var xRotationMatrix = new Float32Array(16);
       var yRotationMatrix = new Float32Array(16);
@@ -261,7 +259,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, textures[1]);
         gl.activeTexture(gl.TEXTURE1);
-        AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+       // AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == 55) {
           cancelAnimationFrame(frame);
