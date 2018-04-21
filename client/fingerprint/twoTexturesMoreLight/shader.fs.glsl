@@ -96,8 +96,8 @@ void main()
                 D_multiple(sun.diffuse , diffuseLightWeighting);
                 
 
-        //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        gl_FragColor = col_transfer( texel1);
+        gl_FragColor = vec4(col_transfer(D_multiple( D_division (texel0.rgb * texel1.rgb, 255)  , lightIntensity)) , 1.0);
+        //gl_FragColor = col_transfer( texel1);
 
 
       } 

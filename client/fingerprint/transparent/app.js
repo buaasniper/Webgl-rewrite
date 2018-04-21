@@ -35,12 +35,8 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     gl = getGLAA(canvas);
                 }else gl = getGL(canvas);
                 var WebGL = true;
+                vetexID = 5;
 
-                __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
-                __Mworld_flag = 1;
-                __Mview_flag = 1;
-                __Mpro_flag = 1;
-                __Drawnumber = 1
 
                 gl.clearColor(0.0, 0.0, 0.0, 0.0);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -174,16 +170,17 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                 mat4.lookAt(viewMatrix, [0, 0, -7], [0, 0, 0], [0, 1, 0]);
 
                 mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
-
+                /*
                 mat4.copy(__Mview,viewMatrix);
                 mat4.copy(__Matrix0,projMatrix);
                 mat4.identity(worldMatrix);
                 mat4.identity(viewMatrix);
                 mat4.identity(projMatrix);
+                */
 
-                //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+                gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
                 gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-                //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+                gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
                 var xRotationMatrix = new Float32Array(16);
                 var yRotationMatrix = new Float32Array(16);
@@ -197,13 +194,13 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                 var sunlightDirUniformLocation = gl.getUniformLocation(program, 'sun.direction');
                 var sunlightDiffuse = gl.getUniformLocation(program, 'sun.diffuse');
                 var sunlightSpecular = gl.getUniformLocation(program, 'sun.specular');
-                var uAlpha = gl.getUniformLocation(program, 'uAlpha');
+                //var uAlpha = gl.getUniformLocation(program, 'uAlpha');
 
                 gl.uniform3f(ambientUniformLocation, 0.3, 0.3, 0.3);
                 gl.uniform3f(sunlightDirUniformLocation, 0.8, -0.8, -0.8);
                 gl.uniform3f(sunlightDiffuse, 0.75, 0.75, 1.0);
                 gl.uniform3f(sunlightSpecular, 0.8, 0.8, 0.8);
-                gl.uniform1f(uAlpha, alp / 100);
+                //gl.uniform1f(uAlpha, alp / 100);
 
                 //
                 // Main render loop
@@ -228,19 +225,20 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     mat4.rotate(xRotationMatrix, identityMatrix, -1.5, [1, 0, 0]);
                     mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
                     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
+                    /*
                     mat4.copy(__Mworld, worldMatrix);
                     mat4.transpose(__Mworld, __Mworld);
                     mat4.transpose(__Mview, __Mview);
                     mat4.transpose(__Matrix0, __Matrix0);
                     mat4.mul(__Mview, __Mview, __Matrix0);
                     mat4.mul(__Mworld, __Mworld, __Mview);
+                    */
 
                     gl.clearColor(0.0, 0.0, 0.0, 1.0);
                     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
                     gl.bindTexture(gl.TEXTURE_2D, tex);
                     gl.activeTexture(gl.TEXTURE0);
-                    AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+                    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
                     //ctx.fillText("Hello world", 9, 50);
 
                     if(count == 50){
