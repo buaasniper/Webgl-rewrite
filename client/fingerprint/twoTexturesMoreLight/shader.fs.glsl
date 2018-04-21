@@ -64,11 +64,14 @@ int  wei_1, wei_2, wei_3;
 uniform sampler2D image0;
 uniform sampler2D image1;
 
+        
+
 void main()
 {
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
+    changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
@@ -91,9 +94,11 @@ void main()
         ivec3 lightIntensity = ambientLightIntensity +
                 D_multiple(sun.specular , specularLightWeighting)  + 
                 D_multiple(sun.diffuse , diffuseLightWeighting);
-        
+                
+
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        gl_FragColor = col_transfer(texel0);
+        gl_FragColor = col_transfer( texel1);
+
 
       } 
     }

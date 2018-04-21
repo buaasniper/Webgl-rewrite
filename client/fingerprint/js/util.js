@@ -1054,8 +1054,10 @@ function devide_draw(left, right, tem_varying, gl){
 				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
 				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
 					gl.my_uniform2iv(loc_array[i], left_varying[i]);
-				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], left_varying[i]);
+					console.log("left_varying",i,left_varying[i]);
+				}
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 					gl.my_uniform4iv(loc_array[i], left_varying[i]);
 				else
@@ -1100,8 +1102,11 @@ function devide_draw(left, right, tem_varying, gl){
 				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
 				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
 					gl.my_uniform2iv(loc_array[i], right_varying[i]);
-				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], right_varying[i]);
+					console.log("right_varying",i,  right_varying[i]);
+				}
+					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 					gl.my_uniform4iv(loc_array[i], right_varying[i]);
 				else 
@@ -1193,8 +1198,11 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
 				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
 					gl.my_uniform2iv(loc_array[i], bot_varying[i]);
-				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], bot_varying[i]);
+					console.log("bot_varying",i,bot_varying[i]);
+				}
+					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 					gl.my_uniform4iv(loc_array[i], bot_varying[i]);
 				else 
@@ -1239,8 +1247,11 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 				loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
 				if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
 					gl.my_uniform2iv(loc_array[i], top_varying[i]);
-				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3)
+				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], top_varying[i]);
+					console.log("top_varying",i,top_varying[i]);
+				}
+					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 					gl.my_uniform4iv(loc_array[i], top_varying[i]);
 				else 
