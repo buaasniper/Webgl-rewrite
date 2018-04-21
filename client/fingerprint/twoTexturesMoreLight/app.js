@@ -220,15 +220,22 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
 
       gl.uniform1i(u_texture1, 0);  // texture unit 0
       gl.uniform1i(u_texture2, 1);  // texture unit 1))
+      
 
+     
+      gl.activeTexture(gl.TEXTURE0);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+      gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+        
       //
       // Main render loop
       //
-      var loop_flag = 1;
+
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 53;
+      var count = 54;
       var ven, ren;
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
@@ -240,26 +247,13 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-        if (loop_flag == 1){
-          mat4.copy(__Mworld, worldMatrix);
-        mat4.transpose(__Mworld, __Mworld);
-        mat4.transpose(__Mview, __Mview);
-        mat4.transpose(__Matrix0, __Matrix0);
-        mat4.mul(__Mview, __Mview, __Matrix0);
-        mat4.mul(__Mworld, __Mworld, __Mview); 
-        }
-        loop_flag ++;
         
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-        gl.bindTexture(gl.TEXTURE_2D, textures[0]);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, textures[1]);
-        gl.activeTexture(gl.TEXTURE1);
-       // AAA(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        
+       gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == 55) {
           cancelAnimationFrame(frame);

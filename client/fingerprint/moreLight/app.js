@@ -229,14 +229,6 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
         mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-        /*
-        mat4.copy(__Mworld, worldMatrix);
-        mat4.transpose(__Mworld, __Mworld);
-        mat4.transpose(__Mview, __Mview);
-        mat4.transpose(__Matrix0, __Matrix0);
-        mat4.mul(__Mview, __Mview, __Matrix0);
-        mat4.mul(__Mworld, __Mworld, __Mview);
-        */
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
