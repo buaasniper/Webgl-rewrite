@@ -486,6 +486,7 @@ Mat3 = (function() {
 		   for (var j = i * stride + offset; j < i * stride + offset + size; j++)
 		   		newAttri.uniformData = newAttri.uniformData.concat(BufferData.bufferData[j]);
 	   }
+	   console.log("newAttri",newAttri);
 
 	   // 将attribute加入map
 	   AttriDataMap.push(newAttri);
@@ -859,6 +860,7 @@ Mat3 = (function() {
 			var vertPosition = [];
 			var vertColor = [];
 			var varyingmap = [];
+			var __VertexPositionAttributeLocation1;
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertPosition")
@@ -910,6 +912,26 @@ Mat3 = (function() {
 
 			console.log("ProgramDataMap",ProgramDataMap);
 
+			var canvas_buffer = [-1.0, -1.0, 
+				1.0, -1.0, 
+				-1.0,  1.0, 
+				-1.0,  1.0,
+				1.0, -1.0, 
+				1.0,  1.0]; 
+			var new_vertex_buffer = gl.createBuffer();
+			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+			__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'vertPosition');
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
+			gl.my_useProgram(activeProgram);
+			var traingles_vex_loc = gl.getUniformLocation(activeProgram, "tri_point");
+			var traingles_fra_loc = gl.getUniformLocation(activeProgram, "tri_color");
+			var traingles_num_loc = gl.my_getUniformLocation(activeProgram, "tri_number");
+			gl.my_uniform1i(traingles_num_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length/3);
+			gl.uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			gl.uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 
 
