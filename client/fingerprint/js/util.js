@@ -426,7 +426,7 @@ Mat3 = (function() {
 
 		//在这里生成一个新的attribute条目
 		// 这个版本需要考虑重复赋值这种情况
-		addAttriMap(ShaderData,BufferData,size,offset);
+		addAttriMap(ShaderData,BufferData,size,stride/4,offset/4);
 		//console.log("AttriDataMap",AttriDataMap);
 	}
 
@@ -463,56 +463,29 @@ Mat3 = (function() {
 
    //考虑了attribute会被重复赋值的情况。
    //需要判断是否需要重组bufferdata
-   var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,size,offset){
-	   //console.log("BufferData",BufferData);
+   var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,size,stride,offset){
+	   //这是一种特殊情况
+	   if (stride == 0)
+	   	stride = size;
 	   var newAttri = new Attri_data;
 	   //var temData = [];
 	   newAttri.shaderName = ShaderData.shaderName;
 	   newAttri.programName = ShaderData.programName;
 	   for (var i = 0; i < AttriDataMap.length; i++){
 		   if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
-			   AttriDataMap[i].attriEleNum = size - offset;
-			   for (var i = 0; i * size < BufferData.bufferData.length; i++){
-				   for (var j = i * size + offset; j < (i + 1) * size; j++)
+			   AttriDataMap[i].attriEleNum = size;
+			   for (var i = 0; i * stride < BufferData.bufferData.length; i++){
+				   for (var j = i * stride + offset; j < i * stride + offset + size; j++)
 				   	AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(BufferData.bufferData[j]);
 			   }
-			   //AttriDataMap[i].uniformData = temData;
-
-			   // 这个是为了重组整个数据
-			   /*
-			   if (EleFlag == 0){
-				   AttriDataMap[i].uniformData = temData;
-			   }else{
-				   for (var i = 0; i < EleFlag.length; i++){
-					   for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
-						   AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(temData[j]);
-				   }
-			   }
-			*/
 			   return;
 		   }
 	   }
-	   newAttri.attriEleNum = size - offset;
-	   for (var i = 0; i * size < BufferData.bufferData.length; i++){
-		   for (var j = i * size + offset; j < (i + 1) * size; j++)
+	   newAttri.attriEleNum = size;
+	   for (var i = 0; i * stride < BufferData.bufferData.length; i++){
+		   for (var j = i * stride + offset; j < i * stride + offset + size; j++)
 		   		newAttri.uniformData = newAttri.uniformData.concat(BufferData.bufferData[j]);
 	   }
-	   //console.log("temData",temData);
-		//    console.log("newAttri.uniformData",newAttri.uniformData);
-		//    console.log("newAttri",newAttri);
-	   //newAttri.uniformData = temData;
-
-	   // 这个是为了重组整个数据
-	   /*
-	   if (EleFlag == 0){
-		   newAttri.uniformData = temData;
-	   }else{
-		   for (var i = 0; i < EleFlag.length; i++){
-			   for (var j = EleFlag[i] * size; j < (EleFlag[i] + 1) * size; j++)
-				   newAttri.uniformData = newAttri.uniformData.concat(temData[j]);
-		   }
-	   }
-	   */
 
 	   // 将attribute加入map
 	   AttriDataMap.push(newAttri);
@@ -782,8 +755,6 @@ Mat3 = (function() {
 		activeProgramNum = getactiveProgramNum();
 		//没有进入gl.element直接进入这个gl.drawelement
 		//加入attribute的部分
-		//还没有考虑first和count呢 ！！！！！！！！！！！！
-		//这个在画linetest前面要改好
 		if (ProgramDataMap[activeProgramNum].attriData.length == 0){
 			for (var i = 0; i < AttriDataMap.length; i++)
 				if( AttriDataMap[i].programName == activeProgram){
