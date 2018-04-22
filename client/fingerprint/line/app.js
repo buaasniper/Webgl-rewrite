@@ -77,8 +77,9 @@ var LineTest = function(type) {
         precision mediump float;
         uniform ivec3 line_point[600];
         int division(int a, int b);
+        int D_abs(int a, int b);
         void main(void) {
-        int x0, y0 , x1, y1, x2, y2, k, b, y;
+        int x0, y0 , x1, y1, x2, y2, k, b, y ;
         x0 = int(gl_FragCoord.x) ; 
         y0 = int(gl_FragCoord.y) ; 
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -87,14 +88,35 @@ var LineTest = function(type) {
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
             x2 = division( (line_point[i + 1][0] + 1000) * 32 , 250);  
             y2 = division( (line_point[i + 1][1] + 1000) * 32 , 250);   
-            //if (((x1 - x0) * (x2 - x0) < 0) && ((y1 - y0) * (y2 - y0) < 0)){
-            //    k = division ((y2 - y1), (x2 - x1));
-            //    y = y1 + (x0 - x1) * k;
-            //    if ( (y0 - y < 5) && (y0 - y > -5) ) 
-            //        gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
-            //}
             if ((x0 == x1) && (y0 == y1))
                 gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
+            else{
+                if (D_abs(x1,x2) > D_abs(y1,y2)){
+                    k = division ( (y1 - y2) * 1000, (x1 - x2));
+                    b = y1 * 1000 - k * x1;
+                    if (x1 > x2){
+                        x1 = x1 + x2;
+                        x2 = x1 - x2;
+                        x1 = x1 - x2;
+                    }
+                    for (int j = 0; j < 255; j++)
+                        if ((j > x1) && (j < x2) && (x0 == j) && (y0 == division(k * x0 + b, 1000))  )
+                            gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
+                }else{
+                    k = division ( (x1 - x2) * 1000, (y1 - y2));
+                    b = x1 * 1000 - k * y1;
+                    if (y1 > y2){
+                        y1 = y1 + y2;
+                        y2 = y1 - y2;
+                        y1 = y1 - y2;
+                    }
+                    for (int j = 0; j < 255; j++)
+                        if ((j > y1) && (j < y2) && (y0 == j) && (x0 == division(k * y0 + b, 1000))  )
+                            gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
+                
+                }
+                
+            }
         
         }
         }
@@ -110,6 +132,12 @@ var LineTest = function(type) {
               return n ;
             else
               return (n + 1);
+          }
+        int D_abs(int a, int b){
+            if (a > b)
+                return a - b;
+            else
+                return b - a;
           }
 `;
                     // Create fragment shader object

@@ -829,13 +829,19 @@ Mat3 = (function() {
 					coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
 			}
 			console.log("coordinates",coordinates);
-			for (var i = 0; i < count -1; i++){
+			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
 				tem = tem.concat(coordinates[3 * i + 2]);
 				tem = tem.concat(coordinates[3 * i + 3]);
 				tem = tem.concat(coordinates[3 * i + 4]);
 				tem = tem.concat(coordinates[3 * i + 5]);
+			}
+			
+			for (var i = 256; i <=  262; i++){
+				tem = tem.concat(coordinates[3 * i]);
+				tem = tem.concat(coordinates[3 * i + 1]);
+				tem = tem.concat(coordinates[3 * i + 2]);
 			}
 			console.log("tem",tem);
 
