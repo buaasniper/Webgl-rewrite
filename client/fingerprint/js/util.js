@@ -815,16 +815,68 @@ Mat3 = (function() {
 			}
 				
 		} 
-		console.log("数据处理区域完毕");
-		console.log("ProgramDataMap", ProgramDataMap);
+		//console.log("数据处理区域完毕");
+		//console.log("ProgramDataMap", ProgramDataMap);
 
+		if (vetexID == 0){
+			var tem = [];
+			var coordinates = [];
+			var __VertexPositionAttributeLocation1;
+			//console.log("ProgramDataMap", ProgramDataMap);
+			//attribute 读取阶段
+			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
+					coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
+			}
+			console.log("coordinates",coordinates);
+			for (var i = 0; i < count -1; i++){
+				tem = tem.concat(coordinates[3 * i]);
+				tem = tem.concat(coordinates[3 * i + 1]);
+				tem = tem.concat(coordinates[3 * i + 2]);
+				tem = tem.concat(coordinates[3 * i + 3]);
+				tem = tem.concat(coordinates[3 * i + 4]);
+				tem = tem.concat(coordinates[3 * i + 5]);
+			}
+			console.log("tem",tem);
+
+			var newData1 = new varying_data;
+			newData1.shaderName = "line_point";
+			newData1.varyEleNum = 3;
+			newData1.uniformData = tem;
+			for (var i =0; i < newData1.uniformData.length; i++)
+				if (i % 3 != 2)
+					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+				else
+					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+			//关于那一条斜线的数据，可以认为处理掉，无所谓的
+			console.log("ProgramDataMap", ProgramDataMap);
+			var canvas_buffer = [-1.0, -1.0, 
+				1.0, -1.0, 
+				-1.0,  1.0, 
+				-1.0,  1.0,
+				1.0, -1.0, 
+				1.0,  1.0]; 
+			var new_vertex_buffer = gl.createBuffer();
+			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+			__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'coordinates');
+			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
+			gl.my_useProgram(activeProgram);
+			var traingles_vex_loc = gl.getUniformLocation(activeProgram, "line_point");
+			gl.uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+			
+		}//vetexID == 0
 		
 
 		//建立了一个全局变量，vetexID
 		//理论上进入vetex的部分，假设有东西
 		
 		
-		
+		if ((vetexID == 4) ||  (vetexID == 5)){
 			var mWorld = new Float32Array(16);
 			var mWorld_fs = new Float32Array(16);
 			var mView_fs = new Float32Array(16);
@@ -854,13 +906,9 @@ Mat3 = (function() {
 			}
 
 
-			if (vetexID == 0){
-				var tem = [];
-				var vertPosition = [];
-				
-			}
+			
 	
-			if ((vetexID == 4) ||  (vetexID == 5)){
+			
 			//进入vetex计算部分
 			mat4.copy(mWorld_fs, mWorld);
 			mat4.copy(mView_fs, mView);
@@ -1069,7 +1117,7 @@ function devide_draw(left, right, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], left_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], left_varying[i]);
-					console.log("left_varying",i,left_varying[i]);
+					//console.log("left_varying",i,left_varying[i]);
 				}
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 					gl.my_uniform4iv(loc_array[i], left_varying[i]);
@@ -1117,7 +1165,7 @@ function devide_draw(left, right, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], right_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], right_varying[i]);
-					console.log("right_varying",i,  right_varying[i]);
+					//console.log("right_varying",i,  right_varying[i]);
 				}
 					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1213,7 +1261,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], bot_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], bot_varying[i]);
-					console.log("bot_varying",i,bot_varying[i]);
+					//console.log("bot_varying",i,bot_varying[i]);
 				}
 					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1262,7 +1310,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 					gl.my_uniform2iv(loc_array[i], top_varying[i]);
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 					gl.my_uniform3iv(loc_array[i], top_varying[i]);
-					console.log("top_varying",i,top_varying[i]);
+					//console.log("top_varying",i,top_varying[i]);
 				}
 					
 				else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
