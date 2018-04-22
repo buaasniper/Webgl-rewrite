@@ -791,7 +791,10 @@ Mat3 = (function() {
 					newData.programName = AttriDataMap[i].programName;
 					newData.shaderName = AttriDataMap[i].shaderName;
 					newData.attriEleNum = AttriDataMap[i].attriEleNum;
-					newData.uniformData = AttriDataMap[i].uniformData;
+					newData.uniformData = [];
+					//在这里面添加first和count
+					for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
+						newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
 					ProgramDataMap[activeProgramNum].attriData.push(newData);
 				}
 					
@@ -812,15 +815,16 @@ Mat3 = (function() {
 			}
 				
 		} 
-		//console.log("数据处理区域完毕");
-		//console.log("ProgramDataMap", ProgramDataMap);
+		console.log("数据处理区域完毕");
+		console.log("ProgramDataMap", ProgramDataMap);
 
+		
 
 		//建立了一个全局变量，vetexID
 		//理论上进入vetex的部分，假设有东西
 		
 		
-		if ((vetexID == 4) ||  (vetexID == 5)){
+		
 			var mWorld = new Float32Array(16);
 			var mWorld_fs = new Float32Array(16);
 			var mView_fs = new Float32Array(16);
@@ -848,6 +852,15 @@ Mat3 = (function() {
 				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
 					mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
 			}
+
+
+			if (vetexID == 0){
+				var tem = [];
+				var vertPosition = [];
+				
+			}
+	
+			if ((vetexID == 4) ||  (vetexID == 5)){
 			//进入vetex计算部分
 			mat4.copy(mWorld_fs, mWorld);
 			mat4.copy(mView_fs, mView);
