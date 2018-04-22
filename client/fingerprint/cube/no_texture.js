@@ -31,7 +31,7 @@ struct txt_coord{
 };
 
 #define init tri_p tri; col_p colorrgb; ivec3 colrgb; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; 
-#define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];    colorrgb.r1 = tri_color[i][0]; colorrgb.g1 = tri_color[i][1]; colorrgb.b1 = tri_color[i][2]; colorrgb.r2 = tri_color[i+1][0]; colorrgb.g2 = tri_color[i+1][1]; colorrgb.b2 = tri_color[i+1][2]; colorrgb.r3 = tri_color[i+2][0]; colorrgb.g3 = tri_color[i+2][1]; colorrgb.b3 = tri_color[i+2][2];
+
 #define changePosition tri = changevalue(tri); 
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
@@ -69,13 +69,13 @@ void main()
 {
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
-    assign;
+
     changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        gl_FragColor = vec4 (col_transfer( colrgb, 100));
+        //gl_FragColor = vec4 (col_transfer( colrgb, 100));
       } 
     }
   } 
@@ -313,6 +313,7 @@ var CubeTest = function(type) {
         canvas = getCanvas("can_aa");
         gl = getGLAA(canvas);
     }
+    console.log("我现在跑的是这个测试繁华的艰苦奋斗看世界繁华的家护肤科技");
     // __texture_flag = 0;
     // __My_index_flag = 0;  
     // __PointBuffer = [];
@@ -344,6 +345,7 @@ var CubeTest = function(type) {
 
     gl.shaderSource(vertexShader, vertCode);
     gl.shaderSource(fragmentShader, fragCod1e);
+    console.log("fragCod1e",fragCod1e);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
