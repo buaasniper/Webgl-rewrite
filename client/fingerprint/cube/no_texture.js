@@ -71,19 +71,21 @@ var CubeTest = function(type) {
         canvas = getCanvas("can_aa");
         gl = getGLAA(canvas);
     }
-    __texture_flag = 0;
-    __My_index_flag = 0;  
-    __PointBuffer = [];
-    __ColorBuffer = [];
-    __Tem_pointbuffer = [];
-    __Tem_colorbuffer = [];
-    __ActiveBuffer_vertex = [];
-    __ActiveBuffer_frag = [];
-    __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
-    __Mworld_flag = 1;
-    __Mview_flag = 1;
-    __Mpro_flag = 1;
-    __Drawnumber = 1
+    // __texture_flag = 0;
+    // __My_index_flag = 0;  
+    // __PointBuffer = [];
+    // __ColorBuffer = [];
+    // __Tem_pointbuffer = [];
+    // __Tem_colorbuffer = [];
+    // __ActiveBuffer_vertex = [];
+    // __ActiveBuffer_frag = [];
+    // __ColorFlag = 1;  // 0代表不需要颜色，1代表需要颜色。
+    // __Mworld_flag = 1;
+    // __Mview_flag = 1;
+    // __Mpro_flag = 1;
+    // __Drawnumber = 1
+
+    vetexID = 1;
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -192,9 +194,7 @@ var CubeTest = function(type) {
       // Bottom
       21, 20, 22, 22, 20, 23
     ];
-/*  
 
-    var boxIndices = [0, 1, 2, 0, 2, 3,3]; */ 
     var boxVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
@@ -225,14 +225,14 @@ var CubeTest = function(type) {
         );
 
     gl.enableVertexAttribArray(positionAttribLocation);
-    //gl.enableVertexAttribArray(colorAttribLocation);
+    gl.enableVertexAttribArray(colorAttribLocation);
 
     // Tell OpenGL state machine which program should be active.
     gl.useProgram(program);
 
-    //var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
-    //var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
-    //var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
+    var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+    var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+    var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 
     var worldMatrix = new Float32Array(16);
     var viewMatrix = new Float32Array(16);
@@ -243,18 +243,18 @@ var CubeTest = function(type) {
                      canvas.width / canvas.height, 0.1, 1000.0);
     //mat4.transpose(viewMatrix, viewMatrix);
     //mat4.transpose(projMatrix, projMatrix);
-    mat4.copy(__Mworld, worldMatrix);
-    mat4.copy(__Mview,viewMatrix);
-    mat4.copy(__Matrix0,projMatrix);
-    mat4.identity(worldMatrix);
-    mat4.identity(viewMatrix);
-    mat4.identity(projMatrix);
+    // mat4.copy(__Mworld, worldMatrix);
+    // mat4.copy(__Mview,viewMatrix);
+    // mat4.copy(__Matrix0,projMatrix);
+    // mat4.identity(worldMatrix);
+    // mat4.identity(viewMatrix);
+    // mat4.identity(projMatrix);
     //console.log("worldMatrix", worldMatrix);
     //console.log("viewMatrix", viewMatrix);
     //console.log("projMatrix", projMatrix);
-    //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-    //gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-    //gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+    gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+    gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+    gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
     var xRotationMatrix = new Float32Array(16);
     var yRotationMatrix = new Float32Array(16);
@@ -276,13 +276,13 @@ var CubeTest = function(type) {
       mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
       mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
       mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
-      mat4.copy(__Mworld, worldMatrix);
-      mat4.transpose(__Mworld, __Mworld);
-      mat4.transpose(__Mview, __Mview);
-      mat4.transpose(__Matrix0, __Matrix0);
-      mat4.mul(__Mview, __Mview, __Matrix0);
+      // mat4.copy(__Mworld, worldMatrix);
+      // mat4.transpose(__Mworld, __Mworld);
+      // mat4.transpose(__Mview, __Mview);
+      // mat4.transpose(__Matrix0, __Matrix0);
+      // mat4.mul(__Mview, __Mview, __Matrix0);
       //console.log("第一次计算", __Mview);
-      mat4.mul(__Mworld, __Mworld, __Mview);
+      // mat4.mul(__Mworld, __Mworld, __Mview);
       //console.log("传入的矩阵", __Mworld);
       /*
       console.log("第二次计算", __Mworld);
@@ -292,8 +292,8 @@ var CubeTest = function(type) {
       mat4.identity(worldMatrix);
       console.log("最终结果", worldMatrix);
       */
-      //gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-      __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      // __Matrix1 = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 256);
       //console.log("__Mworld", __Mworld);
       //console.log("__Mview", __Mview);
       //console.log("__Matrix0", __Matrix0);
@@ -302,7 +302,7 @@ var CubeTest = function(type) {
       //console.log("aaaaaaaaaaaa");
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-      AAA(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
       if (count == 20) {
         dataURL = canvas.toDataURL('image/png', 1.0);
         console.log("cube test result:", calcSHA1(dataURL));

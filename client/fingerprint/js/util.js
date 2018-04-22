@@ -879,9 +879,71 @@ Mat3 = (function() {
 		}//vetexID == 0
 		
 
-		//建立了一个全局变量，vetexID
-		//理论上进入vetex的部分，假设有东西
-		
+		if (vetexID == 1){
+			var mWorld = new Float32Array(16);
+			var mWorld_fs = new Float32Array(16);
+			var mView_fs = new Float32Array(16);
+			var mView = new Float32Array(16);
+			var mProj = new Float32Array(16);
+			var vertPosition = [];
+			var vertColor = [];
+			var varyingmap = [];
+			//attribute 读取阶段
+			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertPosition")
+					vertPosition = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
+				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertColor")
+					vertColor = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+			}
+			//uniform 读取阶段
+			for (var i = 0; i < ProgramDataMap[activeProgramNum].uniformData.length; i++){
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mWorld")
+					mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;					
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mView")
+					mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
+					mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			}
+
+			//进入vetex计算部分
+			mat4.copy(mWorld_fs, mWorld);
+			mat4.copy(mView_fs, mView);
+			mat4.transpose(mWorld, mWorld);
+			mat4.transpose(mView, mView);
+			mat4.transpose(mProj, mProj);
+			mat4.mul(mView, mView, mProj);
+			mat4.mul(mWorld, mWorld, mView);
+
+			//进入计算阶段
+			//手工去完成自动化的那部分
+			
+			var newData1 = new varying_data;
+			newData1.shaderName = "tri_point";
+			newData1.varyEleNum = 3;
+			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+			for (var i =0; i < newData1.uniformData.length; i++)
+				if (i % 3 != 2)
+					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+				else
+					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+
+			var newData2 = new varying_data;
+			newData2.shaderName = "tri_color";
+			newData2.varyEleNum = 3;
+			for (var i = 0; i < vertColor.length; i++){
+				newData2.uniformData = newData2.uniformData.concat(vertColor[i]);
+				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
+			}	
+			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+
+			console.log("ProgramDataMap",ProgramDataMap);
+
+
+
+
+
+		}//vetexID == 1
 		
 		if ((vetexID == 4) ||  (vetexID == 5)){
 			var mWorld = new Float32Array(16);
