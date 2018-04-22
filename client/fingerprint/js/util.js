@@ -864,9 +864,10 @@ Mat3 = (function() {
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 			gl.my_useProgram(activeProgram);
-			var traingles_vex_loc = gl.getUniformLocation(activeProgram, "line_point");
-			gl.uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
+			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			console.log("开始draw");
+			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 			
 		}//vetexID == 0

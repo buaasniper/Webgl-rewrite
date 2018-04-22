@@ -73,24 +73,45 @@ var LineTest = function(type) {
                   }
 
                 // Fragment shader source code
-                var fragCode =
-        'precision mediump float;' +
-        'float round(float x);'+
-        'uniform vec3 line_point[600];' +
-        'void main(void) {' +
-        'float x0, y0 , x1, y1, x2, y2, k, b, y;'+
-        'x0 = gl_FragCoord.x * 1.0; y0 = gl_FragCoord.y * 1.0; '+
-        'gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);'+
-        'for (int i = 0 ; i < 600; i += 2){'+
-            'x1 = line_point[i][0];   y1 = line_point[i][1];  '+
-            'x2 = line_point[i+1][0]; y2 = line_point[i+1][1]; '+
-            'if (((x1 - x0) * (x2 - x0) < 0.0001) && ((y1 - y0) * (y2 - y0) < 0.0001)){' +
-                'k = (y2 - y1)/ (x2 - x1); y = y1 + (x0 - x1) * k; if (abs(y0 - y) < 1.0) {gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);}'+
-            '}'+
+                var fragCode =`
+        precision mediump float;
+        uniform ivec3 line_point[600];
+        int division(int a, int b);
+        void main(void) {
+        int x0, y0 , x1, y1, x2, y2, k, b, y;
+        x0 = int(gl_FragCoord.x) ; 
+        y0 = int(gl_FragCoord.y) ; 
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        for (int i = 0 ; i < 600; i += 2){
+            x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
+            y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
+            x2 = division( (line_point[i + 1][0] + 1000) * 32 , 250);  
+            y2 = division( (line_point[i + 1][1] + 1000) * 32 , 250);   
+            //if (((x1 - x0) * (x2 - x0) < 0) && ((y1 - y0) * (y2 - y0) < 0)){
+            //    k = division ((y2 - y1), (x2 - x1));
+            //    y = y1 + (x0 - x1) * k;
+            //    if ( (y0 - y < 5) && (y0 - y > -5) ) 
+            //        gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
+            //}
+            if ((x0 == x1) && (y0 == y1))
+                gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
         
-   '}'+
-'}' 
-;
+        }
+        }
+        int division(int a, int b){
+            int n = a / b;
+            if ( (n - 2) * b >= a )
+              return (n - 3);
+            else if ( (n - 1) * b >= a )
+              return (n - 2);
+            else if ( b * n >= a )
+              return (n - 1);
+            else if ( (n + 1) * b >= a )
+              return n ;
+            else
+              return (n + 1);
+          }
+`;
                     // Create fragment shader object
                     var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
 
