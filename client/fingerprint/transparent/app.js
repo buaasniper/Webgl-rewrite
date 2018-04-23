@@ -242,6 +242,8 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     //ctx.fillText("Hello world", 9, 50);
 
                     if(count == 50){
+                        dataURL = canvas.toDataURL('image/png', 1.0);
+                        console.log("Transparent test result:", calcSHA1(dataURL));
                         cancelAnimationFrame(frame);
                         sender.getData(gl, parent.IDs[childNumber]);
                         parent.childComplete();
