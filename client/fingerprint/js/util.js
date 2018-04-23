@@ -823,9 +823,9 @@ Mat3 = (function() {
 			newData1.uniformData = tem;
 			for (var i =0; i < newData1.uniformData.length; i++)
 				if (i % 3 != 2)
-					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
 				else
-					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 			//关于那一条斜线的数据，可以认为处理掉，无所谓的
 			//console.log("ProgramDataMap", ProgramDataMap);
@@ -896,9 +896,9 @@ Mat3 = (function() {
 			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
 			for (var i =0; i < newData1.uniformData.length; i++)
 				if (i % 3 != 2)
-					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
 				else
-					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 
 			var newData2 = new varying_data;
@@ -906,7 +906,7 @@ Mat3 = (function() {
 			newData2.varyEleNum = 3;
 			for (var i = 0; i < vertColor.length; i++){
 				newData2.uniformData = newData2.uniformData.concat(vertColor[i]);
-				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
+				newData2.uniformData[i] = Math.round(((newData2.uniformData[i] )) * 1000);
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
@@ -993,9 +993,9 @@ Mat3 = (function() {
 			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
 			for (var i =0; i < newData1.uniformData.length; i++)
 				if (i % 3 != 2)
-					newData1.uniformData[i] = Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
 				else
-					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
+					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 
 
@@ -1007,7 +1007,7 @@ Mat3 = (function() {
 			newData2.varyEleNum = 2;
 			for (var i = 0; i < vertTexCoord.length; i++){
 				newData2.uniformData = newData2.uniformData.concat(vertTexCoord[i]);
-				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
+				newData2.uniformData[i] = Math.round(((newData2.uniformData[i] )) * 1000);
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 			//console.log("vertTexCoord",vertTexCoord);
@@ -1030,7 +1030,7 @@ Mat3 = (function() {
 					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[2] + tem[i+1] * mWorld_fs[6] + tem[i+2] * mWorld_fs[10])) ;
 				}
 				for (var i = 0; i < newData3.uniformData.length; i++)
-					newData3.uniformData[i] = Math.floor(((newData3.uniformData[i] )) * 1000);
+					newData3.uniformData[i] = Math.round(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
 			
@@ -1049,7 +1049,7 @@ Mat3 = (function() {
 					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[3] + tem[i+1] * mView_fs[7] + tem[i+2] * mView_fs[11]+  mView_fs[15]));
 				}
 				for (var i = 0; i < newData4.uniformData.length; i++)
-					newData4.uniformData[i] = Math.floor(((newData4.uniformData[i] )) * 1000);
+					newData4.uniformData[i] = Math.round(((newData4.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData4);
 			}
 
@@ -1117,7 +1117,7 @@ function devide_draw(left, right, tem_varying, gl){
 	var left_varying = [];
 	var right_varying = [];
 	var tri_number = tem_varying[0].length / 9;
-	var mid = Math.floor((left + right) / 2);
+	var mid = Math.round((left + right) / 2);
 	var left_number = 0;
 	var right_number = 0;
 	var __Program;
@@ -1273,7 +1273,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	var bot_varying = [];
 	var top_varying = [];
 	var tri_number = tem_varying[0].length / 9;
-	var mid = Math.floor((bot + top) / 2);
+	var mid = Math.round((bot + top) / 2);
 	var bot_number = 0;
 	var top_number = 0;
 	var __Program;
@@ -1454,7 +1454,7 @@ BBB = function(primitiveType, offset, count){
 			var line_buffer = [];
 			for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 				if (i % 3 != 2)
-				__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+				__ActiveBuffer_vertex[i] = Math.round(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 				else
 				__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
 			for (var i = 0; i < count - 1; i++){
@@ -1498,7 +1498,7 @@ BBB = function(primitiveType, offset, count){
 			/*
 			for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 				if (i % 3 != 2)
-					__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+					__ActiveBuffer_vertex[i] = Math.round(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 				else
 					__ActiveBuffer_vertex[i] = -1 * __ActiveBuffer_vertex[i];
 			*/
@@ -1506,9 +1506,9 @@ BBB = function(primitiveType, offset, count){
 			// 这是int版本的
 			for (var i =0; i < __ActiveBuffer_vertex.length; i++)
 				if (i % 3 != 2)
-					__ActiveBuffer_vertex[i] = Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+					__ActiveBuffer_vertex[i] = Math.round(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 				else
-					__ActiveBuffer_vertex[i] = -1 * Math.floor(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
+					__ActiveBuffer_vertex[i] = -1 * Math.round(((__ActiveBuffer_vertex[i] + 1)) * 256 /2);
 
 			
 			//console.log("转化成pixel的位置",__ActiveBuffer_vertex);	
@@ -1548,7 +1548,7 @@ BBB = function(primitiveType, offset, count){
 		/*
 			for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 				if (i % 3 != 2)
-					__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+					__ActiveBuffer_vertex_result[i] = Math.round(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 				else
 					__ActiveBuffer_vertex_result[i] = -1 * __ActiveBuffer_vertex_result[i];
 		*/
@@ -1556,13 +1556,13 @@ BBB = function(primitiveType, offset, count){
 		//这个是int版本
 		for (var i =0; i < __ActiveBuffer_vertex_result.length; i++)
 			if (i % 3 != 2)
-				__ActiveBuffer_vertex_result[i] = Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+				__ActiveBuffer_vertex_result[i] = Math.round(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 			else
-				__ActiveBuffer_vertex_result[i] = -1 * Math.floor(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
+				__ActiveBuffer_vertex_result[i] = -1 * Math.round(((__ActiveBuffer_vertex_result[i] + 1)) * 256 /2);
 
 			
 		for (var i =0; i < __ActiveBuffer_vertex_texture.length; i++)
-			__ActiveBuffer_vertex_texture[i] = Math.floor(((__ActiveBuffer_vertex_texture[i] )) * 255);
+			__ActiveBuffer_vertex_texture[i] = Math.round(((__ActiveBuffer_vertex_texture[i] )) * 255);
 
 		var t_nor = [];	
 		if (__My_buffer_flag == 4){
@@ -1573,7 +1573,7 @@ BBB = function(primitiveType, offset, count){
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[2] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[6] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[10])) ;
 			}
 			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i++)
-				__ActiveBuffer_vertex_normal[i] = Math.floor(((t_nor[i] )) * 100);
+				__ActiveBuffer_vertex_normal[i] = Math.round(((t_nor[i] )) * 100);
 			//__ActiveBuffer_vertex_normal = t_nor;
 			
 		}
