@@ -1007,7 +1007,7 @@ Mat3 = (function() {
 			newData2.varyEleNum = 2;
 			for (var i = 0; i < vertTexCoord.length; i++){
 				newData2.uniformData = newData2.uniformData.concat(vertTexCoord[i]);
-				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 255);
+				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 			//console.log("vertTexCoord",vertTexCoord);

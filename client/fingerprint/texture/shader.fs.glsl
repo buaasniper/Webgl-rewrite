@@ -144,12 +144,12 @@ txt_coord calCoord(txt_p f, tri_p t){
   wei_3 = division(bcs3 * 1000, cs3);
   // 在这里还是256000这样一个系数
 
-  //f.x1 = division( f.x1 * 51, 200);
-  //f.y1 = division( f.y1 * 51, 200);
-  //f.x2 = division( f.x2 * 51, 200);
-  //f.y2 = division( f.y2 * 51, 200);
-  //f.x3 = division( f.x3 * 51, 200);
-  //f.y3 = division( f.y3 * 51, 200); 
+  f.x1 = division( f.x1 * 51, 200);
+  f.y1 = division( f.y1 * 51, 200);
+  f.x2 = division( f.x2 * 51, 200);
+  f.y2 = division( f.y2 * 51, 200);
+  f.x3 = division( f.x3 * 51, 200);
+  f.y3 = division( f.y3 * 51, 200); 
 
   tt.x = wei_1 * f.x1 + wei_2 * f.x2 + wei_3 * f.x3;
   tt.y = wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3;
