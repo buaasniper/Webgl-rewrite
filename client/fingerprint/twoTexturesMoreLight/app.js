@@ -256,6 +256,8 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == 55) {
+          dataURL = canvas.toDataURL('image/png', 1.0);
+          console.log("two texture test result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();
