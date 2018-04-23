@@ -910,7 +910,7 @@ Mat3 = (function() {
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
-			console.log("ProgramDataMap",ProgramDataMap);
+			//console.log("ProgramDataMap",ProgramDataMap);
 
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
@@ -925,13 +925,14 @@ Mat3 = (function() {
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
 			gl.my_useProgram(activeProgram);
-			var traingles_vex_loc = gl.getUniformLocation(activeProgram, "tri_point");
-			var traingles_fra_loc = gl.getUniformLocation(activeProgram, "tri_color");
+			var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "tri_point");
+			var traingles_fra_loc = gl.my_getUniformLocation(activeProgram, "tri_color");
 			var traingles_num_loc = gl.my_getUniformLocation(activeProgram, "tri_number");
 			gl.my_uniform1i(traingles_num_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length/3);
-			gl.uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
-			gl.uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
+			console.log("开始画了");
+			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 
 
@@ -1361,7 +1362,7 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
 			gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);		
 			gl.my_useProgram(__Program);
-			var traingles_num_loc = gl.getUniformLocation(__Program, "tri_number");
+			var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
 			gl.my_uniform1i(traingles_num_loc, top_number);
 			transUniform(__Program);
 			//要实现自动化的代码

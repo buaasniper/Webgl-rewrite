@@ -151,7 +151,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       //
       // Create texture
       //
-      __tex = gl.createTexture();
+      var __tex = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, __tex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

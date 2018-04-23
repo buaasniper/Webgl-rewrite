@@ -31,7 +31,7 @@ struct txt_coord{
 };
 
 #define init tri_p tri; col_p colorrgb; ivec3 colrgb; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; 
-
+#define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];    colorrgb.r1 = tri_color[i][0]; colorrgb.g1 = tri_color[i][1]; colorrgb.b1 = tri_color[i][2]; colorrgb.r2 = tri_color[i+1][0]; colorrgb.g2 = tri_color[i+1][1]; colorrgb.b2 = tri_color[i+1][2]; colorrgb.r3 = tri_color[i+2][0]; colorrgb.g3 = tri_color[i+2][1]; colorrgb.b3 = tri_color[i+2][2];
 #define changePosition tri = changevalue(tri); 
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
@@ -57,7 +57,7 @@ int  wei_1, wei_2, wei_3;
 
 
 txt_coord calCoord(txt_p f, tri_p t);
-col calCoord(col_p f, tri_p t);
+ivec3 calCoord(col_p f, tri_p t);
 ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
 ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y); 
 ivec3 D_normalize(ivec3 a);
@@ -69,13 +69,13 @@ void main()
 {
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
-
+    assign;
     changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        //gl_FragColor = vec4 (col_transfer( colrgb, 100));
+        gl_FragColor = vec4 (col_transfer( colrgb, 100));
       } 
     }
   } 
@@ -174,7 +174,7 @@ txt_coord calCoord(txt_p f, tri_p t){
   return tt;
 }
 
-col calCoord(col_p f, tri_p t){
+ivec3 calCoord(col_p f, tri_p t){
   col tt;
   int bcs1, bcs2, bcs3, cs1, cs2, cs3;
   bcs1 = (t.x0 * t.y2 + t.x2 * t.y3 + t.x3 * t.y0) - (t.x3 * t.y2 + t.x2 * t.y0 + t.x0 * t.y3);
@@ -201,7 +201,7 @@ col calCoord(col_p f, tri_p t){
   f.b3 = division( f.b3 * 51, 200);
 
   tt.r = division( wei_1 * f.r1 + wei_2 * f.r2 + wei_3 * f.r3, 1000);
-  tt.g = division( wei_1 * f.y1 + wei_2 * f.y2 + wei_3 * f.y3, 1000);
+  tt.g = division( wei_1 * f.g1 + wei_2 * f.g2 + wei_3 * f.g3, 1000);
   tt.b = division( wei_1 * f.b1 + wei_2 * f.b2 + wei_3 * f.b3, 1000);
 
   return ivec3(tt.r, tt.g, tt.b);
@@ -313,7 +313,6 @@ var CubeTest = function(type) {
         canvas = getCanvas("can_aa");
         gl = getGLAA(canvas);
     }
-    console.log("我现在跑的是这个测试繁华的艰苦奋斗看世界繁华的家护肤科技");
     // __texture_flag = 0;
     // __My_index_flag = 0;  
     // __PointBuffer = [];
@@ -345,7 +344,6 @@ var CubeTest = function(type) {
 
     gl.shaderSource(vertexShader, vertCode);
     gl.shaderSource(fragmentShader, fragCod1e);
-    console.log("fragCod1e",fragCod1e);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {

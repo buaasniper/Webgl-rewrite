@@ -245,14 +245,31 @@ int isqrt(int a){
       return i;
 }
 
+int D_multiple(int a, int b)
+{
+  if (division(b, 1000) > 100)
+	{
+		return a * division(b, 1000);
+	}	
+  else if (division(a, 1000) > 100)
+	{
+		return b * division(a, 1000);
+	}	
+	else
+	{
+		return division(a * b, 1000);
+	}
+}
+
+
 ivec3 D_multiple(ivec3 x, int b)
 {
-  return ivec3(division(x[0] * b,1000), division(x[1] * b,1000), division(x[2] * b,1000));
+  return ivec3(D_multiple(x[0] ,b), D_multiple(x[1] ,b), D_multiple(x[2] ,b));
 }
 
 ivec3 D_multiple(ivec3 x, ivec3 y)
 {
-  return ivec3(division(x[0] * y[0],1000), division(x[1] * y[1],1000), division(x[2] * y[2],1000));
+  return ivec3(D_multiple(x[0] ,y[0]), D_multiple(x[1] ,y[1]), D_multiple(x[2] ,y[2]));
 }
 
 ivec3 D_division(ivec3 x, int y)
@@ -295,14 +312,15 @@ tri_p changevalue(tri_p t)
 //I - 2.0 * dot(N, I) * N
 ivec3 D_reflect(ivec3 x, ivec3 y)
 {
-	return ivec3(x[0] - 2 * D_dot(x,y)*y[0],x[1] - 2 * D_dot(x,y)*y[1], x[2] - 2 * D_dot(x,y)*y[2]);
+	return ivec3(x[0] - division(2 * D_dot(x,y)*y[0],1000),x[1] - division(2 * D_dot(x,y)*y[1],1000), x[2] - division(2 * D_dot(x,y)*y[2],1000));
 }
 
 int D_pow(int a, int b)
 {
     int ans = 1;
     for (int i = 0; i < 16; i++) {
-        ans = division(ans * a, 10);
+        ans = D_multiple(ans, a);
     }
     return ans;
 }
+

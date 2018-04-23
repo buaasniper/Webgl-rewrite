@@ -222,9 +222,9 @@
       this.testList = [];
       root.sender = sender = new Sender();
       
-      this.testList.push(new CubeTest('normal'));
-      //this.testList.push(new CubeTest('aa'));
-      //this.testList.push(new CameraTest());     
+      // this.testList.push(new CubeTest('normal'));
+      // this.testList.push(new CubeTest('aa'));
+      // this.testList.push(new CameraTest());     
       // this.testList.push(new LineTest('normal'));
       
       // this.testList.push(new LineTest('aa'));
@@ -233,9 +233,9 @@
       
       // this.testList.push(new SimpleLightTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.susanNormals, this.texture));
       // this.testList.push(new SimpleLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
-      // this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
-      // this.testList.push(new TwoTexturesMoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture, this.texture1));
-      //this.testList.push(new TransparentTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
+      //this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
+      //this.testList.push(new TwoTexturesMoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture, this.texture1));
+       this.testList.push(new TransparentTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
       //this.testList.push(new LightingTest());
       //this.testList.push(new ClippingTest());
       //this.testList.push(new BubbleTest());

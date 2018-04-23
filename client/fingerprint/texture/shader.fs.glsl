@@ -199,14 +199,31 @@ int isqrt(int a){
       return i;
 }
 
+int D_multiple(int a, int b)
+{
+  if (division(b, 1000) > 100)
+	{
+		return a * division(b, 1000);
+	}	
+  else if (division(a, 1000) > 100)
+	{
+		return b * division(a, 1000);
+	}	
+	else
+	{
+		return division(a * b, 1000);
+	}
+}
+
+
 ivec3 D_multiple(ivec3 x, int b)
 {
-  return ivec3(division(x[0] * b,1000), division(x[1] * b,1000), division(x[2] * b,1000));
+  return ivec3(D_multiple(x[0] ,b), D_multiple(x[1] ,b), D_multiple(x[2] ,b));
 }
 
 ivec3 D_multiple(ivec3 x, ivec3 y)
 {
-  return ivec3(division(x[0] * y[0],1000), division(x[1] * y[1],1000), division(x[2] * y[2],1000));
+  return ivec3(D_multiple(x[0] ,y[0]), D_multiple(x[1] ,y[1]), D_multiple(x[2] ,y[2]));
 }
 
 ivec3 D_division(ivec3 x, int y)
