@@ -67,7 +67,7 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    changePosition;
+    //changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){

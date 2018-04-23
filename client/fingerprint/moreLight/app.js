@@ -237,6 +237,8 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
         if (count == end) {
+          dataURL = canvas.toDataURL('image/png', 1.0);
+          console.log("more light result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();
