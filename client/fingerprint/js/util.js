@@ -486,7 +486,7 @@ Mat3 = (function() {
 		   for (var j = i * stride + offset; j < i * stride + offset + size; j++)
 		   		newAttri.uniformData = newAttri.uniformData.concat(BufferData.bufferData[j]);
 	   }
-	   console.log("newAttri",newAttri);
+	   //console.log("newAttri",newAttri);
 
 	   // 将attribute加入map
 	   AttriDataMap.push(newAttri);
@@ -800,7 +800,7 @@ Mat3 = (function() {
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
 					coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
 			}
-			console.log("coordinates",coordinates);
+			//console.log("coordinates",coordinates);
 			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
@@ -815,7 +815,7 @@ Mat3 = (function() {
 				tem = tem.concat(coordinates[3 * i + 1]);
 				tem = tem.concat(coordinates[3 * i + 2]);
 			}
-			console.log("tem",tem);
+			//console.log("tem",tem);
 
 			var newData1 = new varying_data;
 			newData1.shaderName = "line_point";
@@ -828,7 +828,7 @@ Mat3 = (function() {
 					newData1.uniformData[i] = -1 * Math.floor(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 			//关于那一条斜线的数据，可以认为处理掉，无所谓的
-			console.log("ProgramDataMap", ProgramDataMap);
+			//console.log("ProgramDataMap", ProgramDataMap);
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
 				-1.0,  1.0, 
@@ -844,7 +844,7 @@ Mat3 = (function() {
 			gl.my_useProgram(activeProgram);
 			var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
-			console.log("开始draw");
+			//console.log("开始draw");
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 			
@@ -931,7 +931,7 @@ Mat3 = (function() {
 			gl.my_uniform1i(traingles_num_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length/3);
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
-			console.log("开始画了");
+			//console.log("开始画了");
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 
@@ -981,8 +981,8 @@ Mat3 = (function() {
 			mat4.mul(mView, mView, mProj);
 			mat4.mul(mWorld, mWorld, mView);
 
-			console.log("mWorld_fs",mWorld_fs);
-			console.log("mView_fs",mView_fs);
+			// console.log("mWorld_fs",mWorld_fs);
+			// console.log("mView_fs",mView_fs);
 
 			//进入计算阶段
 			//手工去完成自动化的那部分
@@ -1566,7 +1566,7 @@ BBB = function(primitiveType, offset, count){
 
 		var t_nor = [];	
 		if (__My_buffer_flag == 4){
-			console.log("mWorld_fs",mWorld_fs);
+			//console.log("mWorld_fs",mWorld_fs);
 			for (var i =0; i < __ActiveBuffer_vertex_normal.length; i += 3){
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[0] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[4] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[8]));
 				t_nor = t_nor.concat((__ActiveBuffer_vertex_normal[i] * mWorld_fs[1] + __ActiveBuffer_vertex_normal[i+1] * mWorld_fs[5] + __ActiveBuffer_vertex_normal[i+2] * mWorld_fs[9]) );
@@ -1666,13 +1666,13 @@ BBB = function(primitiveType, offset, count){
 
 			}
 		}
-		console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
-		console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
-		console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
+		// console.log("__ActiveBuffer_vertex_result",__ActiveBuffer_vertex_result);
+		// console.log("__ActiveBuffer_vertex_texture",__ActiveBuffer_vertex_texture);
+		// console.log("__ActiveBuffer_vertex_normal",__ActiveBuffer_vertex_normal);
 
-		console.log("tri_result",tri_result);
-		console.log("tri_texture",tri_texture);
-		console.log("tri_normal",tri_normal);
+		// console.log("tri_result",tri_result);
+		// console.log("tri_texture",tri_texture);
+		// console.log("tri_normal",tri_normal);
 
 
 
