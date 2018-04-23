@@ -1156,16 +1156,16 @@ function devide_draw(left, right, tem_varying, gl){
 
 	if (left_number <= uniform_number){
 		if (left_number > 0){
-			canvas_left = (left + 1000) / 255;
-			canvas_mid = (mid + 1000) / 255;
+			canvas_left = (left + 1000) / 2000 * 255;
+			canvas_mid = (mid + 1000) / 2000 * 255;
 
 			var right_canvas_buffer = [
-				left * 2 / 255 - 1.0,     -1.0, 
-				mid * 2 / 255 - 1.0,      -1.0, 
-				left * 2 / 255 - 1.0,      1.0, 
-				left * 2 / 255 - 1.0,      1.0,
-				mid * 2 / 255 - 1.0,      -1.0, 
-				mid * 2 / 255 - 1.0,       1.0]; 
+				canvas_left * 2 / 255 - 1.0,     -1.0, 
+				canvas_mid * 2 / 255 - 1.0,      -1.0, 
+				canvas_left * 2 / 255 - 1.0,      1.0, 
+				canvas_left * 2 / 255 - 1.0,      1.0,
+				canvas_mid * 2 / 255 - 1.0,      -1.0, 
+				canvas_mid * 2 / 255 - 1.0,       1.0]; 
 
 			var new_vertex_buffer = gl.createBuffer();
 			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1209,15 +1209,15 @@ function devide_draw(left, right, tem_varying, gl){
 
 	if (right_number <= uniform_number){
 		if (right_number > 0){
-			canvas_right = (right + 1000) / 255;
-			canvas_mid = (mid + 1000) / 255;
+			canvas_right = (right + 1000) / 2000 * 255;
+			canvas_mid = (mid + 1000) / 2000 * 255;
 			var right_canvas_buffer = [
-				mid * 2 / 255 - 1.0, -1.0, 
-				right * 2 / 255 - 1.0, -1.0, 
-				mid * 2 / 255 - 1.0,  1.0, 
-				mid * 2 / 255 - 1.0,  1.0,
-				right * 2 / 255 - 1.0, -1.0, 
-				right * 2 / 255 - 1.0,  1.0]; 
+				canvas_mid * 2 / 255 - 1.0, -1.0, 
+				canvas_right * 2 / 255 - 1.0, -1.0, 
+				canvas_mid * 2 / 255 - 1.0,  1.0, 
+				canvas_mid * 2 / 255 - 1.0,  1.0,
+				canvas_right * 2 / 255 - 1.0, -1.0, 
+				canvas_right * 2 / 255 - 1.0,  1.0]; 
 			var new_vertex_buffer = gl.createBuffer();
 			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -1310,17 +1310,17 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	if (bot_number <= uniform_number){
 
 		if (bot_number > 0){
-			canvas_left = (left + 1000) / 255;
-			canvas_mid = (mid + 1000) / 255;
-			canvas_right = (right + 1000) / 255;
-			canvas_bot = (bot + 1000) / 255;
+			canvas_left = (left + 1000) / 2000 * 255;
+			canvas_mid = (mid + 1000) / 2000 * 255;
+			canvas_right = (right + 1000) / 2000 * 255;
+			canvas_bot = (bot + 1000) / 2000 * 255;
 			var right_canvas_buffer = [
-				left * 2 / 255 - 1.0,   bot * 2 / 255 -1.0, 
-				right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
-				left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0, 
-				left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0,
-				right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
-				right * 2 / 255 - 1.0,    mid * 2 / 255 -1.0]; 
+				canvas_left * 2 / 255 - 1.0,   canvas_bot * 2 / 255 -1.0, 
+				canvas_right * 2 / 255 - 1.0,    canvas_bot * 2 / 255 -1.0, 
+				canvas_left * 2 / 255 - 1.0,    canvas_mid * 2 / 255 -1.0, 
+				canvas_left * 2 / 255 - 1.0,    canvas_mid * 2 / 255 -1.0,
+				canvas_right * 2 / 255 - 1.0,    canvas_bot * 2 / 255 -1.0, 
+				canvas_right * 2 / 255 - 1.0,    canvas_mid * 2 / 255 -1.0]; 
 
 			var new_vertex_buffer = gl.createBuffer();
 			gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1363,17 +1363,17 @@ function devide_draw_height(left, right, bot, top, tem_varying, gl){
 	if (top_number <= uniform_number){
 
 		if (top_number > 0){
-			canvas_left = (left + 1000) / 255;
-			canvas_mid = (mid + 1000) / 255;
-			canvas_right = (right + 1000) / 255;
-			canvas_top = (top + 1000) / 255;
+			canvas_left = (left + 1000) / 2000 * 255;
+			canvas_mid = (mid + 1000) / 2000 * 255;
+			canvas_right = (right + 1000) / 2000 * 255;
+			canvas_top = (top + 1000) / 2000 * 255;
 			var right_canvas_buffer = [
-				left * 2 / 255 - 1.0, mid * 2 / 255 -1.0, 
-				right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
-				left * 2 / 255 - 1.0,  top * 2 / 255 -1.0, 
-				left * 2 / 255 - 1.0,  top * 2 / 255 -1.0,
-				right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
-				right * 2 / 255 - 1.0,  top * 2 / 255 -1.0]; 
+				canvas_left * 2 / 255 - 1.0, canvas_mid * 2 / 255 -1.0, 
+				canvas_right * 2 / 255 - 1.0,  canvas_mid * 2 / 255 -1.0, 
+				canvas_left * 2 / 255 - 1.0,  canvas_top * 2 / 255 -1.0, 
+				canvas_left * 2 / 255 - 1.0,  canvas_top * 2 / 255 -1.0,
+				canvas_right * 2 / 255 - 1.0,  canvas_mid * 2 / 255 -1.0, 
+				canvas_right * 2 / 255 - 1.0,  canvas_top * 2 / 255 -1.0]; 
 
 
 			var new_vertex_buffer = gl.createBuffer();
