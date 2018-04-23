@@ -932,6 +932,7 @@ Mat3 = (function() {
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
 			//console.log("开始画了");
+			console.log("ProgramDataMap",ProgramDataMap);
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 
