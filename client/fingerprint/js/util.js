@@ -820,11 +820,11 @@ Mat3 = (function() {
 			}
 			main();
 			`
-		//console.log("ProgramDataMap",ProgramDataMap);
+		console.log("ProgramDataMap",ProgramDataMap);
 		var Compiler = GLSL();
   		//console.log("testShader",testShader);
   		compiled = Compiler.compile(testShader);
-		console.log("compiled",compiled);
+		//console.log("compiled",compiled);
 
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
@@ -835,7 +835,7 @@ Mat3 = (function() {
 		//console.log("ProgramDataMap",ProgramDataMap);
 		var TemUniformDataMap = [];
 		set_value_dict = {};
-		
+		/*
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
@@ -847,6 +847,18 @@ Mat3 = (function() {
 				}
 				newData.uniformData.push(tem);
 			}
+			TemUniformDataMap.push(newData);
+		}
+		*/
+
+		for (var i in ProgramDataMap[activeProgramNum].attriData){
+			var newData = new Tem_uniform_data;
+			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
+			newData.uniformData = [];
+			for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; j++)
+				newData.uniformData.push([]);
+			for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j++)
+				newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
 			TemUniformDataMap.push(newData);
 		}
 
@@ -884,8 +896,8 @@ Mat3 = (function() {
 		 compiled = set_values(set_value_dict, compiled);
 		// compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
 		 //console.log(compiled);
-		//   console.log("compiled",compiled);
-  		//   eval(compiled);
+	   console.log("compiled",compiled);
+  		//eval(compiled);
 
 
 
