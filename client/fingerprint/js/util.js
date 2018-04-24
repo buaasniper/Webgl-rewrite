@@ -816,7 +816,7 @@ Mat3 = (function() {
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 				console.log(fragNormal);
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-				console.log(gl_Position);
+				//console.log(gl_Position);
 			}
 			main();
 			`
@@ -824,11 +824,8 @@ Mat3 = (function() {
 		var Compiler = GLSL();
   		//console.log("testShader",testShader);
   		compiled = Compiler.compile(testShader);
-		//console.log("compiled",compiled);
-		set_value_dict = {};
-		for (var i in ProgramDataMap[activeProgramNum].attriData){
-			set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
-		}
+		console.log("compiled",compiled);
+
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
 		var Tem_uniform_data = function(){
@@ -837,6 +834,27 @@ Mat3 = (function() {
 		}
 		//console.log("ProgramDataMap",ProgramDataMap);
 		var TemUniformDataMap = [];
+		set_value_dict = {};
+		
+		for (var i in ProgramDataMap[activeProgramNum].attriData){
+			var newData = new Tem_uniform_data;
+			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
+			newData.uniformData = [];
+			for (j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j += ProgramDataMap[activeProgramNum].attriData[i].attriEleNum){
+				var tem = [];
+				for (k = j; k < j + ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; k++){
+					tem = tem.concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[k]);
+				}
+				newData.uniformData.push(tem);
+			}
+			TemUniformDataMap.push(newData);
+		}
+
+
+		// for (var i in ProgramDataMap[activeProgramNum].attriData){
+		// 	set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+		// }
+		
 		for (var i in ProgramDataMap[activeProgramNum].uniformData){
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
@@ -851,6 +869,7 @@ Mat3 = (function() {
 					newData.uniformData.push(tem);
 				}
 			}else{
+				//这块正式写的时候要改，要不然会修改原始值的！！！！！！！！！！！！！！！！！！！！！
 				newData.uniformData = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
 			}
 			TemUniformDataMap.push(newData);
@@ -864,9 +883,9 @@ Mat3 = (function() {
 		
 		 compiled = set_values(set_value_dict, compiled);
 		// compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		 console.log(compiled);
-		 console.log("compiled",compiled);
-  		 eval(compiled);
+		 //console.log(compiled);
+		//   console.log("compiled",compiled);
+  		//   eval(compiled);
 
 
 
@@ -1175,7 +1194,7 @@ Mat3 = (function() {
 
 
 			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
-			console.log("tem_varying",tem_varying);
+			//console.log("tem_varying",tem_varying);
 			//console.log("ProgramDataMap",ProgramDataMap);
 			//console.log("数据准备完毕，开始画图");
 
