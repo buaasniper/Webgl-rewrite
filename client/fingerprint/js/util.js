@@ -826,10 +826,36 @@ Mat3 = (function() {
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 			set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
 		}
+		//需要进行mat从一维到二维的转化
+		//先进行一个临时的转化
+		var Tem_uniform_data = function(){
+			this.shaderName = undefined;
+			this.uniformData = undefined;
+		}
+		var TemUniformDataMap = [];
 		for (var i in ProgramDataMap[activeProgramNum].uniformData){
-			set_value_dict[ProgramDataMap[activeProgramNum].uniformData[i].shaderName] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			var newData = new Tem_uniform_data;
+			newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
+			if (ProgramDataMap[activeProgramNum].uniformData[i].uniformType == 14){
+				newData.uniformData = [];
+				for (var j = 1; j <= 4; j++){
+					var tem = [];
+					for (var k = 1; k <= 4; k++){
+						tem = tem.concat(ProgramDataMap[activeProgramNum].uniformData[i].uniformData[j * 4 + k - 1]);
+					}
+					newData.uniformData.push(tem);
+				}
+			}else{
+				newData.uniformData = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			}
+			TemUniformDataMap.push(newData);
+		}
+		console.log("TemUniformDataMap",TemUniformDataMap);
+		for (var i in TemUniformDataMap){
+			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
 		console.log("set_value_dict",set_value_dict);
+		console.log([[1,2],[3]]);
 		
 		// compiled = set_values(set_value_dict, compiled);
 		// //compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
