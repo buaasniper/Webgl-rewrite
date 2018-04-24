@@ -810,18 +810,21 @@ Mat3 = (function() {
 			void main()
 			{
 				vPosition = mView * vec4(vertPosition, 1.0);
+				console.log(vPosition);
 				fragTexCoord = vertTexCoord;
+				console.log(fragTexCoord);
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
-
+				console.log(fragNormal);
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+				console.log(gl_Position);
 			}
 			main();
 			`
-		console.log("ProgramDataMap",ProgramDataMap);
+		//console.log("ProgramDataMap",ProgramDataMap);
 		var Compiler = GLSL();
-  		console.log("testShader",testShader);
+  		//console.log("testShader",testShader);
   		compiled = Compiler.compile(testShader);
-		console.log("compiled",compiled);
+		//console.log("compiled",compiled);
 		set_value_dict = {};
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 			set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
@@ -832,13 +835,15 @@ Mat3 = (function() {
 			this.shaderName = undefined;
 			this.uniformData = undefined;
 		}
+		//console.log("ProgramDataMap",ProgramDataMap);
 		var TemUniformDataMap = [];
 		for (var i in ProgramDataMap[activeProgramNum].uniformData){
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
-			if (ProgramDataMap[activeProgramNum].uniformData[i].uniformType == 14){
+			if (ProgramDataMap[activeProgramNum].uniformData[i].uniformNum == 14){
+				console.log("进入转换");
 				newData.uniformData = [];
-				for (var j = 1; j <= 4; j++){
+				for (var j = 0; j <= 3; j++){
 					var tem = [];
 					for (var k = 1; k <= 4; k++){
 						tem = tem.concat(ProgramDataMap[activeProgramNum].uniformData[i].uniformData[j * 4 + k - 1]);
@@ -850,18 +855,18 @@ Mat3 = (function() {
 			}
 			TemUniformDataMap.push(newData);
 		}
-		console.log("TemUniformDataMap",TemUniformDataMap);
+		//console.log("TemUniformDataMap",TemUniformDataMap);
 		for (var i in TemUniformDataMap){
 			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
 		console.log("set_value_dict",set_value_dict);
-		console.log([[1,2],[3]]);
+		//console.log([[1,2],[3]]);
 		
-		// compiled = set_values(set_value_dict, compiled);
-		// //compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		// console.log(compiled);
-		// console.log("compiled",compiled);
-  		// eval(compiled);
+		 compiled = set_values(set_value_dict, compiled);
+		// compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
+		 console.log(compiled);
+		 console.log("compiled",compiled);
+  		 eval(compiled);
 
 
 
