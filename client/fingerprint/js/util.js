@@ -793,12 +793,15 @@ Mat3 = (function() {
 		/*------------------自动化连接部分------------------------------------*/
 		var testShader = 
 			`
+			precision mediump float;
+
 			attribute vec3 vertPosition;
 			attribute vec2 vertTexCoord;
 			attribute vec3 vertNormal;
 
 			varying vec2 fragTexCoord;
 			varying vec3 fragNormal;
+			varying vec4 vPosition;
 
 			uniform mat4 mWorld;
 			uniform mat4 mView;
@@ -806,41 +809,33 @@ Mat3 = (function() {
 
 			void main()
 			{
-			fragTexCoord = vertTexCoord;
-			fragNormal = (mWorld * vec4(vertNormal, 1.0));
-			console.log(fragNormal.toString());
-			console.log((mWorld * mView).toString());
-			mProj += mProj;
-			mProj /= mProj;
-			console.log(mProj.toString());
-			if (fragTexCoord == vertNormal) {
+				vPosition = mView * vec4(vertPosition, 1.0);
+				fragTexCoord = vertTexCoord;
+				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
+
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-				gl_Position = gl_Position + gl_Position;
-				console.log(gl_Position.toString());
-			}else {
-				gl_Position = mProj;
-				gl_Position = mProj - mView;
-			}
-			gl_Position = mProj - mView;
-			console.log(gl_Position.toString());
 			}
 			main();
 			`
+		console.log("ProgramDataMap",ProgramDataMap);
 		var Compiler = GLSL();
   		console.log("testShader",testShader);
   		compiled = Compiler.compile(testShader);
 		console.log("compiled",compiled);
-		/* 
-		ary;
 		set_value_dict = {};
-		for (var idx in unifor) {
-		  set_value_dict['shaername'] = unifor[idx].shadername;
+		for (var i in ProgramDataMap[activeProgramNum].attriData){
+			set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
 		}
-		*/
-		compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled);
-		  console.log(compiled);
-		console.log("compiled",compiled);
-  		eval(compiled);
+		for (var i in ProgramDataMap[activeProgramNum].uniformData){
+			set_value_dict[ProgramDataMap[activeProgramNum].uniformData[i].shaderName] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+		}
+		console.log("set_value_dict",set_value_dict);
+		
+		// compiled = set_values(set_value_dict, compiled);
+		// //compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
+		// console.log(compiled);
+		// console.log("compiled",compiled);
+  		// eval(compiled);
 
 
 
