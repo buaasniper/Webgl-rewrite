@@ -688,7 +688,7 @@ Mat3 = (function() {
 		var activeProgramNum;
 		activeProgram = getactiveProgram();
 		activeProgramNum = getactiveProgramNum();
-		elementArray = getElementArray(offset);
+		elementArray = getElementArray(count,offset);
 		for (var i = 0; i < AttriDataMap.length; i++){
 			var newData = new Attri_data;
 			if( AttriDataMap[i].programName == activeProgram){
@@ -730,13 +730,13 @@ Mat3 = (function() {
 				return i;
 	}
 
-	getElementArray = function(offset){
+	getElementArray = function(count,offset){
 		var elementArray = [];
 		var returnArray = [];
 		for (var i = 0; i < BufferDataMap.length; i++)
 			if (BufferDataMap[i].activeElement == 1)
 				elementArray = BufferDataMap[i].bufferData;
-		for (var i = offset; i < elementArray.length; i++)
+		for (var i = offset; i < offset + count; i++)
 			returnArray = returnArray.concat(elementArray[i]);
 		return returnArray;
 	}
@@ -1012,6 +1012,8 @@ Mat3 = (function() {
 			console.log("string",string);
 			//eval(string);
 		}
+
+
 
 
 
