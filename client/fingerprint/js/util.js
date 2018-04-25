@@ -791,9 +791,10 @@ Mat3 = (function() {
 		//console.log("ProgramDataMap", ProgramDataMap);
 
 		/*------------------自动化连接部分------------------------------------*/
+		/*------------------数据输入部分--------------------------------------*/
 		var testShader = 
 			`
-			precision mediump float;
+			      precision mediump float;
 
 			attribute vec3 vertPosition;
 			attribute vec2 vertTexCoord;
@@ -816,15 +817,42 @@ Mat3 = (function() {
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 				console.log(fragNormal);
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+				if (){
+					fragTexCoord = a;
+				}
+				else{
+					fragTexCoord = b;
+				}
 				//console.log(gl_Position);
 			}
 			main();
 			`
-		console.log("ProgramDataMap",ProgramDataMap);
+		//console.log("ProgramDataMap",ProgramDataMap);
 		var Compiler = GLSL();
   		//console.log("testShader",testShader);
-  		compiled = Compiler.compile(testShader);
-		//console.log("compiled",compiled);
+		compiled = Compiler.compile(testShader);
+		console.log("shader",testShader);
+		//要获得varying的变量名
+		var testShaderMap = [];
+		var start = -1;
+		var end = 0;
+		while ((testShader[++start] >='a') && (testShader[++start] <'z'));
+		console.log("start",start);
+		console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
+			
+		// while (end < testShader.length){
+		// 	if 
+
+		// }
+
+
+
+
+
+
+
+
+		console.log("compiled",compiled);
 
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
@@ -835,7 +863,9 @@ Mat3 = (function() {
 		//console.log("ProgramDataMap",ProgramDataMap);
 		var TemUniformDataMap = [];
 		set_value_dict = {};
-		/*
+
+		//这里是转化的第一个版本
+	
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
@@ -849,8 +879,10 @@ Mat3 = (function() {
 			}
 			TemUniformDataMap.push(newData);
 		}
-		*/
+	
 
+
+		//这里是转化的第二个版本
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
@@ -861,6 +893,8 @@ Mat3 = (function() {
 				newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
 			TemUniformDataMap.push(newData);
 		}
+
+
 
 
 		// for (var i in ProgramDataMap[activeProgramNum].attriData){
@@ -890,18 +924,27 @@ Mat3 = (function() {
 		for (var i in TemUniformDataMap){
 			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
-		console.log("set_value_dict",set_value_dict);
+		//console.log("set_value_dict",set_value_dict);
 		//console.log([[1,2],[3]]);
 		
-		 compiled = set_values(set_value_dict, compiled);
-		// compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		 //console.log(compiled);
-	   console.log("compiled",compiled);
-  		//eval(compiled);
+		compiled = set_values(set_value_dict, compiled);
+		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
+		//console.log(compiled);
+	   	//console.log("compiled",compiled);
+		//eval(compiled);
+		/*------------------数据输入部分--------------------------------------*/
+		
+		/*------------------数据输出部分--------------------------------------*/
 
 
 
-		/*------------------------------------------------------------------*/
+
+		/*------------------数据输出部分--------------------------------------*/
+
+
+
+
+		/*---------------------自动化连接部分---------------------------------*/
 
 		if (vetexID == 0){
 			var tem = [];
