@@ -817,13 +817,6 @@ Mat3 = (function() {
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 				console.log(fragNormal);
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-				if (){
-					fragTexCoord = a;
-				}
-				else{
-					fragTexCoord = b;
-				}
-				//console.log(gl_Position);
 			}
 			main();
 			`
@@ -833,17 +826,70 @@ Mat3 = (function() {
 		compiled = Compiler.compile(testShader);
 		console.log("shader",testShader);
 		//要获得varying的变量名
-		var testShaderMap = [];
-		var start = -1;
-		var end = 0;
-		while ((testShader[++start] >='a') && (testShader[++start] <'z'));
-		console.log("start",start);
-		console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
-			
-		// while (end < testShader.length){
-		// 	if 
+		// var testShaderMap = [];
+		// var start = -1;
+		// var end = 0;
+		// while ((testShader[++start] >='a') && (testShader[++start] <'z'));
+		// console.log("start",start);
+		// console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
+		
+		//去掉空个的函数
+		function trim(s){ 
+			return trimRight(trimLeft(s)); 
+		} 
+		//去掉左边的空白 
+		function trimLeft(s){ 
+			if(s == null) { 
+			return ""; 
+			} 
+			var whitespace = new String(" \t\n\r"); 
+			var str = new String(s); 
+			if (whitespace.indexOf(str.charAt(0)) != -1) { 
+			var j=0, i = str.length; 
+			while (j < i && whitespace.indexOf(str.charAt(j)) != -1){ 
+				j++; 
+			} 
+			str = str.substring(j, i); 
+			} 
+			return str; 
+		} 
+		
+		//去掉右边的空白 
+		function trimRight(s){ 
+			if(s == null) return ""; 
+			var whitespace = new String(" \t\n\r"); 
+			var str = new String(s); 
+			if (whitespace.indexOf(str.charAt(str.length-1)) != -1){ 
+			var i = str.length - 1; 
+			while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){ 
+				i--; 
+			} 
+			str = str.substring(0, i+1); 
+			} 
+			return str; 
+				}
+		
+		var words = trim(testShader);		
+		function replaceAll(str)  
+		{  
+			if(str!=null)  
+			str = str.replace(/;/g," ") 
+			str = str.replace (/\n/g," ") 
+			return str;  
+		}  
+		console.log("words", words);
+		var strNew = words.replace(";","");  
+		strNew = replaceAll(strNew);  
+		var test = strNew.split(" ");
+		var finalwords = [];
+		for (i in test)
+			if (test[i] != "")
+				finalwords = finalwords.concat(trim(test[i]));
 
-		// }
+
+		console.log("strNew",strNew);
+		console.log("test",test);
+		console.log("finalwords",finalwords);
 
 
 
