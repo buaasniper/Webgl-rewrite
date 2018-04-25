@@ -833,85 +833,7 @@ Mat3 = (function() {
 		// console.log("start",start);
 		// console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
 		
-		//去掉空个的函数
-		function trim(s){ 
-			return trimRight(trimLeft(s)); 
-		} 
-		//去掉左边的空白 
-		function trimLeft(s){ 
-			if(s == null) { 
-			return ""; 
-			} 
-			var whitespace = new String(" \t\n\r"); 
-			var str = new String(s); 
-			if (whitespace.indexOf(str.charAt(0)) != -1) { 
-			var j=0, i = str.length; 
-			while (j < i && whitespace.indexOf(str.charAt(j)) != -1){ 
-				j++; 
-			} 
-			str = str.substring(j, i); 
-			} 
-			return str; 
-		} 
 		
-		//去掉右边的空白 
-		function trimRight(s){ 
-			if(s == null) return ""; 
-			var whitespace = new String(" \t\n\r"); 
-			var str = new String(s); 
-			if (whitespace.indexOf(str.charAt(str.length-1)) != -1){ 
-			var i = str.length - 1; 
-			while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){ 
-				i--; 
-			} 
-			str = str.substring(0, i+1); 
-			} 
-			return str; 
-				}
-		
-		var words = trim(testShader);		
-		function replaceAll(str)  
-		{  
-			if(str!=null)  
-			str = str.replace(/;/g," ") 
-			str = str.replace (/\n/g," ") 
-			return str;  
-		}  
-		console.log("words", words);
-		var strNew = words.replace(";","");  
-		strNew = replaceAll(strNew);  
-		var test = strNew.split(" ");
-		var finalwords = [];
-		for (i in test)
-			if (test[i] != "")
-				finalwords = finalwords.concat(trim(test[i]));
-
-
-		console.log("strNew",strNew);
-		console.log("test",test);
-		console.log("finalwords",finalwords);
-
-		//在这里进行输出的赋值
-		var VaryingDataMap = [];
-		var i = 0;
-		while (i < finalwords.length){
-			if (finalwords[i] == "varying"){
-				var newData = new Varying_data;
-				i++;
-				if (finalwords[i] == "vec2")
-					newData.varyEleNum = 2;
-				else if (finalwords[i] == "vec3")
-					newData.varyEleNum = 3;
-				else if (finalwords[i] == "vec4")
-					newData.varyEleNum = 4;
-				i++;
-				newData.shaderName = finalwords[i]
-				newData.uniformData = [];
-				VaryingDataMap.push(newData);
-			}
-			i++;
-		}
-		console.log("VaryingDataMap",VaryingDataMap);
 
 
 
@@ -1004,7 +926,92 @@ Mat3 = (function() {
 		/*------------------数据输入部分--------------------------------------*/
 		
 		/*------------------数据输出部分--------------------------------------*/
+		//去掉空个的函数
+		function trim(s){ 
+			return trimRight(trimLeft(s)); 
+		} 
+		//去掉左边的空白 
+		function trimLeft(s){ 
+			if(s == null) { 
+			return ""; 
+			} 
+			var whitespace = new String(" \t\n\r"); 
+			var str = new String(s); 
+			if (whitespace.indexOf(str.charAt(0)) != -1) { 
+			var j=0, i = str.length; 
+			while (j < i && whitespace.indexOf(str.charAt(j)) != -1){ 
+				j++; 
+			} 
+			str = str.substring(j, i); 
+			} 
+			return str; 
+		} 
+		
+		//去掉右边的空白 
+		function trimRight(s){ 
+			if(s == null) return ""; 
+			var whitespace = new String(" \t\n\r"); 
+			var str = new String(s); 
+			if (whitespace.indexOf(str.charAt(str.length-1)) != -1){ 
+			var i = str.length - 1; 
+			while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){ 
+				i--; 
+			} 
+			str = str.substring(0, i+1); 
+			} 
+			return str; 
+				}
+		
+		var words = trim(testShader);		
+		function replaceAll(str)  
+		{  
+			if(str!=null)  
+			str = str.replace(/;/g," ") 
+			str = str.replace (/\n/g," ") 
+			return str;  
+		}  
+		console.log("words", words);
+		var strNew = words.replace(";","");  
+		strNew = replaceAll(strNew);  
+		var test = strNew.split(" ");
+		var finalwords = [];
+		for (i in test)
+			if (test[i] != "")
+				finalwords = finalwords.concat(trim(test[i]));
 
+
+		console.log("strNew",strNew);
+		console.log("test",test);
+		console.log("finalwords",finalwords);
+
+		//在这里进行输出的赋值
+		var VaryingDataMap = [];
+		var i = 0;
+		while (i < finalwords.length){
+			if (finalwords[i] == "varying"){
+				var newData = new Varying_data;
+				i++;
+				if (finalwords[i] == "vec2")
+					newData.varyEleNum = 2;
+				else if (finalwords[i] == "vec3")
+					newData.varyEleNum = 3;
+				else if (finalwords[i] == "vec4")
+					newData.varyEleNum = 4;
+				i++;
+				newData.shaderName = finalwords[i]
+				newData.uniformData = [];
+				VaryingDataMap.push(newData);
+			}
+			i++;
+		}
+		console.log("VaryingDataMap",VaryingDataMap);
+
+
+		for (i in VaryingDataMap){
+			var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
+			console.log("string",string);
+			//eval(string);
+		}
 
 
 
