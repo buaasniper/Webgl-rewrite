@@ -134,7 +134,7 @@ Mat3 = (function() {
 		this.fragSource = undefined //frag的source
 		this.attriData = [];  //重新建立一个新的Attri_data object的array
 		this.uniformData = []; //重新建立一个新的Uniform_data object的array
-		this.varyingData = []; //重新建立一个新的varying_data object的array
+		this.varyingData = []; //重新建立一个新的Varying_data object的array
 	}
 	var ProgramDataMap = [];
 
@@ -197,7 +197,7 @@ Mat3 = (function() {
 	var UniformLocMap = [];
 
 	// 建立varying的map
-	var varying_data = function(){
+	var Varying_data = function(){
 		this.shaderName = undefined;  //在glsl代码中对应的varying的变量名
 		this.varyEleNum = undefined;  //记录varying最终要变成vec2还是vc3
 		this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
@@ -891,6 +891,29 @@ Mat3 = (function() {
 		console.log("test",test);
 		console.log("finalwords",finalwords);
 
+		//在这里进行输出的赋值
+		var VaryingDataMap = [];
+		var i = 0;
+		while (i < finalwords.length){
+			if (finalwords[i] == "varying"){
+				var newData = new Varying_data;
+				i++;
+				if (finalwords[i] == "vec2")
+					newData.varyEleNum = 2;
+				else if (finalwords[i] == "vec3")
+					newData.varyEleNum = 3;
+				else if (finalwords[i] == "vec4")
+					newData.varyEleNum = 4;
+				i++;
+				newData.shaderName = finalwords[i]
+				newData.uniformData = [];
+				VaryingDataMap.push(newData);
+			}
+			i++;
+		}
+		console.log("VaryingDataMap",VaryingDataMap);
+
+
 
 
 
@@ -1019,7 +1042,7 @@ Mat3 = (function() {
 			}
 			//console.log("tem",tem);
 
-			var newData1 = new varying_data;
+			var newData1 = new Varying_data;
 			newData1.shaderName = "line_point";
 			newData1.varyEleNum = 3;
 			newData1.uniformData = tem;
@@ -1092,7 +1115,7 @@ Mat3 = (function() {
 			//进入计算阶段
 			//手工去完成自动化的那部分
 			
-			var newData1 = new varying_data;
+			var newData1 = new Varying_data;
 			newData1.shaderName = "tri_point";
 			newData1.varyEleNum = 3;
 			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
@@ -1103,7 +1126,7 @@ Mat3 = (function() {
 					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 
-			var newData2 = new varying_data;
+			var newData2 = new Varying_data;
 			newData2.shaderName = "tri_color";
 			newData2.varyEleNum = 3;
 			for (var i = 0; i < vertColor.length; i++){
@@ -1190,7 +1213,7 @@ Mat3 = (function() {
 			//进入计算阶段
 			//手工去完成自动化的那部分
 			
-			var newData1 = new varying_data;
+			var newData1 = new Varying_data;
 			newData1.shaderName = "tri_point";
 			newData1.varyEleNum = 3;
 			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
@@ -1205,7 +1228,7 @@ Mat3 = (function() {
 
 
 
-			var newData2 = new varying_data;
+			var newData2 = new Varying_data;
 			newData2.shaderName = "text_point";
 			newData2.varyEleNum = 2;
 			for (var i = 0; i < vertTexCoord.length; i++){
@@ -1220,7 +1243,7 @@ Mat3 = (function() {
 
 
 			if(vertNormal.length != 0){
-				var newData3 = new varying_data;
+				var newData3 = new Varying_data;
 				newData3.shaderName = "nor_point";
 				newData3.varyEleNum = 3;
 				//只是一个中间替代值为了让后面的值不变
@@ -1238,7 +1261,7 @@ Mat3 = (function() {
 			}
 			
 			if(vetexID == 5){
-				var newData4 = new varying_data;
+				var newData4 = new Varying_data;
 				newData4.shaderName = "vPosition";
 				newData4.varyEleNum = 4;
 				//只是一个中间替代值为了让后面的值不变
