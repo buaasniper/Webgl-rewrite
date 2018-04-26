@@ -25,6 +25,7 @@ var my_subtract = function(a, b) {
 // all values have to be assigned once
 var set_values = function(values, js_str, num_attrs) {
   js_str_lines = js_str.split('\n');
+  js_str_lines.unshift('var gl_Position = [0, 0, 0, 0];');
   var var_re = RegExp('^var ([a-zA-Z$_][a-zA-Z0-9$_]*) = (.*);');
   var res = "";
   // update the attr value and uniform value
