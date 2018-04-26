@@ -874,16 +874,16 @@ Mat3 = (function() {
 
 
 		//这里是转化的第二个版本
-		for (var i in ProgramDataMap[activeProgramNum].attriData){
-			var newData = new Tem_uniform_data;
-			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
-			newData.uniformData = [];
-			for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; j++)
-				newData.uniformData.push([]);
-			for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j++)
-				newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
-			TemUniformDataMap.push(newData);
-		}
+		// for (var i in ProgramDataMap[activeProgramNum].attriData){
+		// 	var newData = new Tem_uniform_data;
+		// 	newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
+		// 	newData.uniformData = [];
+		// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; j++)
+		// 		newData.uniformData.push([]);
+		// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j++)
+		// 		newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
+		// 	TemUniformDataMap.push(newData);
+		// }
 
 
 
@@ -896,7 +896,7 @@ Mat3 = (function() {
 			var newData = new Tem_uniform_data;
 			newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
 			if (ProgramDataMap[activeProgramNum].uniformData[i].uniformNum == 14){
-				console.log("进入转换");
+				//console.log("进入转换");
 				newData.uniformData = [];
 				for (var j = 0; j <= 3; j++){
 					var tem = [];
@@ -915,14 +915,14 @@ Mat3 = (function() {
 		for (var i in TemUniformDataMap){
 			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
-		//console.log("set_value_dict",set_value_dict);
+		console.log("set_value_dict",set_value_dict);
 		//console.log([[1,2],[3]]);
 		
 		compiled = set_values(set_value_dict, compiled);
 		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		//console.log(compiled);
+		console.log(compiled);
 	   	//console.log("compiled",compiled);
-		//eval(compiled);
+		eval(compiled);
 		/*------------------数据输入部分--------------------------------------*/
 		
 		/*------------------数据输出部分--------------------------------------*/
@@ -980,9 +980,9 @@ Mat3 = (function() {
 				finalwords = finalwords.concat(trim(test[i]));
 
 
-		console.log("strNew",strNew);
-		console.log("test",test);
-		console.log("finalwords",finalwords);
+		// console.log("strNew",strNew);
+		// console.log("test",test);
+		// console.log("finalwords",finalwords);
 
 		//在这里进行输出的赋值
 		var VaryingDataMap = [];
@@ -1021,7 +1021,7 @@ Mat3 = (function() {
 
 
 		/*------------------readpixel部分--------------------------------------*/
-		var testNumber = 1;
+		var testNumber = 0;
 		if (testNumber == 1){
 
 			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
