@@ -25,7 +25,7 @@ var my_subtract = function(a, b) {
 // all values have to be assigned once
 var set_values = function(values, js_str, num_attrs) {
   js_str_lines = js_str.split('\n');
-  var var_re = RegExp('var ([a-zA-Z$_][a-zA-Z0-9$_]*) = (.*);');
+  var var_re = RegExp('^var ([a-zA-Z$_][a-zA-Z0-9$_]*) = (.*);');
   var res = "";
   // update the attr value and uniform value
   for (var line in js_str_lines) {
