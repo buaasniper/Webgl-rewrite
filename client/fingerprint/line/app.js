@@ -78,11 +78,21 @@ var LineTest = function(type) {
         uniform ivec3 line_point[600];
         int division(int a, int b);
         int D_abs(int a, int b);
+        uniform sampler2D backtexture;
+        struct txt_coord{
+            int x, y;
+          };
+        vec4 col_transfer(ivec4 color); 
+        ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
+        ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y); 
         void main(void) {
         int x0, y0 , x1, y1, x2, y2, k, b, y ;
         x0 = int(gl_FragCoord.x) ; 
         y0 = int(gl_FragCoord.y) ; 
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        txt_coord fragTexCoord;
+        fragTexCoord.x = x0;
+        fragTexCoord.y = y0;
+        gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
         for (int i = 0 ; i < 600; i += 2){
             x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
@@ -139,6 +149,32 @@ var LineTest = function(type) {
             else
                 return b - a;
           }
+          ivec4 D_texture2D(sampler2D sampler,txt_coord t){
+            int tx0, ty0, wei_x, wei_y;
+            vec4 color0, color1, color2, color3;
+            tx0 = division ( t.x, 1000);
+            ty0 = division ( t.y, 1000);
+            color0 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0     )/ 255.0));
+            color1 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0     )/ 255.0));
+            color2 = texture2D(sampler, vec2 ( float(tx0    )/ 255.0 , float(ty0  + 1)/ 255.0));
+            color3 = texture2D(sampler, vec2 ( float(tx0 + 1)/ 255.0 , float(ty0  + 1)/ 255.0));
+          
+            wei_x = mod (t.x, 1000);
+            wei_y = mod (t.y, 1000);
+            return cal_color(color0, color1, color2, color3, wei_x, wei_y);
+          }
+          
+          ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y){
+            int r, g, b;
+            r = division( int(color0[0] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[0] * 255.0) * wei_x * (1000 - wei_y) + int(color2[0] * 255.0) * (1000 - wei_x) * wei_y + int(color3[0] * 255.0) * wei_x * wei_y, 1000000);
+            g = division( int(color0[1] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[1] * 255.0) * wei_x * (1000 - wei_y) + int(color2[1] * 255.0) * (1000 - wei_x) * wei_y + int(color3[1] * 255.0) * wei_x * wei_y, 1000000);
+            b = division( int(color0[2] * 255.0) * (1000 - wei_x) * (1000 - wei_y) + int(color1[2] * 255.0) * wei_x * (1000 - wei_y) + int(color2[2] * 255.0) * (1000 - wei_x) * wei_y + int(color3[2] * 255.0) * wei_x * wei_y, 1000000);
+            return ivec4( r, g, b, 100 );
+          }
+        vec4 col_transfer( ivec4 c){
+            return vec4 (  float(c[0])/255.0, float(c[1])/255.0, float(c[2])/255.0, float(c[3])/ 100.0);
+        }
+
 `;
                     // Create fragment shader object
                     var fragShader = gl.createShader(gl.FRAGMENT_SHADER);

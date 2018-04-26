@@ -205,7 +205,7 @@ Mat3 = (function() {
 
 /*==========================map部分======================================结尾========================*/
 
-  rewrite = function(gl){
+  rewrite = function(gl, canvas){
 	ProgramDataMap = [];
 	ShaderDataMap = [];
 	BufferDataMap = [];
@@ -1021,26 +1021,29 @@ Mat3 = (function() {
 
 
 		/*------------------readpixel部分--------------------------------------*/
-		var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-		console.log("maxTextureUnits",maxTextureUnits);
-		var pixels = new Uint8Array(canvas.width * canvas.height * 4);
-        webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
-		var backtexture = textureFromPixelArray(gl, pixels, webgl.RGBA, canvas.width, canvas.height);
-		function textureFromPixelArray(gl, dataArray, type, width, height) {
-            var texture = gl.createTexture();
-			gl.bindTexture(gl.TEXTURE_2D, texture);
-			//确保不会翻转
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            return texture;
+		var testNumber = 1;
+		if (testNumber == 1){
+			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+			console.log("maxTextureUnits",maxTextureUnits);
+			var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+			gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
+			function textureFromPixelArray(gl, dataArray, type, width, height) {
+				var texture = gl.createTexture();
+				gl.bindTexture(gl.TEXTURE_2D, texture);
+				//确保不会翻转
+				gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataArray);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+				return texture;
+			}
+			//确保不会和前面的texture起冲突
+			gl.activeTexture(gl.TEXTURE0 + maxTextureUnits);
+			gl.bindTexture(gl.TEXTURE_2D, backtexture);
+			var backtextureLoc = gl.my_getUniformLocation(activeProgram,"backtexture");
+			gl.my_uniform1i(backtextureLoc, maxTextureUnits);
 		}
-		//确保不会和前面的texture起冲突
-		gl.activeTexture(gl.TEXTURE0 + maxTextureUnits);
-		gl.bindTexture(gl.TEXTURE_2D, backtexture);
-		var backtextureLoc = gl.my_getUniformLocation(activeProgram,"backtexture");
-		gl.my_uniform1i(backtextureLoc, maxTextureUnits);
 
 
 		
@@ -1073,6 +1076,61 @@ Mat3 = (function() {
 			
 			//这种情况下要考虑mode的样子，先把数据传输进来
 			console.log("mode",mode);
+			// 我现在先按照test的来画，去判断双draw的部分
+			
+			if (testNumber == 1){
+				if (mode == 3){
+					for (var i = offest; i <  offest + count - 1; i++){
+						tem = tem.concat(coordinates[3 * i]);
+						tem = tem.concat(coordinates[3 * i + 1]);
+						tem = tem.concat(coordinates[3 * i + 2]);
+						tem = tem.concat(coordinates[3 * i + 3]);
+						tem = tem.concat(coordinates[3 * i + 4]);
+						tem = tem.concat(coordinates[3 * i + 5]);
+					}
+				}
+				if (mode == 1){
+					for (var i = offset; i <  offest + count; i++){
+						tem = tem.concat(coordinates[3 * i]);
+						tem = tem.concat(coordinates[3 * i + 1]);
+						tem = tem.concat(coordinates[3 * i + 2]);
+					}
+				}
+				var newData1 = new Varying_data;
+				newData1.shaderName = "line_point";
+				newData1.varyEleNum = 3;
+				newData1.uniformData = tem;
+				for (var i =0; i < newData1.uniformData.length; i++)
+					if (i % 3 != 2)
+						newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
+					else
+						newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
+				ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+				//关于那一条斜线的数据，可以认为处理掉，无所谓的
+				//console.log("ProgramDataMap", ProgramDataMap);
+				var canvas_buffer = [-1.0, -1.0, 
+					1.0, -1.0, 
+					-1.0,  1.0, 
+					-1.0,  1.0,
+					1.0, -1.0, 
+					1.0,  1.0]; 
+				var new_vertex_buffer = gl.createBuffer();
+				gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+				__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'coordinates');
+				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+				gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
+				gl.my_useProgram(activeProgram);
+				var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
+				gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+				//console.log("开始draw");
+				gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+
+
+
+			}
+
+
 			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
@@ -2702,7 +2760,7 @@ var my_m4 = {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  gl = rewrite(gl,canvas);
   return gl;
 }
 
@@ -2726,7 +2784,7 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl);
+  gl = rewrite(gl,canvas);
   
   return gl;
 }
