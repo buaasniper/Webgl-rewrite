@@ -1023,16 +1023,27 @@ Mat3 = (function() {
 		/*------------------readpixel部分--------------------------------------*/
 		var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 		console.log("maxTextureUnits",maxTextureUnits);
-		var texture = textureFromPixelArray(gl, pixels, webgl.RGBA, canvas.width, canvas.height);
+		var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+        webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
+		var backtexture = textureFromPixelArray(gl, pixels, webgl.RGBA, canvas.width, canvas.height);
 		function textureFromPixelArray(gl, dataArray, type, width, height) {
-            var texture = webgl.createTexture();
-            webgl.bindTexture(webgl.TEXTURE_2D, texture);
-            webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
-            webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
-            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
-            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
+            var texture = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			//确保不会翻转
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
             return texture;
-        }
+		}
+		//确保不会和前面的texture起冲突
+		gl.activeTexture(gl.TEXTURE0 + maxTextureUnits);
+		gl.bindTexture(gl.TEXTURE_2D, backtexture);
+		var backtextureLoc = gl.my_getUniformLocation(activeProgram,"backtexture");
+		gl.my_uniform1i(backtextureLoc, maxTextureUnits);
+
+
+		
 
 
 
