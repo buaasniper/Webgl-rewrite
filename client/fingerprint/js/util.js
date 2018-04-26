@@ -1020,6 +1020,29 @@ Mat3 = (function() {
 		/*------------------数据输出部分--------------------------------------*/
 
 
+		/*------------------readpixel部分--------------------------------------*/
+		var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+		console.log("maxTextureUnits",maxTextureUnits);
+		var texture = textureFromPixelArray(gl, pixels, webgl.RGBA, canvas.width, canvas.height);
+		function textureFromPixelArray(gl, dataArray, type, width, height) {
+            var texture = webgl.createTexture();
+            webgl.bindTexture(webgl.TEXTURE_2D, texture);
+            webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
+            webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
+            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
+            webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
+            return texture;
+        }
+
+
+
+		
+
+		/*------------------readpixel部分--------------------------------------*/
+
+
+
+
 
 
 		/*---------------------自动化连接部分---------------------------------*/
@@ -1028,6 +1051,7 @@ Mat3 = (function() {
 			var tem = [];
 			var coordinates = [];
 			var __VertexPositionAttributeLocation1;
+			
 			//console.log("ProgramDataMap", ProgramDataMap);
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
@@ -1035,6 +1059,9 @@ Mat3 = (function() {
 					coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
 			}
 			//console.log("coordinates",coordinates);
+			
+			//这种情况下要考虑mode的样子，先把数据传输进来
+			console.log("mode",mode);
 			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
@@ -1044,7 +1071,7 @@ Mat3 = (function() {
 				tem = tem.concat(coordinates[3 * i + 5]);
 			}
 			
-			for (var i = 256; i <=  262; i++){
+			for (var i = 256; i <=  261; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
 				tem = tem.concat(coordinates[3 * i + 2]);
