@@ -1,3 +1,9 @@
+var handle_gl_Position = function (gl_Position) {
+  gl_Position = gl_Position.map(x => x._data.slice(0, -1));
+  gl_Position = math.flatten(gl_Position);
+  gl_Position = gl_Position.map(x => x * 0.15);
+  return gl_Position;
+}
 var my_multiple = function(a, b) {
   a = math.matrix(a);
   b = math.matrix(b);

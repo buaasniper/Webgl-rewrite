@@ -824,8 +824,6 @@ if (parsingflag == 1){
 				//console.log(fragTexCoord);
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 				//console.log(fragNormal);
-				tmp = mProj * mView;
-				final_tmp = tmp * mWorld;
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 			}
 			main();
@@ -1360,10 +1358,7 @@ if (parsingflag == 1){
 			//newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
 			// console.log("原始值",my_m4.vec_max_mul(vertPosition, mWorld));
 			//console.log(gl_Position);
-			gl_Position = gl_Position.map(x => x._data.slice(0, -1));
-			gl_Position = math.flatten(gl_Position);
-			gl_Position = gl_Position.map(x => x * 0.15);
-			newData1.uniformData = gl_Position;
+			newData1.uniformData = handle_gl_Position(gl_Position);
 			// console.log(newData1.uniformData);
 			// newData1.uniformData = math.flatten(newData1.uniformData);
 			// console.log(newData1.uniformData);
@@ -1381,10 +1376,15 @@ if (parsingflag == 1){
 			var newData2 = new Varying_data;
 			newData2.shaderName = "text_point";
 			newData2.varyEleNum = 2;
-			for (var i = 0; i < vertTexCoord.length; i++){
-				newData2.uniformData = newData2.uniformData.concat(vertTexCoord[i]);
+			// for (var i = 0; i < vertTexCoord.length; i++){
+			// 	newData2.uniformData = newData2.uniformData.concat(vertTexCoord[i]);
+			// 	newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
+			// }
+			fragTexCoord = math.flatten(fragTexCoord);
+			for (var i = 0; i < fragTexCoord.length; i++){
+				newData2.uniformData = newData2.uniformData.concat(fragTexCoord[i]);
 				newData2.uniformData[i] = Math.floor(((newData2.uniformData[i] )) * 1000);
-			}	
+			}		
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 			//console.log("vertTexCoord",vertTexCoord);
 			//console.log("newData2",newData2);
@@ -1405,6 +1405,13 @@ if (parsingflag == 1){
 					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[1] + tem[i+1] * mWorld_fs[5] + tem[i+2] * mWorld_fs[9]) );
 					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[2] + tem[i+1] * mWorld_fs[6] + tem[i+2] * mWorld_fs[10])) ;
 				}
+				console.log(newData3);
+
+				 fragNormal = math.flatten(fragNormal);
+				 console.log(fragNormal);
+				 for (var i = 0; i < fragNormal.length; i++)
+				 	newData3.uniformData = newData3.uniformData.concat(fragNormal[i]);
+
 				for (var i = 0; i < newData3.uniformData.length; i++)
 					newData3.uniformData[i] = Math.round(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
@@ -1416,14 +1423,19 @@ if (parsingflag == 1){
 				newData4.varyEleNum = 4;
 				//只是一个中间替代值为了让后面的值不变
 				var tem = [];
-				for (var i = 0; i < vertPosition.length; i++)
-					tem = tem.concat(vertPosition[i]);
-				for (var i = 0; i < tem.length; i += 3){
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8] +  mView_fs[12]));
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9] +  mView_fs[13]));
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]+  mView_fs[14]));
-					newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[3] + tem[i+1] * mView_fs[7] + tem[i+2] * mView_fs[11]+  mView_fs[15]));
-				}
+				// for (var i = 0; i < vertPosition.length; i++)
+				// 	tem = tem.concat(vertPosition[i]);
+				// for (var i = 0; i < tem.length; i += 3){
+				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8] +  mView_fs[12]));
+				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9] +  mView_fs[13]));
+				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]+  mView_fs[14]));
+				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[3] + tem[i+1] * mView_fs[7] + tem[i+2] * mView_fs[11]+  mView_fs[15]));
+				// }
+
+				vPosition = math.flatten(vPosition);
+				for (var i = 0; i < vPosition.length; i++)
+				 	newData4.uniformData = newData4.uniformData.concat(vPosition[i]);
+
 				for (var i = 0; i < newData4.uniformData.length; i++)
 					newData4.uniformData[i] = Math.round(((newData4.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData4);
