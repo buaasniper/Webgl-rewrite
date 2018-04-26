@@ -819,11 +819,13 @@ if (parsingflag == 1){
 			void main()
 			{
 				vPosition = mView * vec4(vertPosition, 1.0);
-				console.log(vPosition);
+				//console.log(vPosition);
 				fragTexCoord = vertTexCoord;
-				console.log(fragTexCoord);
+				//console.log(fragTexCoord);
 				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
-				console.log(fragNormal);
+				//console.log(fragNormal);
+				tmp = mProj * mView;
+				final_tmp = tmp * mWorld;
 				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 			}
 			main();
@@ -930,10 +932,14 @@ if (parsingflag == 1){
 		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
 		console.log(compiled);
 	   	//console.log("compiled",compiled);
-		//eval(compiled);
-		// console.log("vPosition",vPosition);
-		// console.log("fragTexCoord",fragTexCoord);
-		// console.log("fragNormal",fragNormal);
+		eval(compiled);
+
+		console.log("tmp", math.flatten(tmp._data));
+		console.log("final_tmp", math.flatten(final_tmp._data));
+		console.log("vPosition",vPosition);
+		console.log("fragTexCoord",fragTexCoord);
+		console.log("fragNormal",fragNormal);
+		console.log("gl_Position",gl_Position);
 
 
 		/*------------------数据输入部分--------------------------------------*/
@@ -1346,11 +1352,21 @@ if (parsingflag == 1){
 
 			//进入计算阶段
 			//手工去完成自动化的那部分
-			
+			 
+
 			var newData1 = new Varying_data;
 			newData1.shaderName = "tri_point";
 			newData1.varyEleNum = 3;
-			newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+			//newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+			// console.log("原始值",my_m4.vec_max_mul(vertPosition, mWorld));
+			//console.log(gl_Position);
+			gl_Position = gl_Position.map(x => x._data.slice(0, -1));
+			gl_Position = math.flatten(gl_Position);
+			gl_Position = gl_Position.map(x => x * 0.15);
+			newData1.uniformData = gl_Position;
+			// console.log(newData1.uniformData);
+			// newData1.uniformData = math.flatten(newData1.uniformData);
+			// console.log(newData1.uniformData);
 			for (var i =0; i < newData1.uniformData.length; i++)
 				if (i % 3 != 2)
 					newData1.uniformData[i] = Math.floor((newData1.uniformData[i] + 1) * 128);
@@ -1414,7 +1430,7 @@ if (parsingflag == 1){
 			}
 
 			
-
+			console.log("ProgramDataMap",ProgramDataMap);
 
 			
 			//判断是否是正面
