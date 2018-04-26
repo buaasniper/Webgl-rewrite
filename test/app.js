@@ -47,15 +47,8 @@ var Demo = function () {
   console.log(testShader);
   compiled = Compiler.compile(testShader);
   console.log(compiled);
-  ary;
-  set_value_dict = {};
-  for (var idx in unifor) {
-    set_value_dict['shaername'] = unifor[idx].shadername;
-
-  }
-
   
-  compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled);
+  compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled, 4);
 
   console.log(compiled);
   eval(compiled);
