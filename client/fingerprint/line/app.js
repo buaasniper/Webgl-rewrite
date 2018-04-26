@@ -78,6 +78,7 @@ var LineTest = function(type) {
         uniform ivec3 line_point[600];
         int division(int a, int b);
         int D_abs(int a, int b);
+        int mod(int a, int b); 
         uniform sampler2D backtexture;
         struct txt_coord{
             int x, y;
@@ -92,7 +93,8 @@ var LineTest = function(type) {
         txt_coord fragTexCoord;
         fragTexCoord.x = x0;
         fragTexCoord.y = y0;
-        gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
+        gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
+        //gl_FragColor = vec4(0.5,0.0, 0.0, 1.0);
         for (int i = 0 ; i < 600; i += 2){
             x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
@@ -174,6 +176,19 @@ var LineTest = function(type) {
         vec4 col_transfer( ivec4 c){
             return vec4 (  float(c[0])/255.0, float(c[1])/255.0, float(c[2])/255.0, float(c[3])/ 100.0);
         }
+        int mod(int a, int b){
+            int n = a / b;
+            if ( (n - 2) * b >= a )
+              return a - (n - 3) * b;
+            else if ( (n - 1) * b >= a )
+              return a - (n - 2) * b;
+            else if ( b * n >= a )
+              return a - (n - 1) * b;
+            else if ( (n + 1) * b >= a )
+              return a - n * b;
+            else
+              return a - (n + 1) * b;
+          }
 
 `;
                     // Create fragment shader object
@@ -237,8 +252,8 @@ var LineTest = function(type) {
                     // Draw the triangle
                     //gl.drawArrays(gl.LINES, 0, 256);
                     
-                    gl.drawArrays(gl.LINE_STRIP, 0, 262);
-                    //gl.drawArrays(gl.LINES, 256, 6);
+                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
+                    gl.drawArrays(gl.LINES, 256, 6);
 
 
                     //gl.drawArrays(gl.LINES, 0, 6);

@@ -1023,6 +1023,7 @@ Mat3 = (function() {
 		/*------------------readpixel部分--------------------------------------*/
 		var testNumber = 1;
 		if (testNumber == 1){
+
 			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 			console.log("maxTextureUnits",maxTextureUnits);
 			var pixels = new Uint8Array(canvas.width * canvas.height * 4);
@@ -1066,7 +1067,7 @@ Mat3 = (function() {
 			var coordinates = [];
 			var __VertexPositionAttributeLocation1;
 			
-			//console.log("ProgramDataMap", ProgramDataMap);
+			console.log("ProgramDataMap", ProgramDataMap);
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
@@ -1078,9 +1079,10 @@ Mat3 = (function() {
 			console.log("mode",mode);
 			// 我现在先按照test的来画，去判断双draw的部分
 			
+			//这块coordinates出了问题，但是我不确定是不是对的，等会在处理
 			if (testNumber == 1){
 				if (mode == 3){
-					for (var i = offest; i <  offest + count - 1; i++){
+					for (var i = first; i <  first + count - 1; i++){
 						tem = tem.concat(coordinates[3 * i]);
 						tem = tem.concat(coordinates[3 * i + 1]);
 						tem = tem.concat(coordinates[3 * i + 2]);
@@ -1090,12 +1092,14 @@ Mat3 = (function() {
 					}
 				}
 				if (mode == 1){
-					for (var i = offset; i <  offest + count; i++){
+					for (var i = 0; i <  0 + count; i++){
 						tem = tem.concat(coordinates[3 * i]);
 						tem = tem.concat(coordinates[3 * i + 1]);
 						tem = tem.concat(coordinates[3 * i + 2]);
 					}
 				}
+				console.log("coordinates",coordinates);
+				console.log("tem",tem);
 				var newData1 = new Varying_data;
 				newData1.shaderName = "line_point";
 				newData1.varyEleNum = 3;
@@ -1125,6 +1129,7 @@ Mat3 = (function() {
 				gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 				//console.log("开始draw");
 				gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+				console.log("画了");
 
 
 
