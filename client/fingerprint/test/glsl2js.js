@@ -44,6 +44,7 @@ exports.gl_Layer = 'int';
 exports.gl_ViewportIndex = 'int';
 exports.gl_FragDepth = 'float';
 exports.gl_SampleMask = 'int';
+
 },{}],3:[function(require,module,exports){
 /**
  * Descriptor of a node.
@@ -575,10 +576,6 @@ GLSL.prototype.transforms = {
       bigLength = attrKey + '.length';
       break;
     }
-    for (var varyKey in this.varyings){
-      bigLength = varyKey + '.length';
-      break;
-    }
 
     if (name == 'main') {
       addForLoop = `for (var bigI = 0;bigI < ${bigLength};++ bigI) { \n`;
@@ -877,7 +874,7 @@ GLSL.prototype.transforms = {
 
     var str = node.data;
     
-    if (this.attributes[str] || this.varyings[str]){
+    if (this.attributes[str] || this.varyings[str] || str == 'gl_Position'){
       str = str + '[bigI]';
     } 
     if (scope) {
@@ -1133,7 +1130,11 @@ GLSL.prototype.transforms = {
 
   //gl_Position, gl_FragColor, gl_FragPosition etc
   builtin: function (node) {
-    return Descriptor(node.data, {
+    var str = node.data;
+    if (str == 'gl_Position') {
+      str = str + '[bigI]';
+    }
+    return Descriptor(str, {
       type: this.builtins[node.data],
       complexity: 0
     });

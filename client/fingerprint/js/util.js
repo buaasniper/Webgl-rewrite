@@ -756,6 +756,8 @@ Mat3 = (function() {
 		activeProgramNum = getactiveProgramNum();
 		//没有进入gl.element直接进入这个gl.drawelement
 		//加入attribute的部分
+		// console.log("BufferDataMap",BufferDataMap);
+		// console.log("AttriDataMap",AttriDataMap);
 		if (ProgramDataMap[activeProgramNum].attriData.length == 0){
 			for (var i = 0; i < AttriDataMap.length; i++)
 				if( AttriDataMap[i].programName == activeProgram){
@@ -764,9 +766,12 @@ Mat3 = (function() {
 					newData.shaderName = AttriDataMap[i].shaderName;
 					newData.attriEleNum = AttriDataMap[i].attriEleNum;
 					newData.uniformData = [];
+					// console.log("start",newData.attriEleNum * first);
+					// console.log("end",newData.attriEleNum * (first + count));
 					//在这里面添加first和count
 					for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
 						newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
+					// console.log("newData.uniformData",newData.uniformData);
 					ProgramDataMap[activeProgramNum].attriData.push(newData);
 				}
 					
@@ -790,6 +795,9 @@ Mat3 = (function() {
 		//console.log("数据处理区域完毕");
 		//console.log("ProgramDataMap", ProgramDataMap);
 
+
+		var parsingflag = 1;
+if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
 		var testShader = 
@@ -918,14 +926,16 @@ Mat3 = (function() {
 		console.log("set_value_dict",set_value_dict);
 		//console.log([[1,2],[3]]);
 		
-		compiled = set_values(set_value_dict, compiled);
+		compiled = set_values(set_value_dict, compiled,2988);
 		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
 		console.log(compiled);
 	   	//console.log("compiled",compiled);
-		eval(compiled);
-		console.log("vPosition",vPosition);
-		console.log("fragTexCoord",fragTexCoord);
-		console.log("fragNormal",fragNormal);
+		//eval(compiled);
+		// console.log("vPosition",vPosition);
+		// console.log("fragTexCoord",fragTexCoord);
+		// console.log("fragNormal",fragNormal);
+
+
 		/*------------------数据输入部分--------------------------------------*/
 		
 		/*------------------数据输出部分--------------------------------------*/
@@ -1016,6 +1026,9 @@ Mat3 = (function() {
 			//eval(string);
 		}
 
+}
+
+
 
 
 
@@ -1080,12 +1093,14 @@ Mat3 = (function() {
 			
 			//这种情况下要考虑mode的样子，先把数据传输进来
 			console.log("mode",mode);
+			//console.log("coordinates",coordinates);
 			// 我现在先按照test的来画，去判断双draw的部分
 			
 			//这块coordinates出了问题，但是我不确定是不是对的，等会在处理
+			testNumber = 0;
 			if (testNumber == 1){
 				if (mode == 3){
-					for (var i = first; i <  first + count - 1; i++){
+					for (var i = 0; i <  coordinates.length/3 - 1; i++){
 						tem = tem.concat(coordinates[3 * i]);
 						tem = tem.concat(coordinates[3 * i + 1]);
 						tem = tem.concat(coordinates[3 * i + 2]);
@@ -1095,7 +1110,7 @@ Mat3 = (function() {
 					}
 				}
 				if (mode == 1){
-					for (var i = 0; i <  0 + count; i++){
+					for (var i = 0; i <  coordinates.length/3; i++){
 						tem = tem.concat(coordinates[3 * i]);
 						tem = tem.concat(coordinates[3 * i + 1]);
 						tem = tem.concat(coordinates[3 * i + 2]);
@@ -1115,6 +1130,11 @@ Mat3 = (function() {
 				ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 				//关于那一条斜线的数据，可以认为处理掉，无所谓的
 				//console.log("ProgramDataMap", ProgramDataMap);
+
+				//清除上一个的数据
+				gl.clearColor(0.0, 0.0, 1.0, 1.0);
+        		gl.clear(gl.COLOR_BUFFER_BIT);
+
 				var canvas_buffer = [-1.0, -1.0, 
 					1.0, -1.0, 
 					-1.0,  1.0, 
@@ -1136,8 +1156,9 @@ Mat3 = (function() {
 
 
 
-			}
 
+			}
+			//console.log("进入后面");
 
 			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
@@ -1445,6 +1466,11 @@ Mat3 = (function() {
 
 
 		}//Id = 4
+
+		//数据清楚
+		ProgramDataMap[activeProgramNum].attriData = [];
+		ProgramDataMap[activeProgramNum].uniformData = [];
+		ProgramDataMap[activeProgramNum].varyingData = [];
 
 
 	}
