@@ -569,11 +569,26 @@ GLSL.prototype.transforms = {
     //add body
     assert.equal(node.children[2].type, 'stmtlist', 'Function should have a body.');
 
+    var addForLoop = "";
+    var bigLength = 1;
+    for (var attrKey in this.attributes){
+      bigLength = attrKey + '.length';
+      break;
+    }
+    for (var varyKey in this.varyings){
+      bigLength = varyKey + '.length';
+      break;
+    }
+
+    if (name == 'main') {
+      addForLoop = `for (var bigI = 0;bigI < ${bigLength};++ bigI) { \n`;
+    } 
     //create function body
     result += `function ${name} (${args}) {\n`;
+      result += addForLoop;
       result += this.process(node.children[2]);
       result = result.replace(/\n/g, '\n\t');
-      result += '\n}';
+      result += '\n}\n}';
 
     //get scope back to the global after fn ended
     this.currentScope = this.scopes[this.currentScope].__parentScope.__name;
@@ -861,7 +876,10 @@ GLSL.prototype.transforms = {
     }
 
     var str = node.data;
-
+    
+    if (this.attributes[str] || this.varyings[str]){
+      str = str + '[bigI]';
+    } 
     if (scope) {
       var type = scope[id].type;
       var res = Descriptor(str, {
@@ -871,6 +889,7 @@ GLSL.prototype.transforms = {
 
       return res;
     }
+
 
 
     //FIXME: guess type more accurately here
