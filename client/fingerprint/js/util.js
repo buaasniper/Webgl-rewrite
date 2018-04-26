@@ -923,6 +923,9 @@ Mat3 = (function() {
 		console.log(compiled);
 	   	//console.log("compiled",compiled);
 		eval(compiled);
+		console.log("vPosition",vPosition);
+		console.log("fragTexCoord",fragTexCoord);
+		console.log("fragNormal",fragNormal);
 		/*------------------数据输入部分--------------------------------------*/
 		
 		/*------------------数据输出部分--------------------------------------*/
