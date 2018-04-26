@@ -252,7 +252,7 @@ var LineTest = function(type) {
                     // Draw the triangle
                     //gl.drawArrays(gl.LINES, 0, 256);
                     
-                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
+                    //gl.drawArrays(gl.LINE_STRIP, 0, 256);
                     gl.drawArrays(gl.LINES, 256, 6);
 
 
