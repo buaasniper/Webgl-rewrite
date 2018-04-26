@@ -151,7 +151,7 @@
 
         textureObject = webgl.createTexture();
         webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
-        webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
+        //webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
         webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, texSize, texSize, 0,  webgl.RGBA, webgl.UNSIGNED_BYTE, image);
 
 
@@ -164,12 +164,15 @@
     
         webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
         webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
-        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_S, webgl.CLAMP_TO_EDGE);
-        webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_T, webgl.CLAMP_TO_EDGE);
-    
-        webgl.activeTexture(webgl.TEXTURE0);
+        // webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_S, webgl.CLAMP_TO_EDGE);
+        // webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_T, webgl.CLAMP_TO_EDGE);
+        
+        var maxTextureUnits = webgl.getParameter(webgl.MAX_TEXTURE_IMAGE_UNITS);
+        console.log("maxTextureUnits",maxTextureUnits);
+
+        webgl.activeTexture(webgl.TEXTURE16);
         webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
-        webgl.uniform1i(samplerIndex, 0);
+        webgl.uniform1i(samplerIndex, 16);
         webgl.uniform1f(lineIndex, 0.3);
         webgl.drawArrays(webgl.TRIANGLES, 0, 6);
 
@@ -183,6 +186,10 @@
         var pixels = new Uint8Array(canvas.width * canvas.height * 4);
         webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
         console.log(pixels);
+
+
+
+
         // for i 
         // for ( var i = 0; i < 256; i++ ) {
         //     for ( var j = 0; j <256; j++ ) {
@@ -203,8 +210,13 @@
         //         // image[4*i*texSize+4*j+3] = 255;
         //     }
         // }
-        webgl.clearColor(0.0, 0.0, 1.0, 1.0);
-        webgl.clear(webgl.COLOR_BUFFER_BIT);
+
+
+
+
+
+        // webgl.clearColor(0.0, 0.0, 1.0, 1.0);
+        // webgl.clear(webgl.COLOR_BUFFER_BIT);
 
 
         webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
@@ -224,11 +236,12 @@
         webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
 
         webgl.uniform1f(lineIndex, 0.9);
-        webgl.drawArrays(webgl.LINES,  256, 6);
+        //webgl.drawArrays(webgl.LINES,  256, 6);
 
         function textureFromPixelArray(webgl, dataArray, type, width, height) {
             var texture = webgl.createTexture();
             webgl.bindTexture(webgl.TEXTURE_2D, texture);
+            webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
             webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
             webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
             webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);

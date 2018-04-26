@@ -1020,6 +1020,40 @@ Mat3 = (function() {
 		/*------------------数据输出部分--------------------------------------*/
 
 
+		/*------------------readpixel部分--------------------------------------*/
+		var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+		console.log("maxTextureUnits",maxTextureUnits);
+		var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+        webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
+		var backtexture = textureFromPixelArray(gl, pixels, webgl.RGBA, canvas.width, canvas.height);
+		function textureFromPixelArray(gl, dataArray, type, width, height) {
+            var texture = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			//确保不会翻转
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            return texture;
+		}
+		//确保不会和前面的texture起冲突
+		gl.activeTexture(gl.TEXTURE0 + maxTextureUnits);
+		gl.bindTexture(gl.TEXTURE_2D, backtexture);
+		var backtextureLoc = gl.my_getUniformLocation(activeProgram,"backtexture");
+		gl.my_uniform1i(backtextureLoc, maxTextureUnits);
+
+
+		
+
+
+
+		
+
+		/*------------------readpixel部分--------------------------------------*/
+
+
+
+
 
 
 		/*---------------------自动化连接部分---------------------------------*/
@@ -1028,6 +1062,7 @@ Mat3 = (function() {
 			var tem = [];
 			var coordinates = [];
 			var __VertexPositionAttributeLocation1;
+			
 			//console.log("ProgramDataMap", ProgramDataMap);
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
@@ -1035,6 +1070,9 @@ Mat3 = (function() {
 					coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
 			}
 			//console.log("coordinates",coordinates);
+			
+			//这种情况下要考虑mode的样子，先把数据传输进来
+			console.log("mode",mode);
 			for (var i = 0; i <  255; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
@@ -1044,7 +1082,7 @@ Mat3 = (function() {
 				tem = tem.concat(coordinates[3 * i + 5]);
 			}
 			
-			for (var i = 256; i <=  262; i++){
+			for (var i = 256; i <=  261; i++){
 				tem = tem.concat(coordinates[3 * i]);
 				tem = tem.concat(coordinates[3 * i + 1]);
 				tem = tem.concat(coordinates[3 * i + 2]);
