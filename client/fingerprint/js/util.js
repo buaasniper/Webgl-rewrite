@@ -796,7 +796,7 @@ Mat3 = (function() {
 		//console.log("ProgramDataMap", ProgramDataMap);
 
 
-		var parsingflag = 1;
+		var parsingflag = 0;
 if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
@@ -1101,7 +1101,7 @@ if (parsingflag == 1){
 			// 我现在先按照test的来画，去判断双draw的部分
 			
 			//这块coordinates出了问题，但是我不确定是不是对的，等会在处理
-			testNumber = 0;
+			testNumber = 1;
 			if (testNumber == 1){
 				if (mode == 3){
 					for (var i = 0; i <  coordinates.length/3 - 1; i++){
@@ -1136,8 +1136,8 @@ if (parsingflag == 1){
 				//console.log("ProgramDataMap", ProgramDataMap);
 
 				//清除上一个的数据
-				gl.clearColor(0.0, 0.0, 1.0, 1.0);
-        		gl.clear(gl.COLOR_BUFFER_BIT);
+				//gl.clearColor(0.0, 0.0, 1.0, 1.0);
+        		//gl.clear(gl.COLOR_BUFFER_BIT);
 
 				var canvas_buffer = [-1.0, -1.0, 
 					1.0, -1.0, 
@@ -1191,7 +1191,7 @@ if (parsingflag == 1){
 					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 			//关于那一条斜线的数据，可以认为处理掉，无所谓的
-			//console.log("ProgramDataMap", ProgramDataMap);
+			console.log("ProgramDataMap", ProgramDataMap);
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
 				-1.0,  1.0, 
