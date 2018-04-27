@@ -1101,85 +1101,28 @@ if (parsingflag == 1){
 			// 我现在先按照test的来画，去判断双draw的部分
 			
 			//这块coordinates出了问题，但是我不确定是不是对的，等会在处理
-			testNumber = 1;
-			if (testNumber == 1){
-				if (mode == 3){
-					for (var i = 0; i <  coordinates.length/3 - 1; i++){
-						tem = tem.concat(coordinates[3 * i]);
-						tem = tem.concat(coordinates[3 * i + 1]);
-						tem = tem.concat(coordinates[3 * i + 2]);
-						tem = tem.concat(coordinates[3 * i + 3]);
-						tem = tem.concat(coordinates[3 * i + 4]);
-						tem = tem.concat(coordinates[3 * i + 5]);
-					}
+
+			// testNumber = 1;
+			// if (testNumber == 1){
+			if (mode == 3){
+				for (var i = 0; i <  coordinates.length/3 - 1; i++){
+					tem = tem.concat(coordinates[3 * i]);
+					tem = tem.concat(coordinates[3 * i + 1]);
+					tem = tem.concat(coordinates[3 * i + 2]);
+					tem = tem.concat(coordinates[3 * i + 3]);
+					tem = tem.concat(coordinates[3 * i + 4]);
+					tem = tem.concat(coordinates[3 * i + 5]);
 				}
-				if (mode == 1){
-					for (var i = 0; i <  coordinates.length/3; i++){
-						tem = tem.concat(coordinates[3 * i]);
-						tem = tem.concat(coordinates[3 * i + 1]);
-						tem = tem.concat(coordinates[3 * i + 2]);
-					}
+			}
+			if (mode == 1){
+				for (var i = 0; i <  coordinates.length/3; i++){
+					tem = tem.concat(coordinates[3 * i]);
+					tem = tem.concat(coordinates[3 * i + 1]);
+					tem = tem.concat(coordinates[3 * i + 2]);
 				}
-				console.log("coordinates",coordinates);
-				console.log("tem",tem);
-				var newData1 = new Varying_data;
-				newData1.shaderName = "line_point";
-				newData1.varyEleNum = 3;
-				newData1.uniformData = tem;
-				for (var i =0; i < newData1.uniformData.length; i++)
-					if (i % 3 != 2)
-						newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
-					else
-						newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
-				ProgramDataMap[activeProgramNum].varyingData.push(newData1);
-				//关于那一条斜线的数据，可以认为处理掉，无所谓的
-				//console.log("ProgramDataMap", ProgramDataMap);
-
-				//清除上一个的数据
-				//gl.clearColor(0.0, 0.0, 1.0, 1.0);
-        		//gl.clear(gl.COLOR_BUFFER_BIT);
-
-				var canvas_buffer = [-1.0, -1.0, 
-					1.0, -1.0, 
-					-1.0,  1.0, 
-					-1.0,  1.0,
-					1.0, -1.0, 
-					1.0,  1.0]; 
-				var new_vertex_buffer = gl.createBuffer();
-				gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-				gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
-				__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'coordinates');
-				gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
-				gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
-				gl.my_useProgram(activeProgram);
-				var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
-				gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
-				//console.log("开始draw");
-				gl.my_drawArrays(gl.TRIANGLES, 0, 6);
-				console.log("画了");
-
-
-
-
 			}
-			//console.log("进入后面");
-
-			for (var i = 0; i <  255; i++){
-				tem = tem.concat(coordinates[3 * i]);
-				tem = tem.concat(coordinates[3 * i + 1]);
-				tem = tem.concat(coordinates[3 * i + 2]);
-				tem = tem.concat(coordinates[3 * i + 3]);
-				tem = tem.concat(coordinates[3 * i + 4]);
-				tem = tem.concat(coordinates[3 * i + 5]);
-			}
-			
-			for (var i = 256; i <=  261; i++){
-				tem = tem.concat(coordinates[3 * i]);
-				tem = tem.concat(coordinates[3 * i + 1]);
-				tem = tem.concat(coordinates[3 * i + 2]);
-			}
-			//console.log("tem",tem);
-
+			console.log("coordinates",coordinates);
+			console.log("tem",tem);
 			var newData1 = new Varying_data;
 			newData1.shaderName = "line_point";
 			newData1.varyEleNum = 3;
@@ -1191,7 +1134,12 @@ if (parsingflag == 1){
 					newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
 			ProgramDataMap[activeProgramNum].varyingData.push(newData1);
 			//关于那一条斜线的数据，可以认为处理掉，无所谓的
-			console.log("ProgramDataMap", ProgramDataMap);
+			//console.log("ProgramDataMap", ProgramDataMap);
+
+			//清除上一个的数据
+			//gl.clearColor(0.0, 0.0, 1.0, 1.0);
+			//gl.clear(gl.COLOR_BUFFER_BIT);
+
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
 				-1.0,  1.0, 
@@ -1207,9 +1155,83 @@ if (parsingflag == 1){
 			gl.my_useProgram(activeProgram);
 			var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			//console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			//console.log("开始draw");
-			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
+			
+			 gl.clearColor(0, 0, 0, 1.0);
+			 gl.enable(gl.DEPTH_TEST);
+			 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+			console.log("画了");
+				
+
+
+
+
+			// }
+			// else{
+			// console.log("进入后面");
+		
+			// for (var i = 0; i <  255; i++){
+			// 	tem = tem.concat(coordinates[3 * i]);
+			// 	tem = tem.concat(coordinates[3 * i + 1]);
+			// 	tem = tem.concat(coordinates[3 * i + 2]);
+			// 	tem = tem.concat(coordinates[3 * i + 3]);
+			// 	tem = tem.concat(coordinates[3 * i + 4]);
+			// 	tem = tem.concat(coordinates[3 * i + 5]);
+			// }
+			
+			// for (var i = 256; i <=  261; i++){
+			// 	tem = tem.concat(coordinates[3 * i]);
+			// 	tem = tem.concat(coordinates[3 * i + 1]);
+			// 	tem = tem.concat(coordinates[3 * i + 2]);
+			// }
+			// //console.log("tem",tem);
+
+			// var newData1 = new Varying_data;
+			// newData1.shaderName = "line_point";
+			// newData1.varyEleNum = 3;
+			// newData1.uniformData = tem;
+			// for (var i =0; i < newData1.uniformData.length; i++)
+			// 	if (i % 3 != 2)
+			// 		newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
+			// 	else
+			// 		newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
+			// ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+			// //关于那一条斜线的数据，可以认为处理掉，无所谓的
+			// console.log("ProgramDataMap", ProgramDataMap);
+			// var canvas_buffer = [-1.0, -1.0, 
+			// 	1.0, -1.0, 
+			// 	-1.0,  1.0, 
+			// 	-1.0,  1.0,
+			// 	1.0, -1.0, 
+			// 	1.0,  1.0]; 
+			// var new_vertex_buffer = gl.createBuffer();
+			// gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+			// gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+			// __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'coordinates');
+			// gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+			// gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
+			// gl.my_useProgram(activeProgram);
+			// var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
+			// gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			// //console.log("开始draw");
+
+			//  // Clear the canvas
+			//  gl.clearColor(0, 0, 0, 1.0);
+
+			//  // Enable the depth test
+			//  gl.enable(gl.DEPTH_TEST);
+
+			//  // Clear the color and depth buffer
+			//  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+
+			// gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+			// }
 			
 		}//vetexID == 0
 		

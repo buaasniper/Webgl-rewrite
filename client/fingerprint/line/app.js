@@ -93,9 +93,9 @@ var LineTest = function(type) {
         txt_coord fragTexCoord;
         fragTexCoord.x = x0;
         fragTexCoord.y = y0;
-        gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
-        //gl_FragColor = vec4(0.5,0.0, 0.0, 1.0);
-        for (int i = 0 ; i < 600; i += 2){
+        //gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
+        gl_FragColor = vec4(0.5,0.0, 0.0, 1.0);
+        for (int i = 0 ; i < 60; i += 2){
             x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
             x2 = division( (line_point[i + 1][0] + 1000) * 32 , 250);  
