@@ -1345,27 +1345,27 @@ if (parsingflag == 1){
 			// 		vertNormal = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
 			// }
 			//uniform 读取阶段
-			for (var i = 0; i < ProgramDataMap[activeProgramNum].uniformData.length; i++){
-				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mWorld")
-					mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;					
-				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mView")
-					mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
-				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
-					mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
-			}
+			// for (var i = 0; i < ProgramDataMap[activeProgramNum].uniformData.length; i++){
+			// 	if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mWorld")
+			// 		mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;					
+			// 	if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mView")
+			// 		mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			// 	if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
+			// 		mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			// }
 
 
 			
 	
 			
-			//进入vetex计算部分
-			mat4.copy(mWorld_fs, mWorld);
-			mat4.copy(mView_fs, mView);
-			mat4.transpose(mWorld, mWorld);
-        	mat4.transpose(mView, mView);
-        	mat4.transpose(mProj, mProj);
-			mat4.mul(mView, mView, mProj);
-			mat4.mul(mWorld, mWorld, mView);
+			// //进入vetex计算部分
+			// mat4.copy(mWorld_fs, mWorld);
+			// mat4.copy(mView_fs, mView);
+			// mat4.transpose(mWorld, mWorld);
+        	// mat4.transpose(mView, mView);
+        	// mat4.transpose(mProj, mProj);
+			// mat4.mul(mView, mView, mProj);
+			// mat4.mul(mWorld, mWorld, mView);
 
 			// console.log("mWorld_fs",mWorld_fs);
 			// console.log("mView_fs",mView_fs);
