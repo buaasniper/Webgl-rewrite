@@ -126,6 +126,21 @@
             1.0, 1.0, 0.0,//上顶点
             -1.0, -1.0, 0.0,//左顶点
             1.0, -1.0, 0.0,
+            1.0, 1.0, 0.0,//上顶点
+            -1.0, 1.0, 0.0,//左顶点
+            -1.0, -1.0, 0.0,
+            1.0, 1.0, 0.0,//上顶点
+            -1.0, 1.0, 0.0,//左顶点
+            -1.0, -1.0, 0.0,
+            ];//右顶点
+
+        var jsArrayData1 = [
+           1.0, 1.0, 0.0,//上顶点
+            -1.0, 1.0, 0.0,//左顶点
+            -1.0, -1.0, 0.0,
+            1.0, 1.0, 0.0,//上顶点
+            -1.0, 1.0, 0.0,//左顶点
+            -1.0, -1.0, 0.0,
             ];//右顶点
 
         var texSize = 256;
@@ -144,6 +159,11 @@
         triangleBuffer = webgl.createBuffer();
         webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
         webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(jsArrayData), webgl.STATIC_DRAW);
+
+        triangleBuffer1 = webgl.createBuffer();
+        webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer1);
+        webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(jsArrayData1), webgl.STATIC_DRAW);
+
     
         lineBuffer = webgl.createBuffer();
         webgl.bindBuffer(webgl.ARRAY_BUFFER, lineBuffer);
@@ -156,7 +176,7 @@
 
 
         webgl.clearColor(0.0, 0.0, 1.0, 1.0);
-        webgl.clear(webgl.COLOR_BUFFER_BIT);
+        webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
     
         webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
         webgl.enableVertexAttribArray(v3PositionIndex);
@@ -187,8 +207,8 @@
         webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
         console.log(pixels);
 
-
-
+        
+        pixelcolor(pixels);
 
         // for i 
         // for ( var i = 0; i < 256; i++ ) {
@@ -210,6 +230,14 @@
         //         // image[4*i*texSize+4*j+3] = 255;
         //     }
         // }
+            
+                function pixelcolor(pixels){
+            for (var i = 0; i <  canvas.width * canvas.height * 4; i = i + 4){
+                for (var k = 0; k < 3; k++){
+                    pixels[i+k] = 255 - pixels[i+k];
+                }
+            }
+        }
 
 
 
@@ -217,6 +245,8 @@
 
         // webgl.clearColor(0.0, 0.0, 1.0, 1.0);
         // webgl.clear(webgl.COLOR_BUFFER_BIT);
+
+
 
 
         webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
@@ -229,7 +259,7 @@
         webgl.bindTexture(webgl.TEXTURE_2D, texture);
         webgl.uniform1i(samplerIndex, 0);
         webgl.uniform1f(lineIndex, 0.3);
-        webgl.drawArrays(webgl.TRIANGLES, 0, 6);
+        webgl.drawArrays(webgl.TRIANGLES, 6, 6);
 
         webgl.bindBuffer(webgl.ARRAY_BUFFER, lineBuffer);
         webgl.enableVertexAttribArray(v3PositionIndex);
