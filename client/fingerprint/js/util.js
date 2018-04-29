@@ -796,241 +796,241 @@ Mat3 = (function() {
 		//console.log("ProgramDataMap", ProgramDataMap);
 
 
-		var parsingflag = 1;
-if (parsingflag == 1){
-		/*------------------自动化连接部分------------------------------------*/
-		/*------------------数据输入部分--------------------------------------*/
-		var testShader = 
-			`
-			      precision mediump float;
+		var parsingflag = 0;
+		if (parsingflag == 1){
+				/*------------------自动化连接部分------------------------------------*/
+				/*------------------数据输入部分--------------------------------------*/
+				var testShader = 
+					`
+						precision mediump float;
 
-			attribute vec3 vertPosition;
-			attribute vec2 vertTexCoord;
-			attribute vec3 vertNormal;
+					attribute vec3 vertPosition;
+					attribute vec2 vertTexCoord;
+					attribute vec3 vertNormal;
 
-			varying vec2 fragTexCoord;
-			varying vec3 fragNormal;
-			varying vec4 vPosition;
+					varying vec2 fragTexCoord;
+					varying vec3 fragNormal;
+					varying vec4 vPosition;
 
-			uniform mat4 mWorld;
-			uniform mat4 mView;
-			uniform mat4 mProj;
+					uniform mat4 mWorld;
+					uniform mat4 mView;
+					uniform mat4 mProj;
 
-			void main()
-			{
-				vPosition = mView * vec4(vertPosition, 1.0);
-				//console.log(vPosition);
-				fragTexCoord = vertTexCoord;
-				//console.log(fragTexCoord);
-				fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
-				//console.log(fragNormal);
-				gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-			}
-			main();
-			`
-		//console.log("ProgramDataMap",ProgramDataMap);
-		var Compiler = GLSL();
-  		//console.log("testShader",testShader);
-		compiled = Compiler.compile(testShader);
-		console.log("shader",testShader);
-		//要获得varying的变量名
-		// var testShaderMap = [];
-		// var start = -1;
-		// var end = 0;
-		// while ((testShader[++start] >='a') && (testShader[++start] <'z'));
-		// console.log("start",start);
-		// console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
-		
-		
-
-
-
-
-
-
-
-
-
-		console.log("compiled",compiled);
-
-		//需要进行mat从一维到二维的转化
-		//先进行一个临时的转化
-		var Tem_uniform_data = function(){
-			this.shaderName = undefined;
-			this.uniformData = undefined;
-		}
-		//console.log("ProgramDataMap",ProgramDataMap);
-		var TemUniformDataMap = [];
-		set_value_dict = {};
-
-		//这里是转化的第一个版本
-	
-		for (var i in ProgramDataMap[activeProgramNum].attriData){
-			var newData = new Tem_uniform_data;
-			newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
-			newData.uniformData = [];
-			for (j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j += ProgramDataMap[activeProgramNum].attriData[i].attriEleNum){
-				var tem = [];
-				for (k = j; k < j + ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; k++){
-					tem = tem.concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[k]);
-				}
-				newData.uniformData.push(tem);
-			}
-			TemUniformDataMap.push(newData);
-		}
-	
-
-
-		//这里是转化的第二个版本
-		// for (var i in ProgramDataMap[activeProgramNum].attriData){
-		// 	var newData = new Tem_uniform_data;
-		// 	newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
-		// 	newData.uniformData = [];
-		// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; j++)
-		// 		newData.uniformData.push([]);
-		// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j++)
-		// 		newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
-		// 	TemUniformDataMap.push(newData);
-		// }
-
-
-
-
-		// for (var i in ProgramDataMap[activeProgramNum].attriData){
-		// 	set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
-		// }
-		
-		for (var i in ProgramDataMap[activeProgramNum].uniformData){
-			var newData = new Tem_uniform_data;
-			newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
-			if (ProgramDataMap[activeProgramNum].uniformData[i].uniformNum == 14){
-				//console.log("进入转换");
-				newData.uniformData = [];
-				for (var j = 0; j <= 3; j++){
-					var tem = [];
-					for (var k = 1; k <= 4; k++){
-						tem = tem.concat(ProgramDataMap[activeProgramNum].uniformData[i].uniformData[j * 4 + k - 1]);
+					void main()
+					{
+						vPosition = mView * vec4(vertPosition, 1.0);
+						//console.log(vPosition);
+						fragTexCoord = vertTexCoord;
+						//console.log(fragTexCoord);
+						fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
+						//console.log(fragNormal);
+						gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 					}
-					newData.uniformData.push(tem);
+					main();
+					`
+				//console.log("ProgramDataMap",ProgramDataMap);
+				var Compiler = GLSL();
+				//console.log("testShader",testShader);
+				compiled = Compiler.compile(testShader);
+				console.log("shader",testShader);
+				//要获得varying的变量名
+				// var testShaderMap = [];
+				// var start = -1;
+				// var end = 0;
+				// while ((testShader[++start] >='a') && (testShader[++start] <'z'));
+				// console.log("start",start);
+				// console.log("testShader",testShader[4],testShader[5],testShader[6],testShader[7],testShader[8],testShader[9],testShader[10]);
+				
+				
+
+
+
+
+
+
+
+
+
+				console.log("compiled",compiled);
+
+				//需要进行mat从一维到二维的转化
+				//先进行一个临时的转化
+				var Tem_uniform_data = function(){
+					this.shaderName = undefined;
+					this.uniformData = undefined;
 				}
-			}else{
-				//这块正式写的时候要改，要不然会修改原始值的！！！！！！！！！！！！！！！！！！！！！
-				newData.uniformData = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
-			}
-			TemUniformDataMap.push(newData);
-		}
-		//console.log("TemUniformDataMap",TemUniformDataMap);
-		for (var i in TemUniformDataMap){
-			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
-		}
-		console.log("set_value_dict",set_value_dict);
-		//console.log([[1,2],[3]]);
-		
-		compiled = set_values(set_value_dict, compiled,2988);
-		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		console.log(compiled);
-	   	//console.log("compiled",compiled);
-		eval(compiled);
+				//console.log("ProgramDataMap",ProgramDataMap);
+				var TemUniformDataMap = [];
+				set_value_dict = {};
 
-		// console.log("tmp", math.flatten(tmp._data));
-		// console.log("final_tmp", math.flatten(final_tmp._data));
-		// console.log("vPosition",vPosition);
-		// console.log("fragTexCoord",fragTexCoord);
-		// console.log("fragNormal",fragNormal);
-		// console.log("gl_Position",gl_Position);
-
-
-		/*------------------数据输入部分--------------------------------------*/
-		
-		/*------------------数据输出部分--------------------------------------*/
-		//去掉空个的函数
-		function trim(s){ 
-			return trimRight(trimLeft(s)); 
-		} 
-		//去掉左边的空白 
-		function trimLeft(s){ 
-			if(s == null) { 
-			return ""; 
-			} 
-			var whitespace = new String(" \t\n\r"); 
-			var str = new String(s); 
-			if (whitespace.indexOf(str.charAt(0)) != -1) { 
-			var j=0, i = str.length; 
-			while (j < i && whitespace.indexOf(str.charAt(j)) != -1){ 
-				j++; 
-			} 
-			str = str.substring(j, i); 
-			} 
-			return str; 
-		} 
-		
-		//去掉右边的空白 
-		function trimRight(s){ 
-			if(s == null) return ""; 
-			var whitespace = new String(" \t\n\r"); 
-			var str = new String(s); 
-			if (whitespace.indexOf(str.charAt(str.length-1)) != -1){ 
-			var i = str.length - 1; 
-			while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){ 
-				i--; 
-			} 
-			str = str.substring(0, i+1); 
-			} 
-			return str; 
+				//这里是转化的第一个版本
+			
+				for (var i in ProgramDataMap[activeProgramNum].attriData){
+					var newData = new Tem_uniform_data;
+					newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
+					newData.uniformData = [];
+					for (j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j += ProgramDataMap[activeProgramNum].attriData[i].attriEleNum){
+						var tem = [];
+						for (k = j; k < j + ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; k++){
+							tem = tem.concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[k]);
+						}
+						newData.uniformData.push(tem);
+					}
+					TemUniformDataMap.push(newData);
 				}
-		
-		var words = trim(testShader);		
-		function replaceAll(str)  
-		{  
-			if(str!=null)  
-			str = str.replace(/;/g," ") 
-			str = str.replace (/\n/g," ") 
-			return str;  
-		}  
-		console.log("words", words);
-		var strNew = words.replace(";","");  
-		strNew = replaceAll(strNew);  
-		var test = strNew.split(" ");
-		var finalwords = [];
-		for (i in test)
-			if (test[i] != "")
-				finalwords = finalwords.concat(trim(test[i]));
+			
 
 
-		// console.log("strNew",strNew);
-		// console.log("test",test);
-		// console.log("finalwords",finalwords);
+				//这里是转化的第二个版本
+				// for (var i in ProgramDataMap[activeProgramNum].attriData){
+				// 	var newData = new Tem_uniform_data;
+				// 	newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
+				// 	newData.uniformData = [];
+				// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].attriEleNum; j++)
+				// 		newData.uniformData.push([]);
+				// 	for (var j = 0; j < ProgramDataMap[activeProgramNum].attriData[i].uniformData.length; j++)
+				// 		newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum] = newData.uniformData[j % ProgramDataMap[activeProgramNum].attriData[i].attriEleNum].concat(ProgramDataMap[activeProgramNum].attriData[i].uniformData[j]);
+				// 	TemUniformDataMap.push(newData);
+				// }
 
-		//在这里进行输出的赋值
-		var VaryingDataMap = [];
-		var i = 0;
-		while (i < finalwords.length){
-			if (finalwords[i] == "varying"){
-				var newData = new Varying_data;
-				i++;
-				if (finalwords[i] == "vec2")
-					newData.varyEleNum = 2;
-				else if (finalwords[i] == "vec3")
-					newData.varyEleNum = 3;
-				else if (finalwords[i] == "vec4")
-					newData.varyEleNum = 4;
-				i++;
-				newData.shaderName = finalwords[i]
-				newData.uniformData = [];
-				VaryingDataMap.push(newData);
-			}
-			i++;
+
+
+
+				// for (var i in ProgramDataMap[activeProgramNum].attriData){
+				// 	set_value_dict[ProgramDataMap[activeProgramNum].attriData[i].shaderName] = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+				// }
+				
+				for (var i in ProgramDataMap[activeProgramNum].uniformData){
+					var newData = new Tem_uniform_data;
+					newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
+					if (ProgramDataMap[activeProgramNum].uniformData[i].uniformNum == 14){
+						//console.log("进入转换");
+						newData.uniformData = [];
+						for (var j = 0; j <= 3; j++){
+							var tem = [];
+							for (var k = 1; k <= 4; k++){
+								tem = tem.concat(ProgramDataMap[activeProgramNum].uniformData[i].uniformData[j * 4 + k - 1]);
+							}
+							newData.uniformData.push(tem);
+						}
+					}else{
+						//这块正式写的时候要改，要不然会修改原始值的！！！！！！！！！！！！！！！！！！！！！
+						newData.uniformData = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+					}
+					TemUniformDataMap.push(newData);
+				}
+				//console.log("TemUniformDataMap",TemUniformDataMap);
+				for (var i in TemUniformDataMap){
+					set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
+				}
+				console.log("set_value_dict",set_value_dict);
+				//console.log([[1,2],[3]]);
+				
+				compiled = set_values(set_value_dict, compiled,2988);
+				//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
+				console.log(compiled);
+				//console.log("compiled",compiled);
+				eval(compiled);
+
+				// console.log("tmp", math.flatten(tmp._data));
+				// console.log("final_tmp", math.flatten(final_tmp._data));
+				// console.log("vPosition",vPosition);
+				// console.log("fragTexCoord",fragTexCoord);
+				// console.log("fragNormal",fragNormal);
+				// console.log("gl_Position",gl_Position);
+
+
+				/*------------------数据输入部分--------------------------------------*/
+				
+				/*------------------数据输出部分--------------------------------------*/
+				//去掉空个的函数
+				function trim(s){ 
+					return trimRight(trimLeft(s)); 
+				} 
+				//去掉左边的空白 
+				function trimLeft(s){ 
+					if(s == null) { 
+					return ""; 
+					} 
+					var whitespace = new String(" \t\n\r"); 
+					var str = new String(s); 
+					if (whitespace.indexOf(str.charAt(0)) != -1) { 
+					var j=0, i = str.length; 
+					while (j < i && whitespace.indexOf(str.charAt(j)) != -1){ 
+						j++; 
+					} 
+					str = str.substring(j, i); 
+					} 
+					return str; 
+				} 
+				
+				//去掉右边的空白 
+				function trimRight(s){ 
+					if(s == null) return ""; 
+					var whitespace = new String(" \t\n\r"); 
+					var str = new String(s); 
+					if (whitespace.indexOf(str.charAt(str.length-1)) != -1){ 
+					var i = str.length - 1; 
+					while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){ 
+						i--; 
+					} 
+					str = str.substring(0, i+1); 
+					} 
+					return str; 
+						}
+				
+				var words = trim(testShader);		
+				function replaceAll(str)  
+				{  
+					if(str!=null)  
+					str = str.replace(/;/g," ") 
+					str = str.replace (/\n/g," ") 
+					return str;  
+				}  
+				console.log("words", words);
+				var strNew = words.replace(";","");  
+				strNew = replaceAll(strNew);  
+				var test = strNew.split(" ");
+				var finalwords = [];
+				for (i in test)
+					if (test[i] != "")
+						finalwords = finalwords.concat(trim(test[i]));
+
+
+				// console.log("strNew",strNew);
+				// console.log("test",test);
+				// console.log("finalwords",finalwords);
+
+				//在这里进行输出的赋值
+				var VaryingDataMap = [];
+				var i = 0;
+				while (i < finalwords.length){
+					if (finalwords[i] == "varying"){
+						var newData = new Varying_data;
+						i++;
+						if (finalwords[i] == "vec2")
+							newData.varyEleNum = 2;
+						else if (finalwords[i] == "vec3")
+							newData.varyEleNum = 3;
+						else if (finalwords[i] == "vec4")
+							newData.varyEleNum = 4;
+						i++;
+						newData.shaderName = finalwords[i]
+						newData.uniformData = [];
+						VaryingDataMap.push(newData);
+					}
+					i++;
+				}
+				console.log("VaryingDataMap",VaryingDataMap);
+
+
+				for (i in VaryingDataMap){
+					var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
+					console.log("string",string);
+					//eval(string);
+				}
+
 		}
-		console.log("VaryingDataMap",VaryingDataMap);
-
-
-		for (i in VaryingDataMap){
-			var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
-			console.log("string",string);
-			//eval(string);
-		}
-
-}
 
 
 
@@ -1041,13 +1041,14 @@ if (parsingflag == 1){
 
 
 		/*------------------readpixel部分--------------------------------------*/
-		var testNumber = 0;
+		var testNumber = 1;
 		if (testNumber == 1){
 
 			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 			console.log("maxTextureUnits",maxTextureUnits);
 			var pixels = new Uint8Array(canvas.width * canvas.height * 4);
 			gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			console.log("pixels",pixels);
 			var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
 			function textureFromPixelArray(gl, dataArray, type, width, height) {
 				var texture = gl.createTexture();
@@ -1087,7 +1088,7 @@ if (parsingflag == 1){
 			var coordinates = [];
 			var __VertexPositionAttributeLocation1;
 			
-			console.log("ProgramDataMap", ProgramDataMap);
+			// console.log("ProgramDataMap", ProgramDataMap);
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
@@ -1096,7 +1097,7 @@ if (parsingflag == 1){
 			//console.log("coordinates",coordinates);
 			
 			//这种情况下要考虑mode的样子，先把数据传输进来
-			console.log("mode",mode);
+			// console.log("mode",mode);
 			//console.log("coordinates",coordinates);
 			// 我现在先按照test的来画，去判断双draw的部分
 			
@@ -1105,6 +1106,7 @@ if (parsingflag == 1){
 			// testNumber = 1;
 			// if (testNumber == 1){
 			if (mode == 3){
+				// tem.length = 0;
 				for (var i = 0; i <  coordinates.length/3 - 1; i++){
 					tem = tem.concat(coordinates[3 * i]);
 					tem = tem.concat(coordinates[3 * i + 1]);
@@ -1114,19 +1116,27 @@ if (parsingflag == 1){
 					tem = tem.concat(coordinates[3 * i + 5]);
 				}
 			}
+			// for (var i = 0; i < 1500;i++)
+			// 		tem = tem.concat(0);
 			if (mode == 1){
+				// tem.length = 0;
 				for (var i = 0; i <  coordinates.length/3; i++){
 					tem = tem.concat(coordinates[3 * i]);
 					tem = tem.concat(coordinates[3 * i + 1]);
 					tem = tem.concat(coordinates[3 * i + 2]);
 				}
+				 for (var i = 0; i < 1500;i++)
+				 	tem = tem.concat(0);
 			}
-			console.log("coordinates",coordinates);
-			console.log("tem",tem);
+			
+			//  console.log("coordinates",coordinates);
+			//  console.log("tem",tem);
 			var newData1 = new Varying_data;
 			newData1.shaderName = "line_point";
 			newData1.varyEleNum = 3;
+			// newData1.uniformData.length = 0;
 			newData1.uniformData = tem;
+			// console.log("asaadxasdscdsvsfdbvfdsbgf",newData1.uniformData);
 			for (var i =0; i < newData1.uniformData.length; i++)
 				if (i % 3 != 2)
 					newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
@@ -1155,7 +1165,7 @@ if (parsingflag == 1){
 			gl.my_useProgram(activeProgram);
 			var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
-			//console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+			// console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			//console.log("开始draw");
 
 			
@@ -1164,7 +1174,7 @@ if (parsingflag == 1){
 			 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
-			console.log("画了");
+			// console.log("画了");
 				
 
 
@@ -1317,6 +1327,7 @@ if (parsingflag == 1){
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
 			//console.log("开始画了");
+			
 			console.log("ProgramDataMap",ProgramDataMap);
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
