@@ -762,7 +762,6 @@ rewrite = function(gl, canvas){
           //在这里面添加first和count
           for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
             newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
-          // console.log("newData.uniformData",newData.uniformData);
           ProgramDataMap[activeProgramNum].attriData.push(newData);
         }
 
@@ -776,12 +775,12 @@ rewrite = function(gl, canvas){
         newData.shaderName = UniformDataMap[i].shaderName;
         newData.uniformNum = UniformDataMap[i].uniformNum;
         newData.uniformType = UniformDataMap[i].uniformType;
-        newData.uniformData = UniformDataMap[i].uniformData;
         newData.uniformActive = UniformDataMap[i].uniformActive;
+        newData.uniformData = [];
+        for (var idx in UniformDataMap[i].uniformData)
+          newData.uniformData.push(UniformDataMap[i].uniformData[idx]);
         ProgramDataMap[activeProgramNum].uniformData.push(newData);
-
       }
-
     } 
     //console.log("数据处理区域完毕");
     //console.log("ProgramDataMap", ProgramDataMap);
@@ -810,11 +809,8 @@ rewrite = function(gl, canvas){
       void main()
       {
         vPosition = mView * vec4(vertPosition, 1.0);
-        //console.log(vPosition);
         fragTexCoord = vertTexCoord;
-        //console.log(fragTexCoord);
         fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
-        //console.log(fragNormal);
         gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
       }
       main();
@@ -852,7 +848,6 @@ rewrite = function(gl, canvas){
         }
         TemUniformDataMap.push(newData);
       }
-
 
 
       for (var i in ProgramDataMap[activeProgramNum].uniformData){
