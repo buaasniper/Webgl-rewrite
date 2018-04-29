@@ -11,9 +11,7 @@ var handle_gl_Position = function (gl_Position) {
 var my_multiple = function(a, b) {
   a = math.matrix(a);
   b = math.matrix(b);
-  a = math.transpose(a);
-  b = math.transpose(b);
-  return math.transpose(math.multiply(a, b));
+  return math.multiply(b, a);
 }
 
 var my_add = function(a, b) {
