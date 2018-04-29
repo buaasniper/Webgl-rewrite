@@ -1,7 +1,11 @@
 var handle_gl_Position = function (gl_Position) {
-  gl_Position = gl_Position.map(x => x._data.slice(0, -1));
-  gl_Position = math.flatten(gl_Position);
-  gl_Position = gl_Position.map(x => x * 0.15);
+  gl_Position = gl_Position.map(x => 
+      [
+      Math.floor((x._data[0] * 0.15 + 1) * 128),
+      Math.floor((x._data[1] * 0.15 + 1) * 128),
+      - Math.floor((x._data[2] * 0.15 + 1) * 128)
+      ]);
+  //gl_Position = math.flatten(gl_Position);
   return gl_Position;
 }
 var my_multiple = function(a, b) {
