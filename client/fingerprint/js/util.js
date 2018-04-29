@@ -923,21 +923,10 @@ if (parsingflag == 1){
 		for (var i in TemUniformDataMap){
 			set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
-		console.log("set_value_dict",set_value_dict);
 		//console.log([[1,2],[3]]);
 		
 		compiled = set_values(set_value_dict, compiled,2988);
-		//compiled = set_values({'vertPdsdasdassdosition': [1,2,3,4,5,6,7,8,9]}, compiled);
-		console.log(compiled);
-	   	//console.log("compiled",compiled);
 		eval(compiled);
-
-		console.log("tmp", math.flatten(tmp._data));
-		console.log("final_tmp", math.flatten(final_tmp._data));
-		console.log("vPosition",vPosition);
-		console.log("fragTexCoord",fragTexCoord);
-		console.log("fragNormal",fragNormal);
-		console.log("gl_Position",gl_Position);
 
 
 		/*------------------数据输入部分--------------------------------------*/
@@ -987,7 +976,6 @@ if (parsingflag == 1){
 			str = str.replace (/\n/g," ") 
 			return str;  
 		}  
-		console.log("words", words);
 		var strNew = words.replace(";","");  
 		strNew = replaceAll(strNew);  
 		var test = strNew.split(" ");
@@ -997,9 +985,6 @@ if (parsingflag == 1){
 				finalwords = finalwords.concat(trim(test[i]));
 
 
-		// console.log("strNew",strNew);
-		// console.log("test",test);
-		// console.log("finalwords",finalwords);
 
 		//在这里进行输出的赋值
 		var VaryingDataMap = [];
@@ -1021,12 +1006,10 @@ if (parsingflag == 1){
 			}
 			i++;
 		}
-		console.log("VaryingDataMap",VaryingDataMap);
 
 
 		for (i in VaryingDataMap){
 			var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
-			console.log("string",string);
 			//eval(string);
 		}
 
@@ -1045,7 +1028,6 @@ if (parsingflag == 1){
 		if (testNumber == 1){
 
 			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-			console.log("maxTextureUnits",maxTextureUnits);
 			var pixels = new Uint8Array(canvas.width * canvas.height * 4);
 			gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 			var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
@@ -1087,7 +1069,6 @@ if (parsingflag == 1){
 			var coordinates = [];
 			var __VertexPositionAttributeLocation1;
 			
-			console.log("ProgramDataMap", ProgramDataMap);
 			//attribute 读取阶段
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
 				if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
@@ -1096,8 +1077,6 @@ if (parsingflag == 1){
 			//console.log("coordinates",coordinates);
 			
 			//这种情况下要考虑mode的样子，先把数据传输进来
-			console.log("mode",mode);
-			//console.log("coordinates",coordinates);
 			// 我现在先按照test的来画，去判断双draw的部分
 			
 			//这块coordinates出了问题，但是我不确定是不是对的，等会在处理
@@ -1120,8 +1099,6 @@ if (parsingflag == 1){
 						tem = tem.concat(coordinates[3 * i + 2]);
 					}
 				}
-				console.log("coordinates",coordinates);
-				console.log("tem",tem);
 				var newData1 = new Varying_data;
 				newData1.shaderName = "line_point";
 				newData1.varyEleNum = 3;
@@ -1273,7 +1250,6 @@ if (parsingflag == 1){
 			}	
 			ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
-			//console.log("ProgramDataMap",ProgramDataMap);
 
 			var canvas_buffer = [-1.0, -1.0, 
 				1.0, -1.0, 
@@ -1295,7 +1271,6 @@ if (parsingflag == 1){
 			gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 			gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
 			//console.log("开始画了");
-			console.log("ProgramDataMap",ProgramDataMap);
 			gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 
@@ -1392,6 +1367,7 @@ if (parsingflag == 1){
 
 
 
+      /*
 			if(vertNormal.length != 0){
 				var newData3 = new Varying_data;
 				newData3.shaderName = "nor_point";
@@ -1405,10 +1381,7 @@ if (parsingflag == 1){
 					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[1] + tem[i+1] * mWorld_fs[5] + tem[i+2] * mWorld_fs[9]) );
 					newData3.uniformData = newData3.uniformData.concat((tem[i] * mWorld_fs[2] + tem[i+1] * mWorld_fs[6] + tem[i+2] * mWorld_fs[10])) ;
 				}
-				console.log(newData3);
-
 				 fragNormal = math.flatten(fragNormal);
-				 console.log(fragNormal);
 				 for (var i = 0; i < fragNormal.length; i++)
 				 	newData3.uniformData = newData3.uniformData.concat(fragNormal[i]);
 
@@ -1416,25 +1389,15 @@ if (parsingflag == 1){
 					newData3.uniformData[i] = Math.round(((newData3.uniformData[i] )) * 1000);
 				ProgramDataMap[activeProgramNum].varyingData.push(newData3);
 			}
+      */
 			
 			if(vetexID == 5){
 				var newData4 = new Varying_data;
 				newData4.shaderName = "vPosition";
 				newData4.varyEleNum = 4;
-				//只是一个中间替代值为了让后面的值不变
-				var tem = [];
-				// for (var i = 0; i < vertPosition.length; i++)
-				// 	tem = tem.concat(vertPosition[i]);
-				// for (var i = 0; i < tem.length; i += 3){
-				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[0] + tem[i+1] * mView_fs[4] + tem[i+2] * mView_fs[8] +  mView_fs[12]));
-				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[1] + tem[i+1] * mView_fs[5] + tem[i+2] * mView_fs[9] +  mView_fs[13]));
-				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[2] + tem[i+1] * mView_fs[6] + tem[i+2] * mView_fs[10]+  mView_fs[14]));
-				// 	newData4.uniformData = newData4.uniformData.concat((tem[i] * mView_fs[3] + tem[i+1] * mView_fs[7] + tem[i+2] * mView_fs[11]+  mView_fs[15]));
-				// }
-
 				vPosition = math.flatten(vPosition);
 				for (var i = 0; i < vPosition.length; i++)
-				 	newData4.uniformData = newData4.uniformData.concat(vPosition[i]);
+				 	newData4.uniformData.push(vPosition[i]);
 
 				for (var i = 0; i < newData4.uniformData.length; i++)
 					newData4.uniformData[i] = Math.round(((newData4.uniformData[i] )) * 1000);
@@ -1449,9 +1412,8 @@ if (parsingflag == 1){
 			var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
 			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
 			var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
-			var tem = [];
 			for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
-				tem_varying.push(tem);
+				tem_varying.push([]);
 			for (var i = 0; i < index_num; i+= 3){
 				x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
 				y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
@@ -1465,26 +1427,21 @@ if (parsingflag == 1){
 				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
 					for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
 						for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
-							tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);	
+							tem_varying[j].push(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);	
 					}
 				}
 			}
 			
 			
+      /*
 			//把数值赋给了ProgramDataMap
 			for (var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
 				ProgramDataMap[activeProgramNum].varyingData[i].uniformData = [];
 				for(var j = 0; j < tem_varying[i].length; j++)
 					ProgramDataMap[activeProgramNum].varyingData[i].uniformData = ProgramDataMap[activeProgramNum].varyingData[i].uniformData.concat(tem_varying[i][j]);
 			}
+      */
 
-
-			//console.log("uniform的最大值",gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS));
-			//console.log("tem_varying",tem_varying);
-			//console.log("ProgramDataMap",ProgramDataMap);
-			//console.log("数据准备完毕，开始画图");
-
-			//devide_draw(-1000, 1000, tem_varying, gl);
 
 			devide_draw(0, 255, tem_varying, gl);
 
@@ -1527,8 +1484,8 @@ function devide_draw(left, right, tem_varying, gl){
 
 
 	for (var i = 0; i < tem_varying.length; i++){
-		left_varying.push(tem);
-		right_varying.push(tem);
+		left_varying.push([]);
+		right_varying.push([]);
 	}
 	for (var i = 0; i < tri_number; i++){
 		if (!((tem_varying[0][i * 9] >= mid) && (tem_varying[0][i * 9 + 3] >= mid) && (tem_varying[0][i * 9 + 6] >= mid))){
@@ -1536,7 +1493,7 @@ function devide_draw(left, right, tem_varying, gl){
 			//后加入同一化的代码
 			for (var j = 0; j < tem_varying.length; j++){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
-					left_varying[j] = left_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+					left_varying[j].push(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}
 			
 		}		
@@ -1545,7 +1502,7 @@ function devide_draw(left, right, tem_varying, gl){
 			//后加入的代码
 			for (var j = 0; j < tem_varying.length; j++){
 				for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
-					right_varying[j] = right_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+					right_varying[j].push(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
 			}			
 		}
 	}

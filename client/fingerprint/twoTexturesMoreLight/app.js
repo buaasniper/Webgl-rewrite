@@ -253,7 +253,10 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
         
+        var t0 = performance.now();
        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        var t1 = performance.now();
+        console.log('time', t1 - t0);
 
         if (count == 55) {
           dataURL = canvas.toDataURL('image/png', 1.0);

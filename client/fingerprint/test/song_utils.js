@@ -46,7 +46,6 @@ var set_values = function(values, js_str, num_attrs) {
         res_line = res_line.replace(val[2], JSON.stringify(values[val[1]]));
       } else {
         var cur_val = (val[2] + ',').repeat(num_attrs).slice(0, -1);
-        console.log(cur_val);
         res_line = res_line.replace(val[2], `[${cur_val}]`);
       }
     }
