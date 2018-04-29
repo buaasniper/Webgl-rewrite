@@ -95,6 +95,7 @@ var LineTest = function(type) {
         fragTexCoord.y = y0;
         //gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
         gl_FragColor = texture2D(backtexture,vec2( (gl_FragCoord.x)/256.0  ,  (gl_FragCoord.y )/256.0 ) ); 
+        //gl_FragColor = vec4 (1.0, 0.0, 0.0, 1.0 );
         for (int i = 0 ; i < 600; i += 2){
             x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
@@ -244,7 +245,7 @@ var LineTest = function(type) {
                     gl.enable(gl.DEPTH_TEST);
 
                     // Clear the color and depth buffer
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_CLEAR_VALUE);
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
                     // Set the view port
                     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -255,7 +256,7 @@ var LineTest = function(type) {
                     
 
                     gl.drawArrays(gl.LINE_STRIP, 0, 256);
-                    // gl.drawArrays(gl.LINES, 256, 6);
+                    gl.drawArrays(gl.LINES, 256, 6);
 
 
 

@@ -266,9 +266,9 @@
         var maxTextureUnits = webgl.getParameter(webgl.MAX_TEXTURE_IMAGE_UNITS);
         console.log("maxTextureUnits",maxTextureUnits);
 
-        webgl.activeTexture(webgl.TEXTURE16);
+        webgl.activeTexture(webgl.TEXTURE0);
         webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
-        webgl.uniform1i(samplerIndex, 16);
+        webgl.uniform1i(samplerIndex, 0);
         webgl.uniform1f(lineIndex, 0.3);
         webgl.drawArrays(webgl.TRIANGLES, 0, 6);
 
