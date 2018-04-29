@@ -41,8 +41,8 @@
         fragTexCoord.x = x0;
         fragTexCoord.y = y0;
         if (linecolor < 0.5){
-          //gl_FragColor = vec4 (gl_FragCoord.x/255.0, gl_FragCoord.y/255.0 , 0.0, 1.0); 
-          gl_FragColor = texture2D(s_texture,vec2( (gl_FragCoord.x - 1.0)/255.0  ,  (gl_FragCoord.y - 1.0)/255.0 ) );     
+          //gl_FragColor = vec4 ( (gl_FragCoord.x - 10.0) /256.0, gl_FragCoord.y/256.0 , 0.0, 1.0); 
+          gl_FragColor = texture2D(s_texture,vec2( (gl_FragCoord.x)/256.0  ,  (gl_FragCoord.y )/256.0 ) );     
           //gl_FragColor = col_transfer(color0); 
         }
         else if (linecolor < 0.8){

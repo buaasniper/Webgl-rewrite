@@ -93,7 +93,8 @@ var LineTest = function(type) {
         txt_coord fragTexCoord;
         fragTexCoord.x = x0;
         fragTexCoord.y = y0;
-        gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
+        //gl_FragColor = col_transfer( D_texture2D(backtexture, fragTexCoord));
+        gl_FragColor = texture2D(backtexture,vec2( (gl_FragCoord.x)/256.0  ,  (gl_FragCoord.y )/256.0 ) ); 
         for (int i = 0 ; i < 600; i += 2){
             x1 = division( (line_point[i][0] + 1000) * 32 , 250);  
             y1 = division( (line_point[i][1] + 1000) * 32 , 250);  
