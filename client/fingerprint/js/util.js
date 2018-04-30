@@ -815,8 +815,8 @@ getCanvas = function(canvasName) {
 		  var Compiler = GLSL();
 		//console.log("testShader",testShader);
 		compiled = Compiler.compile(testShader);
-		console.log("shader",testShader);
-		console.log("compiled",compiled);
+		// console.log("shader",testShader);
+		// console.log("compiled",compiled);
   
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
@@ -867,14 +867,14 @@ getCanvas = function(canvasName) {
 		}
 		var t1 = performance.now();
 		console.log('convert', t1 - t0);
-		//console.log("TemUniformDataMap",TemUniformDataMap);
+		// console.log("TemUniformDataMap",TemUniformDataMap);
 		for (var i in TemUniformDataMap){
 		  set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
 		//console.log([[1,2],[3]]);
-  
+		// console.log("set_value_dict",set_value_dict);
 		var t0 = performance.now();
-		compiled = set_values(set_value_dict, compiled,2988);
+		compiled = set_values(set_value_dict, compiled,TemUniformDataMap[0].length);
 		eval(compiled);
 		var t1 = performance.now();
 		console.log('eval', t1 - t0);
