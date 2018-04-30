@@ -1,15 +1,17 @@
 var handle_gl_Position = function (gl_Position) {
-  gl_Position = gl_Position.map(x => x._data.slice(0, -1));
-  gl_Position = math.flatten(gl_Position);
-  gl_Position = gl_Position.map(x => x * 0.15);
+  gl_Position = gl_Position.map(x => 
+      [
+      Math.floor((x._data[0] * 0.15 + 1) * 128),
+      Math.floor((x._data[1] * 0.15 + 1) * 128),
+      - Math.floor((x._data[2] * 0.15 + 1) * 128)
+      ]);
+  //gl_Position = math.flatten(gl_Position);
   return gl_Position;
 }
 var my_multiple = function(a, b) {
   a = math.matrix(a);
   b = math.matrix(b);
-  a = math.transpose(a);
-  b = math.transpose(b);
-  return math.transpose(math.multiply(a, b));
+  return math.multiply(b, a);
 }
 
 var my_add = function(a, b) {
@@ -46,7 +48,6 @@ var set_values = function(values, js_str, num_attrs) {
         res_line = res_line.replace(val[2], JSON.stringify(values[val[1]]));
       } else {
         var cur_val = (val[2] + ',').repeat(num_attrs).slice(0, -1);
-        console.log(cur_val);
         res_line = res_line.replace(val[2], `[${cur_val}]`);
       }
     }
