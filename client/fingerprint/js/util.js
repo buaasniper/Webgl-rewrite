@@ -786,7 +786,7 @@ getCanvas = function(canvasName) {
 	  //console.log("ProgramDataMap", ProgramDataMap);
   
   
-	  var parsingflag = 1;
+	  var parsingflag = 0;
 	  if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
@@ -989,6 +989,7 @@ getCanvas = function(canvasName) {
   
 	  /*------------------数据输出部分--------------------------------------*/
 	  /*------------------readpixel部分--------------------------------------*/
+	  
 	  var testNumber = 0;
 	  if (testNumber == 1){
   
@@ -1013,7 +1014,96 @@ getCanvas = function(canvasName) {
 		gl.my_uniform1i(backtextureLoc, maxTextureUnits);
 	  }
 	  /*------------------readpixel部分--------------------------------------*/
-  
+	  
+
+	  if (vetexID == 1){
+		var mWorld = new Float32Array(16);
+		var mWorld_fs = new Float32Array(16);
+		var mView_fs = new Float32Array(16);
+		var mView = new Float32Array(16);
+		var mProj = new Float32Array(16);
+		var vertPosition = [];
+		var vertColor = [];
+		var varyingmap = [];
+		var __VertexPositionAttributeLocation1;
+		//attribute 读取阶段
+		for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+			if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertPosition")
+				vertPosition = ProgramDataMap[activeProgramNum].attriData[i].uniformData;					
+			if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertColor")
+				vertColor = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+		}
+		//uniform 读取阶段
+		for (var i = 0; i < ProgramDataMap[activeProgramNum].uniformData.length; i++){
+			if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mWorld")
+				mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;					
+			if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mView")
+				mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+			if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
+				mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+		}
+
+		//进入vetex计算部分
+		mat4.copy(mWorld_fs, mWorld);
+		mat4.copy(mView_fs, mView);
+		mat4.transpose(mWorld, mWorld);
+		mat4.transpose(mView, mView);
+		mat4.transpose(mProj, mProj);
+		mat4.mul(mView, mView, mProj);
+		mat4.mul(mWorld, mWorld, mView);
+
+		//进入计算阶段
+		//手工去完成自动化的那部分
+		
+		var newData1 = new Varying_data;
+		newData1.shaderName = "tri_point";
+		newData1.varyEleNum = 3;
+		newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+		for (var i =0; i < newData1.uniformData.length; i++)
+			if (i % 3 != 2)
+				newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
+			else
+				newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
+		ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+
+		var newData2 = new Varying_data;
+		newData2.shaderName = "tri_color";
+		newData2.varyEleNum = 3;
+		for (var i = 0; i < vertColor.length; i++){
+			newData2.uniformData = newData2.uniformData.concat(vertColor[i]);
+			newData2.uniformData[i] = Math.round(((newData2.uniformData[i] )) * 1000);
+		}	
+		ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+
+		//console.log("ProgramDataMap",ProgramDataMap);
+
+		var canvas_buffer = [-1.0, -1.0, 
+			1.0, -1.0, 
+			-1.0,  1.0, 
+			-1.0,  1.0,
+			1.0, -1.0, 
+			1.0,  1.0]; 
+		var new_vertex_buffer = gl.createBuffer();
+		gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+		__VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'vertPosition');
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0);	
+		gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);	
+		gl.my_useProgram(activeProgram);
+		var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "tri_point");
+		var traingles_fra_loc = gl.my_getUniformLocation(activeProgram, "tri_color");
+		var traingles_num_loc = gl.my_getUniformLocation(activeProgram, "tri_number");
+		gl.my_uniform1i(traingles_num_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length/3);
+		gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+		gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
+		//console.log("开始画了");
+		console.log("ProgramDataMap",ProgramDataMap);
+		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+
+
+
+
+	}//vetexID == 1
   
   
   
