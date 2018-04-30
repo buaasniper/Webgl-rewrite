@@ -790,9 +790,29 @@ getCanvas = function(canvasName) {
 	  if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
+		if ((vetexID == 3) ){
+		var testShader = 
+		`
+		precision mediump float;
+
+		attribute vec3 vertPosition;
+		attribute vec2 vertTexCoord;
+		varying vec2 fragTexCoord;
+		uniform mat4 mWorld;
+		uniform mat4 mView;
+		uniform mat4 mProj;
+
+		void main()
+		{
+		fragTexCoord = vertTexCoord;
+		gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+		}
+		main();
+		`
+		}else{
 		var testShader = 
 		  `
-		  precision mediump float;
+		precision mediump float;
 		attribute vec3 vertPosition;
 		attribute vec2 vertTexCoord;
 		attribute vec3 vertNormal;
@@ -811,6 +831,7 @@ getCanvas = function(canvasName) {
 		}
 		main();
 		`
+		}
 		  //console.log("ProgramDataMap",ProgramDataMap);
 		  var Compiler = GLSL();
 		//console.log("testShader",testShader);
@@ -999,7 +1020,7 @@ getCanvas = function(canvasName) {
   
   
 	  /*---------------------自动化连接部分---------------------------------*/
-	  if ((vetexID == 4) ||  (vetexID == 5)){
+	  if ((vetexID == 3) ||(vetexID == 4) ||  (vetexID == 5)){
 		var t0 = performance.now();
 		var newData1 = new Varying_data;
 		newData1.shaderName = "tri_point";

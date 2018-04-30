@@ -31,7 +31,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var gl = getGL(canvas);
       var WebGL = true;
       
-      vetexID = 4;
+      vetexID = 3;
       gl.clearColor(1.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST);
