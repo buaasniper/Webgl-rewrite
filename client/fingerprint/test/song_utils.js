@@ -1,10 +1,9 @@
 var handle_gl_Position = function (gl_Position) {
-  console.log(gl_Position);
   gl_Position = gl_Position.map(x => 
       [
-      Math.floor((x._data[0] * 0.15 + 1) * 128),
-      Math.floor((x._data[1] * 0.15 + 1) * 128),
-      - Math.floor((x._data[2] * 0.15 + 1) * 128)
+      Math.floor((x[0] * 0.15 + 1) * 128),
+      Math.floor((x[1] * 0.15 + 1) * 128),
+      - Math.floor((x[2] * 0.15 + 1) * 128)
       ]);
   //gl_Position = math.flatten(gl_Position);
   return gl_Position;
@@ -21,18 +20,12 @@ map2 = new Map;
 var my_multiple = function(a, b) { 
   if (!a || !b) return a;
   map1.set(a,b);
-
   if (map1.get(a)!=undefined) {
-
     out = map2.get(b); 
-
     if (out!=undefined) 
-
       return out;
-
   } 
 
-  
   if (a.length==16 && b.length==16) {
    out = new Float32Array(16);
    mat4.multiply(out, a, b);
@@ -53,17 +46,11 @@ var my_multiple = function(a, b) {
   } 
 
   if (b.length == 4 && a.length == 16) {
-
    out = new Float32Array(4);
-
    vec4.transformMat4(out, b, a);
-
    map2.set(b,out); 
-
    return out;
-
   } 
-
 }
 
 

@@ -739,104 +739,105 @@ getCanvas = function(canvasName) {
 	  var activeProgramNum;
 	  activeProgram = getactiveProgram();
 	  activeProgramNum = getactiveProgramNum();
+    var t0 = performance.now();
 	  elementArray = getElementArray(count,offset);
-	  for (var i = 0; i < AttriDataMap.length; i++){
-		var newData = new Attri_data;
-		if( AttriDataMap[i].programName == activeProgram){
-		  newData.programName = AttriDataMap[i].programName;
-		  newData.shaderName = AttriDataMap[i].shaderName;
-		  newData.attriEleNum = AttriDataMap[i].attriEleNum;
-		  newData.uniformData = AttriDataMap[i].uniformData;
-  
-		  newData.uniformData = [];
-		  for (var j = 0; j < elementArray.length; j++){
-			for (var k = elementArray[j] * newData.attriEleNum; k <  (elementArray[j] + 1) * newData.attriEleNum; k++)
-			  newData.uniformData.push(AttriDataMap[i].uniformData[k]);
-		  }
-		  ProgramDataMap[activeProgramNum].attriData.push(newData);
-		}
-	  }
-	  gl.drawArrays(mode, 0 , count);
-	}
-  
-	getactiveProgram = function(){
-	  for (var i = 0; i < ProgramDataMap.length; i++)
-		if (ProgramDataMap[i].activeFlag == 1)
-		  return ProgramDataMap[i].programName;
-	}
-  
-	getactiveProgramNum = function(){
-	  for (var i = 0; i < ProgramDataMap.length; i++)
-		if (ProgramDataMap[i].activeFlag == 1)
-		  return i;
-	}
-  
-	getElementArray = function(count,offset){
-	  var elementArray = [];
-	  var returnArray = [];
-	  for (var i = 0; i < BufferDataMap.length; i++)
-		if (BufferDataMap[i].activeElement == 1)
-		  elementArray = BufferDataMap[i].bufferData;
-	  for (var i = offset; i < offset + count; i++)
-		returnArray = returnArray.concat(elementArray[i]);
-	  return returnArray;
-	}
-  
-	//mode
-	//gl.POINTS 0
-	//gl.LINES 1
-	//gl.LINE_LOOP 2
-	//gl.LINE_STRIP 3
-	//gl.TRIANGLES 4
-	var varyingmap = [];
-	gl.my_drawArrays = gl.__proto__.drawArrays;
-	gl.drawArrays = function(mode, first, count){
-	  var startdraw = performance.now();
-	  var activeProgram;
-	  var activeProgramNum;
-	  activeProgram = getactiveProgram();
-	  activeProgramNum = getactiveProgramNum();
-	  //没有进入gl.element直接进入这个gl.drawelement
-	  //加入attribute的部分
-	  // console.log("BufferDataMap",BufferDataMap);
-	  // console.log("AttriDataMap",AttriDataMap);
-	  if (ProgramDataMap[activeProgramNum].attriData.length == 0){
-		for (var i = 0; i < AttriDataMap.length; i++)
-		  if( AttriDataMap[i].programName == activeProgram){
-			var newData = new Attri_data;
-			newData.programName = AttriDataMap[i].programName;
-			newData.shaderName = AttriDataMap[i].shaderName;
-			newData.attriEleNum = AttriDataMap[i].attriEleNum;
-			newData.uniformData = [];
-			// console.log("start",newData.attriEleNum * first);
-			// console.log("end",newData.attriEleNum * (first + count));
-			//在这里面添加first和count
-			for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
-			  newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
-			ProgramDataMap[activeProgramNum].attriData.push(newData);
-		  }
-  
-	  }
-  
-	  //加入uniform的部分
-	  for(var i = 0; i < UniformDataMap.length; i++){
-		if (UniformDataMap[i].programName == activeProgram){
-		  var newData = new Uniform_data;
-		  newData.programName = UniformDataMap[i].programName;
-		  newData.shaderName = UniformDataMap[i].shaderName;
-		  newData.uniformNum = UniformDataMap[i].uniformNum;
-		  newData.uniformType = UniformDataMap[i].uniformType;
-		  newData.uniformActive = UniformDataMap[i].uniformActive;
-		  newData.uniformData = [];
-		  for (var idx in UniformDataMap[i].uniformData)
-			newData.uniformData.push(UniformDataMap[i].uniformData[idx]);
-		  ProgramDataMap[activeProgramNum].uniformData.push(newData);
-		}
-	  } 
-	  //console.log("数据处理区域完毕");
-	  //console.log("ProgramDataMap", ProgramDataMap);
-  
-  
+    var t1 = performance.now();
+    console.log('prepare for drawarrays', t1 - t0);
+    for (var i = 0; i < AttriDataMap.length; i++){
+      var newData = new Attri_data;
+      if( AttriDataMap[i].programName == activeProgram){
+        newData.programName = AttriDataMap[i].programName;
+        newData.shaderName = AttriDataMap[i].shaderName;
+        newData.attriEleNum = AttriDataMap[i].attriEleNum;
+        newData.uniformData = AttriDataMap[i].uniformData;
+
+        newData.uniformData = [];
+        for (var j = 0; j < elementArray.length; j++){
+          for (var k = elementArray[j] * newData.attriEleNum; k <  (elementArray[j] + 1) * newData.attriEleNum; k++)
+            newData.uniformData.push(AttriDataMap[i].uniformData[k]);
+        }
+        ProgramDataMap[activeProgramNum].attriData.push(newData);
+      }
+    }
+    gl.drawArrays(mode, 0 , count);
+  }
+
+  getactiveProgram = function(){
+    for (var i = 0; i < ProgramDataMap.length; i++)
+      if (ProgramDataMap[i].activeFlag == 1)
+        return ProgramDataMap[i].programName;
+  }
+
+  getactiveProgramNum = function(){
+    for (var i = 0; i < ProgramDataMap.length; i++)
+      if (ProgramDataMap[i].activeFlag == 1)
+        return i;
+  }
+
+  getElementArray = function(count,offset){
+    var elementArray = [];
+    var returnArray = [];
+    for (var i = 0; i < BufferDataMap.length; i++)
+      if (BufferDataMap[i].activeElement == 1)
+        elementArray = BufferDataMap[i].bufferData;
+    return elementArray.slice(offset, offset + count);
+  }
+
+  //mode
+  //gl.POINTS 0
+  //gl.LINES 1
+  //gl.LINE_LOOP 2
+  //gl.LINE_STRIP 3
+  //gl.TRIANGLES 4
+  var varyingmap = [];
+  gl.my_drawArrays = gl.__proto__.drawArrays;
+  gl.drawArrays = function(mode, first, count){
+    var startdraw = performance.now();
+    var activeProgram;
+    var activeProgramNum;
+    activeProgram = getactiveProgram();
+    activeProgramNum = getactiveProgramNum();
+    //没有进入gl.element直接进入这个gl.drawelement
+    //加入attribute的部分
+    // console.log("BufferDataMap",BufferDataMap);
+    // console.log("AttriDataMap",AttriDataMap);
+    if (ProgramDataMap[activeProgramNum].attriData.length == 0){
+      for (var i = 0; i < AttriDataMap.length; i++)
+        if( AttriDataMap[i].programName == activeProgram){
+          var newData = new Attri_data;
+          newData.programName = AttriDataMap[i].programName;
+          newData.shaderName = AttriDataMap[i].shaderName;
+          newData.attriEleNum = AttriDataMap[i].attriEleNum;
+          newData.uniformData = [];
+          // console.log("start",newData.attriEleNum * first);
+          // console.log("end",newData.attriEleNum * (first + count));
+          //在这里面添加first和count
+          for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
+            newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
+          ProgramDataMap[activeProgramNum].attriData.push(newData);
+        }
+
+    }
+
+    //加入uniform的部分
+    for(var i = 0; i < UniformDataMap.length; i++){
+      if (UniformDataMap[i].programName == activeProgram){
+        var newData = new Uniform_data;
+        newData.programName = UniformDataMap[i].programName;
+        newData.shaderName = UniformDataMap[i].shaderName;
+        newData.uniformNum = UniformDataMap[i].uniformNum;
+        newData.uniformType = UniformDataMap[i].uniformType;
+        newData.uniformActive = UniformDataMap[i].uniformActive;
+        newData.uniformData = [];
+        for (var idx in UniformDataMap[i].uniformData)
+          newData.uniformData.push(UniformDataMap[i].uniformData[idx]);
+        ProgramDataMap[activeProgramNum].uniformData.push(newData);
+      }
+    } 
+    //console.log("数据处理区域完毕");
+    //console.log("ProgramDataMap", ProgramDataMap);
+
+
 
 	  if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
@@ -923,7 +924,6 @@ getCanvas = function(canvasName) {
 			var mWorld = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
 			var mView = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
 			var mProj = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-			console.log("ProgramDataMap",ProgramDataMap);
 			for (var i in ProgramDataMap[activeProgramNum].uniformData){
 				var tem = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
 				tem[0][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[0];	
@@ -941,6 +941,7 @@ getCanvas = function(canvasName) {
 				tem[3][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[13];	
 				tem[3][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[14];	
 				tem[3][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[15];
+        tem = math.flatten(tem);
 				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld')	
 					mWorld = tem;
 				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mView')
@@ -956,17 +957,16 @@ getCanvas = function(canvasName) {
 				for (var bigI = 0;bigI < vertPosition.length;++ bigI) { 
 				vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
 				fragTexCoord[bigI] = vertTexCoord[bigI];
-				fragNormal[bigI] = [0, 1, 2].map(function (x, i) { return this[x]}, (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) )));
+				fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
 				gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
 				}
 				};
 		}
 
-
 		var t0 = performance.now();
 		main();
 		var t1 = performance.now();
-		console.log('==========main', t1 - t0);
+		console.log('main', t1 - t0);
 
   
   
@@ -1253,7 +1253,7 @@ getCanvas = function(canvasName) {
 	  ProgramDataMap[activeProgramNum].uniformData = [];
 	  ProgramDataMap[activeProgramNum].varyingData = [];
 	  var enddraw = performance.now();
-	  console.log('*******************8drawarray', enddraw - startdraw);
+	  console.log('drawarray', enddraw - startdraw);
 	}
   
 	/*-------------------------draw array--------------------------------------*/
