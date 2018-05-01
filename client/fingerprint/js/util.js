@@ -920,32 +920,36 @@ getCanvas = function(canvasName) {
 			var vPosition = [];
 			var gl_Position = [];
 			var mWorld = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+			var mView = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+			var mProj = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
 			console.log("ProgramDataMap",ProgramDataMap);
 			for (var i in ProgramDataMap[activeProgramNum].uniformData){
-				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld'){
-					mWorld[0][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[0];	
-					mWorld[0][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[1];	
-					mWorld[0][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[2];	
-					mWorld[0][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[3];	
-					mWorld[1][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[4];	
-					mWorld[1][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[5];	
-					mWorld[1][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[6];	
-					mWorld[1][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[7];	
-					mWorld[2][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[8];	
-					mWorld[2][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[9];	
-					mWorld[2][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[10];	
-					mWorld[2][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[11];	
-					mWorld[3][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[12];	
-					mWorld[3][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[13];	
-					mWorld[3][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[14];	
-					mWorld[3][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[15];	
-
-				}
-
+				var tem = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+				tem[0][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[0];	
+				tem[0][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[1];	
+				tem[0][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[2];	
+				tem[0][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[3];	
+				tem[1][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[4];	
+				tem[1][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[5];	
+				tem[1][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[6];	
+				tem[2][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[8];	
+				tem[2][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[9];	
+				tem[2][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[10];	
+				tem[2][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[11];	
+				tem[3][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[12];	
+				tem[3][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[13];	
+				tem[3][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[14];	
+				tem[3][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[15];
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld')	
+					mWorld = tem;
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mView')
+					mView = tem;
+				if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mProj')
+					mProj = tem;
 			}
 			//var mWorld = [[-0.9040721654891968,0,-0.42737987637519836,0],[0.2670685350894928,0.7807069420814514,-0.5649522542953491,0],[0.3336584270000458,-0.624897301197052,-0.7058154344558716,0],[0,0,0,1]];
-			var mView = [[-1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,-7,1]];
-			var mProj = [[2.4142136573791504,0,0,0],[0,2.4142136573791504,0,0],[0,0,-1.0002000331878662,-1],[0,0,-0.20002000033855438,0]];
+			//var mView = [[-1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,-7,1]];
+			//var mProj = [[2.4142136573791504,0,0,0],[0,2.4142136573791504,0,0],[0,0,-1.0002000331878662,-1],[0,0,-0.20002000033855438,0]];
 			function main () {
 				for (var bigI = 0;bigI < vertPosition.length;++ bigI) { 
 				vPosition[bigI] = my_multiple( mView, [vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] );
