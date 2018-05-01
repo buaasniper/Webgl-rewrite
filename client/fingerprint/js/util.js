@@ -580,10 +580,12 @@ getCanvas = function(canvasName) {
 	  var uniformData = [uniformData0, uniformData1, uniformData2];
 	  AddUniformMap(uniformLoc, uniformData, 0, 3);
 	}
-  
+//    var __testnumber = 0;
 	gl.my_uniform3iv = gl.__proto__.uniform3iv;
 	gl.uniform3iv = function (uniformLoc, uniformData){
 	  AddUniformMap(uniformLoc, uniformData, 0, 3);
+	//   console.log("__testnumber",__testnumber++);
+	//   console.log("fdsfdsfsdfdsfds");
 	}
   
 	gl.my_uniform3f = gl.__proto__.uniform3f;
@@ -786,7 +788,7 @@ getCanvas = function(canvasName) {
 	  //console.log("ProgramDataMap", ProgramDataMap);
   
   
-	  var parsingflag = 0;
+	  var parsingflag = 1;
 	  if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
@@ -806,8 +808,7 @@ getCanvas = function(canvasName) {
 		{
 		fragTexCoord = vertTexCoord;
 		gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-		}
-		main();
+		}	
 		`
 		}else{
 		var testShader = 
@@ -829,15 +830,18 @@ getCanvas = function(canvasName) {
 		  fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
 		  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 		}
-		main();
 		`
 		}
 		  //console.log("ProgramDataMap",ProgramDataMap);
-		  var Compiler = GLSL();
+		var t0 = performance.now();
+		var Compiler = GLSL();
 		//console.log("testShader",testShader);
 		compiled = Compiler.compile(testShader);
 		// console.log("shader",testShader);
 		// console.log("compiled",compiled);
+
+		var t1 = performance.now();
+		console.log('compile', t1 - t0);
   
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
@@ -850,7 +854,7 @@ getCanvas = function(canvasName) {
 		set_value_dict = {};
   
 		//这里是转化的第一个版本
-  
+		
 		var t0 = performance.now();
 		for (var i in ProgramDataMap[activeProgramNum].attriData){
 		  var newData = new Tem_uniform_data;
@@ -866,7 +870,7 @@ getCanvas = function(canvasName) {
 		  TemUniformDataMap.push(newData);
 		}
   
-  
+		//console.log("ProgramDataMap",ProgramDataMap);
 		for (var i in ProgramDataMap[activeProgramNum].uniformData){
 		  var newData = new Tem_uniform_data;
 		  newData.shaderName = ProgramDataMap[activeProgramNum].uniformData[i].shaderName;
@@ -886,19 +890,30 @@ getCanvas = function(canvasName) {
 		  }
 		  TemUniformDataMap.push(newData);
 		}
+
+
 		var t1 = performance.now();
 		console.log('convert', t1 - t0);
-		// console.log("TemUniformDataMap",TemUniformDataMap);
+		//  console.log("TemUniformDataMap",TemUniformDataMap);
+ 
+		
 		for (var i in TemUniformDataMap){
 		  set_value_dict[TemUniformDataMap[i].shaderName] = TemUniformDataMap[i].uniformData;
 		}
 		//console.log([[1,2],[3]]);
 		// console.log("set_value_dict",set_value_dict);
+		// console.log("compiled",compiled);
 		var t0 = performance.now();
 		compiled = set_values(set_value_dict, compiled,TemUniformDataMap[0].length);
+		// console.log("compiled",compiled);
 		eval(compiled);
 		var t1 = performance.now();
-		console.log('eval', t1 - t0);
+		console.log('==========eval', t1 - t0);
+		var t0 = performance.now();
+		main();
+		var t1 = performance.now();
+		console.log('==========main', t1 - t0);
+
   
   
 		/*------------------数据输入部分--------------------------------------*/
@@ -1179,7 +1194,7 @@ getCanvas = function(canvasName) {
 	  ProgramDataMap[activeProgramNum].uniformData = [];
 	  ProgramDataMap[activeProgramNum].varyingData = [];
 	  var enddraw = performance.now();
-	  console.log('drawarray', enddraw - startdraw);
+	  console.log('*******************8drawarray', enddraw - startdraw);
 	}
   
 	/*-------------------------draw array--------------------------------------*/
@@ -1259,7 +1274,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], left_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], left_varying[i]);
-			  //console.log("left_varying",i,left_varying[i]);
+			  console.log("left_varying",i,left_varying[i]);
 			}
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 			  gl.my_uniform4iv(loc_array[i], left_varying[i]);
@@ -1307,7 +1322,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], right_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], right_varying[i]);
-			  //console.log("right_varying",i,  right_varying[i]);
+			  console.log("right_varying",i,  right_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1407,7 +1422,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], bot_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], bot_varying[i]);
-			  //console.log("bot_varying",i,bot_varying[i]);
+			  console.log("bot_varying",i,bot_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1457,7 +1472,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], top_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], top_varying[i]);
-			  //console.log("top_varying",i,top_varying[i]);
+			  console.log("top_varying",i,top_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)

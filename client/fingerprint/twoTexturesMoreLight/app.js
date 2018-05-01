@@ -241,7 +241,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
       mat4.identity(identityMatrix);
       gl.enable(gl.DEPTH_TEST);
       var loop = function() {
-          var frame = requestAnimationFrame(loop);
+        var frame = requestAnimationFrame(loop);
         angle = count++ / 20;
         mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
         mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [ 1, 0, 0 ]);
