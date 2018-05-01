@@ -258,7 +258,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         var t1 = performance.now();
         console.log('overall', t1 - t0);
 
-        if (count == 55) {
+        if (count == 150) {
           dataURL = canvas.toDataURL('image/png', 1.0);
           console.log("two texture test result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);

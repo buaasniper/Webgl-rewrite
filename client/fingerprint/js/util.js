@@ -1202,6 +1202,17 @@ getCanvas = function(canvasName) {
 		ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 		var t1 = performance.now();
 		console.log('handle fragtex', t1 - t0);
+
+
+		var newData3 = new Varying_data;
+		newData3.shaderName = "nor_point";
+		newData3.varyEleNum = 3;
+		// fragNormal = math.flatten(fragNormal);
+		// console.log(fragNormal);
+		newData3.uniformData = fragNormal.map(x => x.map(y => Math.floor(y * 1000)))
+      	ProgramDataMap[activeProgramNum].varyingData.push(newData3);
+		
+		
   
 		if(vetexID == 5){
 		  var newData4 = new Varying_data;
