@@ -235,7 +235,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 0;
+      var count = 54;
       var ven, ren;
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
@@ -258,7 +258,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         var t1 = performance.now();
         console.log('overall', t1 - t0);
 
-        if (count == 150) {
+        if (count == 55) {
           dataURL = canvas.toDataURL('image/png', 1.0);
           console.log("two texture test result:", calcSHA1(dataURL));
           cancelAnimationFrame(frame);
