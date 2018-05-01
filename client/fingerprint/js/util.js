@@ -274,7 +274,13 @@ getCanvas = function(canvasName) {
 		  return (ShaderDataMap[i]);
 	  }
 	}
-  
+	
+
+	//判断是否要进入自动编译段！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+	//判断是否要进入自动编译段！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+	//判断是否要进入自动编译段！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+	var parsingflag = 1;
+	var Compiler;
 	gl.my_useProgram =  gl.__proto__.useProgram;
 	gl.useProgram = function (programName){
 	  //这块执行原函数，只需要知道使用了哪一个program就可以了
@@ -287,18 +293,61 @@ getCanvas = function(canvasName) {
 		}	
 		else
 		  ProgramDataMap[i].activeFlag = 0;
-  
-	  //在这里显示map的值
-  
-	  // console.log("ProgramDataMap",ProgramDataMap);
-	  // console.log("ShaderDataMap",ShaderDataMap);
-	  // console.log("BufferDataMap",BufferDataMap);
-	  // console.log("AttriDataMap",AttriDataMap);
-	  // console.log("AttributeLocMap",AttributeLocMap);
-	  // console.log("UniformDataMap",UniformDataMap);
-	  // console.log("UniformLocMap",UniformLocMap);
-  
-  
+		  
+	//将eval并入这个部分
+	if (parsingflag == 1){
+		if ((vetexID == 3) ){
+			var testShader = 
+			`
+			precision mediump float;
+	
+			attribute vec3 vertPosition;
+			attribute vec2 vertTexCoord;
+			varying vec2 fragTexCoord;
+			uniform mat4 mWorld;
+			uniform mat4 mView;
+			uniform mat4 mProj;
+	
+			void main()
+			{
+			fragTexCoord = vertTexCoord;
+			gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+			}	
+			`
+			}else{
+			var testShader = 
+			  `
+			precision mediump float;
+			attribute vec3 vertPosition;
+			attribute vec2 vertTexCoord;
+			attribute vec3 vertNormal;
+			varying vec2 fragTexCoord;
+			varying vec3 fragNormal;
+			varying vec4 vPosition;
+			uniform mat4 mWorld;
+			uniform mat4 mView;
+			uniform mat4 mProj;
+			void main()
+			{
+			  vPosition = mView * vec4(vertPosition, 1.0);
+			  fragTexCoord = vertTexCoord;
+			  fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
+			  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+			}
+			`
+			}
+			  //console.log("ProgramDataMap",ProgramDataMap);
+			var t0 = performance.now();
+			var Compiler = GLSL();
+			//console.log("testShader",testShader);
+			compiled = Compiler.compile(testShader);
+			// console.log("shader",testShader);
+			// console.log("compiled",compiled);
+	
+			var t1 = performance.now();
+			console.log('compile', t1 - t0);
+
+	}
 	}
   
 	/*===================关于program和shader source部分的代码=================结尾================*/
@@ -788,60 +837,11 @@ getCanvas = function(canvasName) {
 	  //console.log("ProgramDataMap", ProgramDataMap);
   
   
-	  var parsingflag = 1;
+
 	  if (parsingflag == 1){
 		/*------------------自动化连接部分------------------------------------*/
 		/*------------------数据输入部分--------------------------------------*/
-		if ((vetexID == 3) ){
-		var testShader = 
-		`
-		precision mediump float;
-
-		attribute vec3 vertPosition;
-		attribute vec2 vertTexCoord;
-		varying vec2 fragTexCoord;
-		uniform mat4 mWorld;
-		uniform mat4 mView;
-		uniform mat4 mProj;
-
-		void main()
-		{
-		fragTexCoord = vertTexCoord;
-		gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-		}	
-		`
-		}else{
-		var testShader = 
-		  `
-		precision mediump float;
-		attribute vec3 vertPosition;
-		attribute vec2 vertTexCoord;
-		attribute vec3 vertNormal;
-		varying vec2 fragTexCoord;
-		varying vec3 fragNormal;
-		varying vec4 vPosition;
-		uniform mat4 mWorld;
-		uniform mat4 mView;
-		uniform mat4 mProj;
-		void main()
-		{
-		  vPosition = mView * vec4(vertPosition, 1.0);
-		  fragTexCoord = vertTexCoord;
-		  fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
-		  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-		}
-		`
-		}
-		  //console.log("ProgramDataMap",ProgramDataMap);
-		var t0 = performance.now();
-		var Compiler = GLSL();
-		//console.log("testShader",testShader);
-		compiled = Compiler.compile(testShader);
-		// console.log("shader",testShader);
-		// console.log("compiled",compiled);
-
-		var t1 = performance.now();
-		console.log('compile', t1 - t0);
+		
   
 		//需要进行mat从一维到二维的转化
 		//先进行一个临时的转化
@@ -919,6 +919,8 @@ getCanvas = function(canvasName) {
 		/*------------------数据输入部分--------------------------------------*/
   
 		/*------------------数据输出部分--------------------------------------*/
+		/*
+		var t0 = performance.now();
 		//去掉空个的函数
 		function trim(s){ 
 		  return trimRight(trimLeft(s)); 
@@ -999,7 +1001,10 @@ getCanvas = function(canvasName) {
 		  var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
 		  //eval(string);
 		}
-  
+
+		var t1 = performance.now();
+		console.log('输出接口', t1 - t0);
+		*/
 	  }
   
 	  /*------------------数据输出部分--------------------------------------*/
@@ -1274,7 +1279,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], left_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], left_varying[i]);
-			  console.log("left_varying",i,left_varying[i]);
+			//   console.log("left_varying",i,left_varying[i]);
 			}
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
 			  gl.my_uniform4iv(loc_array[i], left_varying[i]);
@@ -1322,7 +1327,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], right_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], right_varying[i]);
-			  console.log("right_varying",i,  right_varying[i]);
+			//   console.log("right_varying",i,  right_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1422,7 +1427,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], bot_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], bot_varying[i]);
-			  console.log("bot_varying",i,bot_varying[i]);
+			//   console.log("bot_varying",i,bot_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1472,7 +1477,7 @@ getCanvas = function(canvasName) {
 			  gl.my_uniform2iv(loc_array[i], top_varying[i]);
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
 			  gl.my_uniform3iv(loc_array[i], top_varying[i]);
-			  console.log("top_varying",i,top_varying[i]);
+			//   console.log("top_varying",i,top_varying[i]);
 			}
   
 			else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
