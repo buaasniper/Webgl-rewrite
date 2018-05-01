@@ -849,7 +849,7 @@ getCanvas = function(canvasName) {
 		  this.shaderName = undefined;
 		  this.uniformData = undefined;
 		}
-		//console.log("ProgramDataMap",ProgramDataMap);
+		// console.log("ProgramDataMap",ProgramDataMap);
 		var TemUniformDataMap = [];
 		set_value_dict = {};
   
@@ -905,6 +905,7 @@ getCanvas = function(canvasName) {
 			var t0 = performance.now();
 			compiled = set_values(set_value_dict, compiled,TemUniformDataMap[0].length);
 			var t1 = performance.now();
+			//console.log("compiled",compiled);
 			console.log('==========set_values', t1 - t0);
 
 			var t0 = performance.now();
@@ -950,15 +951,18 @@ getCanvas = function(canvasName) {
 			//var mWorld = [[-0.9040721654891968,0,-0.42737987637519836,0],[0.2670685350894928,0.7807069420814514,-0.5649522542953491,0],[0.3336584270000458,-0.624897301197052,-0.7058154344558716,0],[0,0,0,1]];
 			//var mView = [[-1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,-7,1]];
 			//var mProj = [[2.4142136573791504,0,0,0],[0,2.4142136573791504,0,0],[0,0,-1.0002000331878662,-1],[0,0,-0.20002000033855438,0]];
+
 			function main () {
 				for (var bigI = 0;bigI < vertPosition.length;++ bigI) { 
-				vPosition[bigI] = my_multiple( mView, [vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] );
+				vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
 				fragTexCoord[bigI] = vertTexCoord[bigI];
-				fragNormal[bigI] = [0, 1, 2].map(function (x, i) { return this[x]}, (my_multiple( mWorld, [vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0] )));
-				gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), [vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] );
-				}	
-			};
+				fragNormal[bigI] = [0, 1, 2].map(function (x, i) { return this[x]}, (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) )));
+				gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+				}
+				};
 		}
+
+
 		var t0 = performance.now();
 		main();
 		var t1 = performance.now();
