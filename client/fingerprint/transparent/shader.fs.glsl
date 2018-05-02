@@ -72,8 +72,8 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        ivec3 fragNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
-		  	ivec4 vPosition = ivec4 ( division(wei_1 * vPositionVary[i][0] + wei_2 * vPositionVary[i+1][0] + wei_3 * vPositionVary[i+2][0], 1000)   , division(wei_1 * vPositionVary[i][1] + wei_2 * vPositionVary[i+1][1] + wei_3 * vPositionVary[i+2][1] , 1000) , division(wei_1 * vPositionVary[i][2] + wei_2 * vPositionVary[i+1][2] + wei_3 * vPositionVary[i+2][2],1000),  division(wei_1 * vPositionVary[i][3] + wei_2 * vPositionVary[i+1][3] + wei_3 * vPositionVary[i+2][3],1000)    );
+        ivec3 fragNormal = ivec3 ( D_multiple( wei_1 , nor_point[i][0]) + D_multiple(wei_2 , nor_point[i+1][0]) + D_multiple(wei_3 , nor_point[i+2][0])   ,           D_multiple(wei_1 , nor_point[i][1]) + D_multiple(wei_2 , nor_point[i+1][1]) + D_multiple(wei_3 , nor_point[i+2][1]) ,             D_multiple(wei_1 , nor_point[i][2]) + D_multiple(wei_2 , nor_point[i+1][2]) + D_multiple(wei_3 , nor_point[i+2][2])    );
+		  	ivec4 vPosition = ivec4 ( D_multiple(wei_1 , vPositionVary[i][0]) + D_multiple(wei_2 , vPositionVary[i+1][0]) + D_multiple(wei_3 , vPositionVary[i+2][0])   , D_multiple(wei_1 , vPositionVary[i][1]) + D_multiple(wei_2 , vPositionVary[i+1][1]) + D_multiple(wei_3 , vPositionVary[i+2][1]) , D_multiple(wei_1 , vPositionVary[i][2]) + D_multiple(wei_2 , vPositionVary[i+1][2]) + D_multiple(wei_3 , vPositionVary[i+2][2]),  D_multiple(wei_1 , vPositionVary[i][3]) + D_multiple(wei_2 , vPositionVary[i+1][3]) + D_multiple(wei_3 , vPositionVary[i+2][3])    );
         ivec3 lightDirection = D_normalize(sun.direction - vPosition.xyz);
         ivec3 normSunDir = D_normalize(sun.direction);
         ivec3 surfaceNormal = D_normalize(fragNormal);
@@ -302,7 +302,7 @@ tri_p changevalue(tri_p t)
 //I - 2.0 * dot(N, I) * N
 ivec3 D_reflect(ivec3 x, ivec3 y)
 {
-	return ivec3(x[0] - division(2 * D_dot(x,y)*y[0],1000),x[1] - division(2 * D_dot(x,y)*y[1],1000), x[2] - division(2 * D_dot(x,y)*y[2],1000));
+	return ivec3(x[0] - 2 * D_multiple(D_dot(x,y),y[0]),x[1] - 2 * D_multiple(D_dot(x,y),y[1]), x[2] - 2 * D_multiple(D_dot(x,y),y[2]));
 }
 
 int D_pow(int a, int b)

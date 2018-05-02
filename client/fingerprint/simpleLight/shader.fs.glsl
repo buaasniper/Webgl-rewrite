@@ -69,7 +69,7 @@ void main()
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
-        ivec3 vertNormal = ivec3 ( division(wei_1 * nor_point[i][0] + wei_2 * nor_point[i+1][0] + wei_3 * nor_point[i+2][0], 1000)   , division(wei_1 * nor_point[i][1] + wei_2 * nor_point[i+1][1] + wei_3 * nor_point[i+2][1] , 1000) , division(wei_1 * nor_point[i][2] + wei_2 * nor_point[i+1][2] + wei_3 * nor_point[i+2][2],1000)    );
+        ivec3 vertNormal = ivec3 ( D_multiple(wei_1 , nor_point[i][0]) +  D_multiple(wei_2 , nor_point[i+1][0]) +  D_multiple(wei_3 , nor_point[i+2][0])   ,  D_multiple(wei_1 , nor_point[i][1]) +  D_multiple(wei_2 , nor_point[i+1][1]) +  D_multiple(wei_3 , nor_point[i+2][1]) ,  D_multiple(wei_1 , nor_point[i][2]) +  D_multiple(wei_2 , nor_point[i+1][2]) +  D_multiple(wei_3 , nor_point[i+2][2])   );
         ivec4 texel = D_texture2D(sampler, fragTexCoord);
 		  	ivec3 normSunDir = D_normalize(sun.direction);
         ivec3 lightIntensity = ambientLightIntensity + D_multiple(sun.color, D_max(D_dot(vertNormal, normSunDir), 0));
