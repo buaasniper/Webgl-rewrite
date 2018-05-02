@@ -468,7 +468,7 @@ var CubeTest = function(type) {
         3 * Float32Array.BYTES_PER_ELEMENT  // Offset from the beginning of a
                                             // single vertex to this attribute
         );
-        console.log("Float32Array.BYTES_PER_ELEMENT",Float32Array.BYTES_PER_ELEMENT);
+        // console.log("Float32Array.BYTES_PER_ELEMENT",Float32Array.BYTES_PER_ELEMENT);
 
     gl.enableVertexAttribArray(positionAttribLocation);
     gl.enableVertexAttribArray(colorAttribLocation);

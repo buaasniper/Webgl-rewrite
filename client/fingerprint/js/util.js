@@ -337,15 +337,15 @@ getCanvas = function(canvasName) {
 			`
 			}
 			  //console.log("ProgramDataMap",ProgramDataMap);
-			var t0 = performance.now();
+			// var t0 = performance.now();
 			var Compiler = GLSL();
 			//console.log("testShader",testShader);
 			compiled = Compiler.compile(testShader);
 			// console.log("shader",testShader);
 			// console.log("compiled",compiled);
 	
-			var t1 = performance.now();
-			console.log('compile', t1 - t0);
+			// var t1 = performance.now();
+			// console.log('compile', t1 - t0);
 
 	}
 	}
@@ -739,10 +739,10 @@ getCanvas = function(canvasName) {
 	  var activeProgramNum;
 	  activeProgram = getactiveProgram();
 	  activeProgramNum = getactiveProgramNum();
-    var t0 = performance.now();
+    // var t0 = performance.now();
 	  elementArray = getElementArray(count,offset);
-    var t1 = performance.now();
-    console.log('prepare for drawarrays', t1 - t0);
+    // var t1 = performance.now();
+    // console.log('prepare for drawarrays', t1 - t0);
     for (var i = 0; i < AttriDataMap.length; i++){
       var newData = new Attri_data;
       if( AttriDataMap[i].programName == activeProgram){
@@ -851,10 +851,10 @@ getCanvas = function(canvasName) {
 		if (testNumber == 1){
 
 			var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-			console.log("maxTextureUnits",maxTextureUnits);
+			// console.log("maxTextureUnits",maxTextureUnits);
 			var pixels = new Uint8Array(canvas.width * canvas.height * 4);
 			gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-			console.log("pixels",pixels);
+			// console.log("pixels",pixels);
 			var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
 			function textureFromPixelArray(gl, dataArray, type, width, height) {
 				var texture = gl.createTexture();
@@ -1051,7 +1051,7 @@ getCanvas = function(canvasName) {
 		gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
 		gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
 		//console.log("开始画了");
-		console.log("ProgramDataMap",ProgramDataMap);
+		// console.log("ProgramDataMap",ProgramDataMap);
 		gl.my_drawArrays(gl.TRIANGLES, 0, 6);
 
 
@@ -1380,13 +1380,13 @@ getCanvas = function(canvasName) {
 		for (var idx in tem_varying)
 		  tem_varying[idx] = math.flatten(tem_varying[idx]);
 		var t1 = performance.now();
-		console.log('remove points', t1 - t0);
+		// console.log('remove points', t1 - t0);
   
   
 		var t0 = performance.now();
 		devide_draw(0, 255, tem_varying, gl);
 		var t1 = performance.now();
-		console.log('devide', t1 - t0);
+		// console.log('devide', t1 - t0);
 	  }//Id = 4
   
 	  //数据清楚
@@ -1394,7 +1394,7 @@ getCanvas = function(canvasName) {
 	  ProgramDataMap[activeProgramNum].uniformData = [];
 	  ProgramDataMap[activeProgramNum].varyingData = [];
 	  var enddraw = performance.now();
-	  console.log('drawarray', enddraw - startdraw);
+	  // console.log('drawarray', enddraw - startdraw);
 	}
   
 	/*-------------------------draw array--------------------------------------*/

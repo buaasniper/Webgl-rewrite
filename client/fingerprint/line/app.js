@@ -46,7 +46,7 @@ var LineTest = function(type) {
         // Unbind the buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-        console.log("vertices",vertices);
+        // console.log("vertices",vertices);
 
         /*=================== Shaders ====================*/
 

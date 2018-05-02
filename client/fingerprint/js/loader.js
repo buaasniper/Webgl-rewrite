@@ -236,11 +236,11 @@
        this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
        this.testList.push(new TwoTexturesMoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture, this.texture1));
        this.testList.push(new TransparentTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
-      // this.testList.push(new LightingTest());
-      // this.testList.push(new ClippingTest());
-      // this.testList.push(new BubbleTest());
-      // this.testList.push(new CompressedTextureTest());
-      //this.testList.push(new ShadowTest());
+      this.testList.push(new LightingTest());
+      this.testList.push(new ClippingTest());
+      this.testList.push(new BubbleTest());
+      this.testList.push(new CompressedTextureTest());
+      this.testList.push(new ShadowTest());
       
       this.asyncTests = [];
       //language detection is done by another js file
