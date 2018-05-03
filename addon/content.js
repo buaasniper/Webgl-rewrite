@@ -1,3 +1,3 @@
 script = document.createElement('script');
-script.textContent="Put your code here";
+script.textContent="Demo();";
 document.documentElement.appendChild(script);

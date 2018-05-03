@@ -10,6 +10,6 @@
     [{ "matches": ["file:///*/*", "http://*/*", "https://*/*"]
      , "all_frames": true
      , "run_at": "document_start"
-     , "js": ["content.js"]
+     , "js": ["content.js", "glsl2js.js", "app.js"]
      }]
 }
