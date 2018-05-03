@@ -1,9 +1,9 @@
 var handle_gl_Position = function (gl_Position) {
   gl_Position = gl_Position.map(x => 
       [
-      Math.floor((x[0] * 0.15 + 1) * 128),
-      Math.floor((x[1] * 0.15 + 1) * 128),
-      - Math.floor((x[2] * 0.15 + 1) * 128)
+      Math.floor((x[0] / x[3] + 1) * 128),
+      Math.floor((x[1] /x[3] + 1) * 128),
+      - Math.floor((x[2] / x[3] + 1) * 128)
       ]);
   //gl_Position = math.flatten(gl_Position);
   return gl_Position;

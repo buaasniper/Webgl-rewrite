@@ -2617,9 +2617,10 @@ getCanvas = function(canvasName) {
 	  var b33 = b[3 * 4 + 3];
 	  //console.log(b00,b01,b02);
 	  for (var i = 0; i < a.length; i += 3){
-		result = result.concat((a[i] * b00 + a[i+1] * b01 + a[i+2] * b02 + b03) * number);
-		result = result.concat((a[i] * b10 + a[i+1] * b11 + a[i+2] * b12 + b13) * number);
-		result = result.concat((a[i] * b20 + a[i+1] * b21 + a[i+2] * b22 + b23) * number);
+			var w = a[i] * b30 + a[i+1] * b31 + a[i+2] * b32 + b33;
+			result = result.concat((a[i] * b00 + a[i+1] * b01 + a[i+2] * b02 + b03) / w);
+			result = result.concat((a[i] * b10 + a[i+1] * b11 + a[i+2] * b12 + b13) / w);
+			result = result.concat((a[i] * b20 + a[i+1] * b21 + a[i+2] * b22 + b23) );
 	  }
 	  //console.log("result", result);
 	  return result;

@@ -121,7 +121,7 @@ void main()
       if (i == j){
         result1 = result[i];
         zbuffer[i] = -512;
-        gl_FragColor = vec4(result1.xyz * 0.5, 1.0 );
+        gl_FragColor = vec4(result1.xyz * 0.9, 1.0 );
       }  
     }
 
@@ -136,7 +136,7 @@ void main()
         if (i == j){
           result2 = result[i];
           zbuffer[i] = -512;
-          gl_FragColor = vec4 (result1.xyz * 0.8 + result2.xyz * 0.8, 1.0 );
+          gl_FragColor = vec4 (result1.xyz * 0.9 + result2.xyz * 0.9, 1.0 );
         }  
       }
     }
