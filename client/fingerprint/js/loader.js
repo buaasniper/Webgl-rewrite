@@ -222,19 +222,19 @@
       this.testList = [];
       root.sender = sender = new Sender();
       
-      this.testList.push(new CubeTest('normal'));
-      this.testList.push(new CubeTest('aa'));
-      this.testList.push(new CameraTest());     
-      this.testList.push(new LineTest('normal'));
+      // this.testList.push(new CubeTest('normal'));
+      // this.testList.push(new CubeTest('aa'));
+      // this.testList.push(new CameraTest());     
+      // this.testList.push(new LineTest('normal'));
       
-      this.testList.push(new LineTest('aa'));
-      this.testList.push(new TextureTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.texture));
-      this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
+      // this.testList.push(new LineTest('aa'));
+      // this.testList.push(new TextureTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.texture));
+      // this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
       
-       this.testList.push(new SimpleLightTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.susanNormals, this.texture));
-      this.testList.push(new SimpleLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
-       this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
-       this.testList.push(new TwoTexturesMoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture, this.texture1));
+      //  this.testList.push(new SimpleLightTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.susanNormals, this.texture));
+      // this.testList.push(new SimpleLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
+      //  this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
+      //  this.testList.push(new TwoTexturesMoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture, this.texture1));
        this.testList.push(new TransparentTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
       // this.testList.push(new LightingTest());
       // this.testList.push(new ClippingTest());
@@ -302,3 +302,20 @@
   });
 
 }).call(this);
+/*
+if (z3 > z2){
+          z3 = z3 + z2;
+          z2 = z3 - z2;
+          z3 = z3 - z2;
+          i3 = i3 + i2;
+          i2 = i3 - i2;
+          i3 = i3 - i2;
+        }
+        if (z2 > z1){
+          z2 = z2 + z1;
+          z1 = z2 - z1;
+          z2 = z2 - z1;
+          i2 = i2 + i1;
+          i1 = i2 - i1;
+          i2 = i2 - i1;
+*/
