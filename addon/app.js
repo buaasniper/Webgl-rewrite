@@ -35,21 +35,15 @@ main();
 `
 
 var Demo = function () {
-	var canvas = document.getElementById('game-surface');
-	var gl = canvas.getContext('webgl');
-
-	if (!gl) {
-		console.log('WebGL not supported, falling back on experimental-webgl');
-		gl = canvas.getContext('experimental-webgl');
-	}
-  
   var Compiler = GLSL();
   console.log(testShader);
   compiled = Compiler.compile(testShader);
   console.log(compiled);
-  
-  compiled = set_values({'mWorld': [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]}, compiled, 4);
-
-  console.log(compiled);
-  eval(compiled);
+  //eval(compiled);
+  alert('the page will add the compiled shader');
+  script = document.createElement('div');
+  script.textContent=compiled;
+  document.documentElement.appendChild(script);
 }
+
+Demo();

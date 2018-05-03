@@ -1,3 +1,3 @@
 script = document.createElement('script');
-script.textContent="Demo();";
+script.textContent="console.log('running addon');"
 document.documentElement.appendChild(script);
