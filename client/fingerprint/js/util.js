@@ -1029,7 +1029,39 @@ getCanvas = function(canvasName) {
 		}	
 		ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
-		//console.log("ProgramDataMap",ProgramDataMap);
+
+		var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
+			var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+			var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+			var tem = [];
+			for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+				tem_varying.push(tem);
+			for (var i = 0; i < index_num; i+= 3){
+				x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
+				y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
+				z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 2];
+				x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 3];
+				y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 4];
+				z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 5];
+				x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 6];
+				y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 7];
+				z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 8];
+				if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+					for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
+						for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+							tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);	
+					}
+				}
+			}
+			
+			
+			//把数值赋给了ProgramDataMap
+			for (var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+				ProgramDataMap[activeProgramNum].varyingData[i].uniformData = [];
+				for(var j = 0; j < tem_varying[i].length; j++)
+					ProgramDataMap[activeProgramNum].varyingData[i].uniformData = ProgramDataMap[activeProgramNum].varyingData[i].uniformData.concat(tem_varying[i][j]);
+			}
+
 
 		var canvas_buffer = [-1.0, -1.0, 
 			1.0, -1.0, 

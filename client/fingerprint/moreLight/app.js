@@ -7,7 +7,7 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
   this.canvas = null;
   this.cb = null;
   this.level = null;
-  this.numChildren = 3;
+  this.numChildren = 1;
   this.children = [];
   this.IDs = sender.getIDs(this.numChildren);
 

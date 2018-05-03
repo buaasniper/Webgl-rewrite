@@ -61,11 +61,11 @@ uniform ivec3 ambientLightIntensity;
 uniform DirectionalLight sun;
 uniform sampler2D sampler;
 int  wei_1, wei_2, wei_3;
-vec4 result[80];
+ivec4 result[80];
 int zbuffer[80];
 int z1, z2, z3;
 int j;
-vec4 result1, result2, result3;
+ivec4 result1, result2, result3;
 
 void main()
 {
@@ -101,7 +101,7 @@ void main()
                 
 
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        result[i / 3] = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
+        result[i / 3] = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
         //gl_FragColor = result[i];
       } 
     }
@@ -121,7 +121,7 @@ void main()
       if (i == j){
         result1 = result[i];
         zbuffer[i] = -512;
-        gl_FragColor = vec4(result1.xyz * 0.9, 1.0 );
+        gl_FragColor = vec4 ( col_transfer(D_multiple(result1.xyz , 900) ), 1.0 );
       }  
     }
 
@@ -136,7 +136,7 @@ void main()
         if (i == j){
           result2 = result[i];
           zbuffer[i] = -512;
-          gl_FragColor = vec4 (result1.xyz * 0.9 + result2.xyz * 0.9, 1.0 );
+          gl_FragColor = vec4 ( col_transfer(D_multiple(result1.xyz , 900) + D_multiple(result2.xyz , 900) ), 1.0 );
         }  
       }
     }

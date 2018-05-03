@@ -391,7 +391,7 @@ var CameraTest = function(type) {
       -1.0,1.0,-1.0,     0.3,0.4, 0.7,
 
       // Right
-      1.0,1.0,1.0,       1.0,0.25,0.2,
+      1.0,1.0,1.0,       0.34,0.3,0.34,
       1.0,-1.0,1.0,      0.52,0.24,0.75,
       1.0,-1.0,-1.0,     0.1,0.26,0.75,
       1.0,1.0,-1.0,      0.9,0.95,0.75,
@@ -483,7 +483,7 @@ var CameraTest = function(type) {
     var viewMatrix = new Float32Array(16);
     var projMatrix = new Float32Array(16);
     mat4.identity(worldMatrix);
-    mat4.lookAt(viewMatrix, [ 2, 1, -5 ], [ 0, 0, 0 ], [ 0, 1, 0 ]);
+    mat4.lookAt(viewMatrix, [2, 1, -5 ], [ 0, 0, 0 ], [ 0, 1, 0 ]);
     mat4.perspective(projMatrix, glMatrix.toRadian(45),
                      canvas.width / canvas.height, 0.1, 1000.0);
     //mat4.transpose(viewMatrix, viewMatrix);
