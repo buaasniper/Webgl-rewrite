@@ -4,7 +4,11 @@ getCanvas = function(canvasName) {
 	if(!canvas[0]){
 	  $('#test_canvases').append("<canvas id='" + canvasName + "' width='256' height='256'></canvas>");
 	}
-	return canvas = $('#' + canvasName)[0];
+	canvas = $('#' + canvasName)[0];
+	canvas.addEventListener('webglcontextlost', function(e) {
+		console.log(e); 
+	}, false);
+	return canvas;
   }
   
   var vetexID;
