@@ -229,7 +229,21 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         requestAnimationFrame(loop);
 
       };
-
+      function webglcontextlost(e) {
+        e.preventDefault();
+      }
+    
+      function webglcontextrestored(e) {
+        gl = glUtils.checkWebGL(canvas, {
+          preserveDrawingBuffer: true,
+        });
+        init();
+      }
+      if (gl.isContextLost() && gl.WEBGL_lose_context_ext) 
+        gl.WEBGL_lose_context_ext.restoreContext();
+      canvas.addEventListener('webglcontextlost', webglcontextlost);
+      canvas.addEventListener('webglcontextrestored', webglcontextrestored);
+      
       init(canvas);
 
     };
