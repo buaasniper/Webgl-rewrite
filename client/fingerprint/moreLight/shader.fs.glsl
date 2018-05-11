@@ -71,6 +71,7 @@ void main()
     assign;
     //changePosition;
     if ( pixel_on_triangle ){
+        gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
@@ -96,7 +97,7 @@ void main()
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
         //gl_FragColor = col_transfer( texel);
         //gl_FragColor = vec4 ( -1.0 * float(z0 / 2)/255.0, 0.0, 0.0, 1.0 );
-        gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
         //gl_FragColor = vec4 ( (float(i)+0.1)/255.0, 0.0, 0.0, 1.0 );
         
 
