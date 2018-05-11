@@ -65,6 +65,8 @@ int  wei_1, wei_2, wei_3;
 void main()
 {
   init;
+  int flag;
+  flag = 0;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
     //changePosition;
@@ -93,8 +95,9 @@ void main()
 
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
         //gl_FragColor = col_transfer( texel);
-        //gl_FragColor = vec4 ( -1.0 * float(z0)/255.0, 0.0, 0.0, 1.0 );
-        gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( -1.0 * float(z0 / 2)/255.0, 0.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
+        gl_FragColor = vec4 ( (float(i)+0.1)/255.0, 0.0, 0.0, 1.0 );
 
 
 
