@@ -7,7 +7,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
   this.canvas = null;
   this.cb = null;
   this.level = null;
-  this.numChildren = 1;
+  this.numChildren = 2;
   this.children = [];
   this.IDs = sender.getIDs(this.numChildren);
 
