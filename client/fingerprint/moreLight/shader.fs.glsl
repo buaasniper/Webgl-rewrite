@@ -92,7 +92,8 @@ void main()
                 
 
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        gl_FragColor = col_transfer( texel);
+        //gl_FragColor = col_transfer( texel);
+        gl_FragColor = vec4 ( float(i)/255.0, 0.0, 0.0, 1.0 );
 
 
       } 
