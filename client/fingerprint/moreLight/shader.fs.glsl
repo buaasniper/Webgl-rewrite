@@ -6,7 +6,7 @@ struct DirectionalLight
 	ivec3 diffuse;
 	ivec3 specular;
 };
-#define uniformNumber 3
+#define uniformNumber 228
 uniform ivec3 tri_point[225];
 uniform ivec2 text_point[225];
 uniform ivec3 nor_point[225];
@@ -26,7 +26,8 @@ struct txt_coord{
 #define changePosition tri = changevalue(tri); 
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
-#define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > z)
+#define draw_pixel  (z0 > z)
+// draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > z)
 #define renew_Zbuffer z = z0; fragTexCoord = calCoord(texcoord, tri);
 int judge(tri_p t);
 int f_judge(tri_p t);
@@ -71,7 +72,7 @@ void main()
     assign;
     //changePosition;
     if ( pixel_on_triangle ){
-        gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
@@ -95,7 +96,7 @@ void main()
                 
 
         //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        //gl_FragColor = col_transfer( texel);
+        gl_FragColor = col_transfer( texel);
         //gl_FragColor = vec4 ( -1.0 * float(z0 / 2)/255.0, 0.0, 0.0, 1.0 );
         //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
         //gl_FragColor = vec4 ( (float(i)+0.1)/255.0, 0.0, 0.0, 1.0 );

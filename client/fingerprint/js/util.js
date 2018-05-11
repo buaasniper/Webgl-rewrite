@@ -1420,6 +1420,7 @@ getCanvas = function(canvasName) {
   
   
 		var t0 = performance.now();
+		console.log(tem_varying);
 		devide_draw(0, 255, tem_varying, gl);
 		var t1 = performance.now();
 		// console.log('devide', t1 - t0);

@@ -272,18 +272,18 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                         self.childLoaded();
                         self.children.push(new RunTransparent(vsText, fsText, 9, 1, self));
                         self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 10, 2, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 11, 3, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 50, 4, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 79, 5, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 80, 6, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 81, 7, self));
-                        self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 10, 2, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 11, 3, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 50, 4, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 79, 5, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 80, 6, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 81, 7, self));
+                        // self.childLoaded();
                     }
                 }, self);
             }
