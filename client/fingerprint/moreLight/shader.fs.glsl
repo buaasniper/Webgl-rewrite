@@ -97,7 +97,12 @@ void main()
         //gl_FragColor = col_transfer( texel);
         //gl_FragColor = vec4 ( -1.0 * float(z0 / 2)/255.0, 0.0, 0.0, 1.0 );
         //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
-        gl_FragColor = vec4 ( (float(i)+0.1)/255.0, 0.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( (float(i)+0.1)/255.0, 0.0, 0.0, 1.0 );
+        int a = 2147483647;
+        if (a > 10000)
+          gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );
+        else 
+          gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
 
 
 
