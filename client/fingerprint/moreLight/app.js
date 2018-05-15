@@ -266,7 +266,7 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.WEBGL_lose_context_ext.restoreContext();
       canvas.addEventListener('webglcontextlost', webglcontextlost);
       canvas.addEventListener('webglcontextrestored', webglcontextrestored);
-      
+
       init(canvas);
     };
   };
@@ -287,10 +287,10 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
                 alert('Fatal error getting fragment shader (see console)');
                 console.error(fsErr);
               } else {
-                self.children.push(new RunMoreLight(vsText, fsText, 0, self));
-                self.childLoaded();
-                // self.children.push(new RunMoreLight(vsText, fsText, 1, self));
+                // self.children.push(new RunMoreLight(vsText, fsText, 0, self));
                 // self.childLoaded();
+                self.children.push(new RunMoreLight(vsText, fsText, 1, self));
+                self.childLoaded();
                 // self.children.push(new RunMoreLight(vsText, fsText, 2, self));
                 // self.childLoaded();
               }
