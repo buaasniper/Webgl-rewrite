@@ -71,8 +71,9 @@ void main()
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
     //changePosition;
+    gl_FragColor = vec4 ( float(PinAB(tri.x0 - tri.x1, tri.y0 - tri.y1, tri.x2 - tri.x1, tri.y2 - tri.y1, tri.x3 - tri.x1, tri.y3 - tri.y1)), 0.0, 0.0, 1.0 );
     if ( pixel_on_triangle ){
-        gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
+        //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
