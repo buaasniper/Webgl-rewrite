@@ -29,6 +29,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
     };
     var RunTransparent = function (vertexShaderText, fragmentShaderText, alp, childNumber, parent) {
         this.begin = function(canvas) {
+            var init = function(canvas){
                 var gl;
                 if(childNumber == 10){
                     canvas = getCanvas("can_aa");
@@ -250,6 +251,25 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     }
                 };
                 requestAnimationFrame(loop);
+            };
+            function webglcontextlost(e) {
+                e.preventDefault();
+              }
+            
+              function webglcontextrestored(e) {
+                init(canvas);
+              }
+              var gl;
+                if(childNumber == 10){
+                    canvas = getCanvas("can_aa");
+                    gl = getGLAA(canvas);
+                }else gl = getGL(canvas);
+              if (gl.isContextLost() && gl.WEBGL_lose_context_ext) 
+                gl.WEBGL_lose_context_ext.restoreContext();
+              canvas.addEventListener('webglcontextlost', webglcontextlost);
+              canvas.addEventListener('webglcontextrestored', webglcontextrestored);
+        
+              init(canvas);
         };
     };
 
