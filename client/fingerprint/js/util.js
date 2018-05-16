@@ -1483,28 +1483,15 @@ getCanvas = function(canvasName) {
   
 	  if (left_number <= uniform_number){
 		if (left_number > 0){
-			if (left == 0){
+		
 				var right_canvas_buffer = [
-				left * 2 / 255 - 1.0,     -1.0, 
-				mid * 2 / 255 - 1.0,      -1.0, 
-				left * 2 / 255 - 1.0,      1.0, 
-				left * 2 / 255 - 1.0,      1.0,
-				mid * 2 / 255 - 1.0,      -1.0, 
-				mid * 2 / 255 - 1.0,       1.0]; 
-				console.log("left",left,"mid",mid);
-
-			}
-			else{
-				var right_canvas_buffer = [
-				(left+1) * 2 / 255 - 1.0,     -1.0, 
-				mid * 2 / 255 - 1.0,      -1.0, 
-				(left+1) * 2 / 255 - 1.0,      1.0, 
-				(left+1) * 2 / 255 - 1.0,      1.0,
-				mid * 2 / 255 - 1.0,      -1.0, 
-				mid * 2 / 255 - 1.0,       1.0]; 
-				console.log("left",left+1,"mid",mid);
-
-			}
+				(left+0.5) * 2 / 255 - 1.0,     -1.0, 
+				(mid+0.5) * 2 / 255 - 1.0,      -1.0, 
+				(left+0.5) * 2 / 255 - 1.0,      1.0, 
+				(left+0.5) * 2 / 255 - 1.0,      1.0,
+				(mid+0.5) * 2 / 255 - 1.0,      -1.0, 
+				(mid+0.5) * 2 / 255 - 1.0,       1.0]; 
+	
 		  
   
 		  var new_vertex_buffer = gl.createBuffer();
@@ -1550,13 +1537,13 @@ getCanvas = function(canvasName) {
 	  if (right_number <= uniform_number){
 		if (right_number > 0){
 		  var right_canvas_buffer = [
-			(mid+1) * 2 / 255 - 1.0, -1.0, 
-			right * 2 / 255 - 1.0, -1.0, 
-			(mid+1) * 2 / 255 - 1.0,  1.0, 
-			(mid+1) * 2 / 255 - 1.0,  1.0,
-			right * 2 / 255 - 1.0, -1.0, 
-			right * 2 / 255 - 1.0,  1.0]; 
-			console.log("mid",mid+1,"right",right);
+			(mid+0.5) * 2 / 255 - 1.0, -1.0, 
+			(right+0.5) * 2 / 255 - 1.0, -1.0, 
+			(mid+0.5) * 2 / 255 - 1.0,  1.0, 
+			(mid+0.5) * 2 / 255 - 1.0,  1.0,
+			(right+0.5) / 255 - 1.0, -1.0, 
+			(right+0.5) / 255 - 1.0,  1.0]; 
+			// console.log("mid",mid,"right",right);
 		  var new_vertex_buffer = gl.createBuffer();
 		  gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		  gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
