@@ -1483,16 +1483,14 @@ getCanvas = function(canvasName) {
   
 	  if (left_number <= uniform_number){
 		if (left_number > 0){
-		
-				var right_canvas_buffer = [
-				(left+0.5) * 2 / 255 - 1.0,     -1.0, 
-				(mid+0.5) * 2 / 255 - 1.0,      -1.0, 
-				(left+0.5) * 2 / 255 - 1.0,      1.0, 
-				(left+0.5) * 2 / 255 - 1.0,      1.0,
-				(mid+0.5) * 2 / 255 - 1.0,      -1.0, 
-				(mid+0.5) * 2 / 255 - 1.0,       1.0]; 
-	
-		  
+  
+		  var right_canvas_buffer = [
+			left * 2 / 255 - 1.0,     -1.0, 
+			mid * 2 / 255 - 1.0,      -1.0, 
+			left * 2 / 255 - 1.0,      1.0, 
+			left * 2 / 255 - 1.0,      1.0,
+			mid * 2 / 255 - 1.0,      -1.0, 
+			mid * 2 / 255 - 1.0,       1.0]; 
   
 		  var new_vertex_buffer = gl.createBuffer();
 		  gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1537,13 +1535,12 @@ getCanvas = function(canvasName) {
 	  if (right_number <= uniform_number){
 		if (right_number > 0){
 		  var right_canvas_buffer = [
-			(mid+0.5) * 2 / 255 - 1.0, -1.0, 
-			(right+0.5) * 2 / 255 - 1.0, -1.0, 
-			(mid+0.5) * 2 / 255 - 1.0,  1.0, 
-			(mid+0.5) * 2 / 255 - 1.0,  1.0,
-			(right+0.5) / 255 - 1.0, -1.0, 
-			(right+0.5) / 255 - 1.0,  1.0]; 
-			// console.log("mid",mid,"right",right);
+			mid * 2 / 255 - 1.0, -1.0, 
+			right * 2 / 255 - 1.0, -1.0, 
+			mid * 2 / 255 - 1.0,  1.0, 
+			mid * 2 / 255 - 1.0,  1.0,
+			right * 2 / 255 - 1.0, -1.0, 
+			right * 2 / 255 - 1.0,  1.0]; 
 		  var new_vertex_buffer = gl.createBuffer();
 		  gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		  gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -1590,7 +1587,6 @@ getCanvas = function(canvasName) {
   
   
 	function devide_draw_height(left, right, bot, top, tem_varying, gl){
-		console.log("进入devide_draw_height");
 	  var canvas_left;
 	  var canvas_mid;
 	  var canvas_right;
