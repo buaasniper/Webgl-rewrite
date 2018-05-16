@@ -71,7 +71,7 @@ void main()
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
     //changePosition;
-    gl_FragColor = vec4 ( float( mod (tri.x0 + 1000, 255 ))/255.0, float( mod (tri.y0 + 1000, 255 ))/255.0, 0.0, 1.0 );
+    gl_FragColor = vec4 ( float( mod (tri.x1 + 1000, 255 ))/255.0, float( mod (tri.y1 + 1000, 255 ))/255.0, 0.0, 1.0 );
     //gl_FragColor = vec4 ( float(PinAB(tri.x0 - tri.x1, tri.y0 - tri.y1, tri.x2 - tri.x1, tri.y2 - tri.y1, tri.x3 - tri.x1, tri.y3 - tri.y1)), 0.0, 0.0, 1.0 );
     if ( pixel_on_triangle ){
         //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
