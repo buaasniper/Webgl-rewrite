@@ -6,7 +6,7 @@ struct DirectionalLight
 	ivec3 diffuse;
 	ivec3 specular;
 };
-#define uniformNumber 3
+#define uniformNumber 228
 uniform ivec3 tri_point[225];
 uniform ivec2 text_point[225];
 uniform ivec3 nor_point[225];
@@ -71,7 +71,7 @@ void main()
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
     //changePosition;
-    gl_FragColor = vec4 ( float( mod (tri.x1 + 1000, 255 ))/255.0, float( mod (tri.y1 + 1000, 255 ))/255.0, 0.0, 1.0 );
+    //gl_FragColor = vec4 ( float( mod (tri.x1 + 1000, 255 ))/255.0, float( mod (tri.y1 + 1000, 255 ))/255.0, 0.0, 1.0 );
     //gl_FragColor = vec4 ( float(PinAB(tri.x0 - tri.x1, tri.y0 - tri.y1, tri.x2 - tri.x1, tri.y2 - tri.y1, tri.x3 - tri.x1, tri.y3 - tri.y1)), 0.0, 0.0, 1.0 );
     if ( pixel_on_triangle ){
         //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
@@ -97,7 +97,7 @@ void main()
                 D_multiple(sun.diffuse , diffuseLightWeighting);
                 
 
-        //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
+        gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
         //gl_FragColor = col_transfer( texel);
         //gl_FragColor = vec4 ( -1.0 * float(z0 / 2)/255.0, 0.0, 0.0, 1.0 );
         //gl_FragColor = vec4 ( 0.0, 1.0, 0.0, 1.0 );
