@@ -7,7 +7,7 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
   this.canvas = null;
   this.cb = null;
   this.level = null;
-  this.numChildren = 2;
+  this.numChildren = 1;
   this.children = [];
   this.IDs = sender.getIDs(this.numChildren);
 
@@ -34,11 +34,10 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
     this.begin = function(canvas) {
       var init = function(canvas){
         var gl;
-        // if(ID == 1){
-        //       canvas = getCanvas("can_aa");
-        //       gl = getGLAA(canvas);
-        // }else gl = getGL(canvas);
-        gl = getGL(canvas);
+        if(ID == 1){
+              canvas = getCanvas("can_aa");
+              gl = getGLAA(canvas);
+        }else gl = getGL(canvas);
         
         var WebGL = true;
         vetexID = 5;
@@ -290,8 +289,8 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
               } else {
                 self.children.push(new RunMoreLight(vsText, fsText, 0, self));
                 self.childLoaded();
-                self.children.push(new RunMoreLight(vsText, fsText, 1, self));
-                self.childLoaded();
+                // self.children.push(new RunMoreLight(vsText, fsText, 1, self));
+                // self.childLoaded();
                 // self.children.push(new RunMoreLight(vsText, fsText, 2, self));
                 // self.childLoaded();
               }

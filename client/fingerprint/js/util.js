@@ -1491,6 +1491,7 @@ getCanvas = function(canvasName) {
 			left * 2 / 255 - 1.0,      1.0,
 			mid * 2 / 255 - 1.0,      -1.0, 
 			mid * 2 / 255 - 1.0,       1.0]; 
+			// console.log("left",left, "right", mid);
   
 		  var new_vertex_buffer = gl.createBuffer();
 		  gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
@@ -1541,6 +1542,7 @@ getCanvas = function(canvasName) {
 			mid * 2 / 255 - 1.0,  1.0,
 			right * 2 / 255 - 1.0, -1.0, 
 			right * 2 / 255 - 1.0,  1.0]; 
+			// console.log("left",mid, "right", right);
 		  var new_vertex_buffer = gl.createBuffer();
 		  gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		  gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
@@ -2741,7 +2743,7 @@ getCanvas = function(canvasName) {
 	for (var i = 0; i < 4; ++i) {
 	  gl = canvas.getContext(
 		  [ "webgl", "experimental-webgl", "moz-webgl", "webkit-3d" ][i], {
-			antialias : true,
+			antialias : false,
 			preserveDrawingBuffer : true,
 			willReadFrequently : false,
 			depth: true
