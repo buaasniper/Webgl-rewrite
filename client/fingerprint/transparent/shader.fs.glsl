@@ -26,7 +26,7 @@ struct txt_coord{
 #define changePosition tri = changevalue(tri); 
 #define cal_Zbuffer z0 = cal_z(tri);
 #define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
-#define draw_pixel (z0 >= -512) && (z0 <= 512) 
+#define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > bot)
 #define renew_Zbuffer fragTexCoord = calCoord(texcoord, tri);
 int judge(tri_p t);
 int f_judge(tri_p t);
@@ -66,20 +66,22 @@ int zbuffer[80];
 int z1, z2, z3;
 int j;
 ivec4 result1, result2, result3;
+int bot , top;
+ivec4 resultbot, resulttop;
 
 void main()
 {
+  bot = -512;
+  top = -512;
+  resultbot = ivec4(0 ,0 ,0 ,0);
+  resulttop = ivec4(0 ,0 ,0 ,0);
   init;
-  for (int i = 0; i < 80; i++){
-    zbuffer[i] = -512;
-  }
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
     //changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
-        zbuffer[i / 3] = z0;
         renew_Zbuffer;
         ivec3 fragNormal = ivec3 ( D_multiple( wei_1 , nor_point[i][0]) + D_multiple(wei_2 , nor_point[i+1][0]) + D_multiple(wei_3 , nor_point[i+2][0])   ,           D_multiple(wei_1 , nor_point[i][1]) + D_multiple(wei_2 , nor_point[i+1][1]) + D_multiple(wei_3 , nor_point[i+2][1]) ,             D_multiple(wei_1 , nor_point[i][2]) + D_multiple(wei_2 , nor_point[i+1][2]) + D_multiple(wei_3 , nor_point[i+2][2])    );
 		  	ivec4 vPosition = ivec4 ( D_multiple(wei_1 , vPositionVary[i][0]) + D_multiple(wei_2 , vPositionVary[i+1][0]) + D_multiple(wei_3 , vPositionVary[i+2][0])   , D_multiple(wei_1 , vPositionVary[i][1]) + D_multiple(wei_2 , vPositionVary[i+1][1]) + D_multiple(wei_3 , vPositionVary[i+2][1]) , D_multiple(wei_1 , vPositionVary[i][2]) + D_multiple(wei_2 , vPositionVary[i+1][2]) + D_multiple(wei_3 , vPositionVary[i+2][2]),  D_multiple(wei_1 , vPositionVary[i][3]) + D_multiple(wei_2 , vPositionVary[i+1][3]) + D_multiple(wei_3 , vPositionVary[i+2][3])    );
@@ -99,53 +101,19 @@ void main()
                 D_multiple(sun.specular , specularLightWeighting)  + 
                 D_multiple(sun.diffuse , diffuseLightWeighting);
                 
-
-        //gl_FragColor = vec4(col_transfer(D_multiple(texel.rgb , lightIntensity)) , 1.0);
-        result[i / 3] = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
-        //gl_FragColor = result[i];
+        if (z0 > top){
+          bot = top;
+          resultbot = resulttop;
+          top = z0;
+          resulttop = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
+        }else{
+          bot = z0;
+          resultbot = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
+        }
       } 
     }
   }
-  z1 = -512;
-  z2 = -512;
-  z3 = -512;
-  for (int i = 0; i < 80; i++){
-    if ( zbuffer[i] > z1 ){
-      z1 = zbuffer[i];
-      j = i;
-    }
-  }
-
-  if (z1 > -512){
-    for (int i =0; i < 80; i++){
-      if (i == j){
-        result1 = result[i];
-        zbuffer[i] = -512;
-        gl_FragColor = vec4 ( col_transfer(D_multiple(result1.xyz , 900) ), 1.0 );
-      }  
-    }
-
-    for (int i = 0; i < 80; i++){
-    if ( zbuffer[i] > z2 ){
-      z2 = zbuffer[i];
-      j = i;
-    }
-
-    if (z2 > -512){
-      for (int i =0; i < 80; i++){
-        if (i == j){
-          result2 = result[i];
-          zbuffer[i] = -512;
-          gl_FragColor = vec4 ( col_transfer(D_multiple(result1.xyz , 900) + D_multiple(result2.xyz , 900) ), 1.0 );
-        }  
-      }
-    }
-
-
-  }
-
-  }    
-
+  gl_FragColor = vec4 ( col_transfer(D_multiple(resulttop.xyz , 900) + D_multiple(resultbot.xyz , 900) ), 1.0 );
   
 }
 
