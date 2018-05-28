@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+   <body>
+    <canvas width = "128" height = "128" id = "my_Canvas"></canvas>
+
+      <script>
+
+         /*============= Creating a canvas ==================*/
+         var canvas = document.getElementById('my_Canvas');
+         gl = canvas.getContext('experimental-webgl', {antialias:false});
+         
+
+         /*============Drawing the Quad====================*/
+
+         // Clear the canvas
+         gl.clearColor(0.1, 0.0, 0.0, 1.0);
+
+         // Enable the depth test
+         gl.enable(gl.DEPTH_TEST);
+
+         // Clear the color buffer bit
+         gl.clear(gl.COLOR_BUFFER_BIT);
+
+         // Set the view port
+         gl.viewport(0,0,canvas.width,canvas.height);
+
+         //Draw the triangle
+         gl.drawArrays(gl.POINTS, 0, 256);
+
+      </script>
+      
+   </body>
+</html>
