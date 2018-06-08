@@ -72,6 +72,36 @@ var types = require('./types');
  * @param {string|array} options.include List of stdlib methods to include for a node, if complex version is applied
  * @param {bool} options.optimize Whether to try to optimize the result.
  */
+
+
+module.exports = Descriptor;
+
+},{"./types":8,"xtend/mutable":25}],4:[function(require,module,exports){
+/**
+ * Transform glsl to js.
+ *
+ * Dev notes.
+ * glsl-parser often creates identifiers/other nodes by inheriting them from definition.
+ * So by writing som additional info into nodes, note that it will be accessible everywhere below, where initial id is referred by.
+ *
+ * @module  glsl-js/lib/index
+ */
+
+var Emitter = require('events');
+var inherits = require('inherits');
+var assert = require('assert');
+var parse = require('./parse');
+var extend = require('xtend/mutable');
+var builtins = require('./builtins');
+var types = require('./types');
+var operators = require('./operators');
+var stdlib = require('./stdlib');
+var flatten = require('array-flatten');
+var Descriptor = require('./descriptor');
+var prepr = require('prepr');
+
+var floatRE = /^-?[0-9]*(?:.[0-9]+)?(?:e-?[0-9]+)?$/i;
+
 function Descriptor (str, options) {
 	//strings which are rendered to something
 	if (str != null) {
@@ -149,41 +179,13 @@ function Descriptor (str, options) {
 	return descriptor;
 }
 
-module.exports = Descriptor;
-
-},{"./types":8,"xtend/mutable":25}],4:[function(require,module,exports){
-/**
- * Transform glsl to js.
- *
- * Dev notes.
- * glsl-parser often creates identifiers/other nodes by inheriting them from definition.
- * So by writing som additional info into nodes, note that it will be accessible everywhere below, where initial id is referred by.
- *
- * @module  glsl-js/lib/index
- */
-
-var Emitter = require('events');
-var inherits = require('inherits');
-var assert = require('assert');
-var parse = require('./parse');
-var extend = require('xtend/mutable');
-var builtins = require('./builtins');
-var types = require('./types');
-var operators = require('./operators');
-var stdlib = require('./stdlib');
-var flatten = require('array-flatten');
-var Descriptor = require('./descriptor');
-var prepr = require('prepr');
-
-var floatRE = /^-?[0-9]*(?:.[0-9]+)?(?:e-?[0-9]+)?$/i;
-
-
 /**
  * Create GLSL codegen instance
  *
  * @constructor
  */
 function GLSL (options) {
+  console.log("options",options);
   if (!(this instanceof GLSL)) return new GLSL(options);
 
   extend(this, options);
