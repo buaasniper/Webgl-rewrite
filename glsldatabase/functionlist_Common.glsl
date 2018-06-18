@@ -355,3 +355,156 @@ ivec4 max(ivec4 a, int b){
 ivec4 max(ivec4 a, ivec4 b){
 	return ivec4( max(a[0], b[0]) , max(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3]) );
 }
+
+/*=========================================================Clamp================================================*/
+//7个function
+//------------------------------------------------>return int
+int clamp(int x, int min, int max){
+	if (x < min)
+		return min;
+	if (x > max)
+		return max;
+	return x;
+}
+
+//------------------------------------------------>return ivec2
+ivec2 clamp(ivec2 x, ivec2 min, ivec2 max){
+	return ivec2( clamp(x[0], min[0], max[0]), clamp(x[1], min[1], max[1]) );
+}
+
+ivec2 clamp(ivec2 x, int min, int max){
+	return ivec2( clamp(x[0], min, max), clamp(x[1], min, max) );
+}
+
+//------------------------------------------------>return ivec3
+ivec3 clamp(ivec3 x, ivec3 min, ivec3 max){
+	return ivec3( clamp(x[0], min[0], max[0]), clamp(x[1], min[1], max[1]), clamp(x[2], min[2], max[2]) );
+}
+
+ivec3 clamp(ivec3 x, int min, int max){
+	return ivec3( clamp(x[0], min, max), clamp(x[1], min, max), clamp(x[2], min, max) );
+}
+
+//------------------------------------------------>return ivec4
+ivec4 clamp(ivec4 x, ivec4 min, ivec4 max){
+	return ivec4( clamp(x[0], min[0], max[0]), clamp(x[1], min[1], max[1]), clamp(x[2], min[2], max[2]), clamp(x[3], min[3], max[3]) );
+}
+
+ivec4 clamp(ivec4 x, int min, int max){
+	return ivec4( clamp(x[0], min, max), clamp(x[1], min, max), clamp(x[2], min, max), clamp(x[3], min, max) );
+}
+
+
+/*=========================================================Mix================================================*/
+//7个function
+//------------------------------------------------>return int
+int mix(int x, int y, int a){
+	return x + D_multiple((y - x), a);
+}
+
+//------------------------------------------------>return ivec2
+ivec2 mix(ivec2 x, ivec2 y, int a){
+	return ivec2( mix(x[0], y[0], a), mix(x[1], y[1], a));
+}
+
+ivec2 mix(ivec2 x, ivec2 y, ivec2 a){
+	return ivec2( mix(x[0], y[0], a[0]), mix(x[1], y[1], a[1]));
+}
+
+//------------------------------------------------>return ivec3
+ivec3 mix(ivec3 x, ivec3 y, int a){
+	return ivec3( mix(x[0], y[0], a), mix(x[1], y[1], a), mix(x[2], y[2], a));
+}
+
+ivec3 mix(ivec3 x, ivec3 y, ivec3 a){
+	return ivec3( mix(x[0], y[0], a[0]), mix(x[1], y[1], a[1]), mix(x[2], y[2], a[2]));
+}
+
+//------------------------------------------------>return ivec4
+ivec4 mix(ivec4 x, ivec4 y, int a){
+	return ivec4( mix(x[0], y[0], a), mix(x[1], y[1], a), mix(x[2], y[2], a), mix(x[3], y[3], a));
+}
+
+ivec4 mix(ivec4 x, ivec4 y, ivec4 a){
+	return ivec4( mix(x[0], y[0], a[0]), mix(x[1], y[1], a[1]), mix(x[2], y[2], a[2]), mix(x[3], y[3], a[3]));
+}
+
+
+/*=========================================================Step================================================*/
+//7个function
+//------------------------------------------------>return int
+int step(int x, int y) {
+	if (x > y)
+		return 0;
+	return 1;
+}
+
+//------------------------------------------------>return ivec2
+ivec2 step(ivec2 a, int b){
+	return ivec2( step(a[0], b) , step(a[1], b));
+}
+
+ivec2 step(ivec2 a, ivec2 b){
+	return ivec2( step(a[0], b[0]) , step(a[1], b[1]));
+}
+
+//------------------------------------------------>return ivec3
+ivec3 step(ivec3 a, int b){
+	return step( min(a[0], b) , step(a[1], b), step(a[2], b));
+}
+
+ivec3 step(ivec3 a, ivec3 b){
+	return ivec3( step(a[0], b[0]) , step(a[1], b[1]), step(a[2], b[2]) );
+}
+
+
+//------------------------------------------------>return ivec4
+ivec4 step(ivec4 a, int b){
+	return ivec4( step(a[0], b) , step(a[1], b), step(a[2], b), step(a[3], b));
+}
+
+ivec4 step(ivec4 a, ivec4 b){
+	return ivec4( step(a[0], b[0]) , step(a[1], b[1]), step(a[2], b[2]), step(a[3], b[3]) );
+}
+
+
+//暂时不考虑smoothstep   有些问题
+/*=========================================================Smoothstep================================================*/
+//t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+//return t * t * (3.0 - 2.0 * t);
+//在这里0.0，1.0变成0， 1000
+//7个function
+//------------------------------------------------>return int
+int step(int x, int y) {
+	if (x > y)
+		return 0;
+	return 1;
+}
+
+//------------------------------------------------>return ivec2
+ivec2 step(ivec2 a, int b){
+	return ivec2( step(a[0], b) , step(a[1], b));
+}
+
+ivec2 step(ivec2 a, ivec2 b){
+	return ivec2( step(a[0], b[0]) , step(a[1], b[1]));
+}
+
+//------------------------------------------------>return ivec3
+ivec3 step(ivec3 a, int b){
+	return step( min(a[0], b) , step(a[1], b), step(a[2], b));
+}
+
+ivec3 step(ivec3 a, ivec3 b){
+	return ivec3( step(a[0], b[0]) , step(a[1], b[1]), step(a[2], b[2]) );
+}
+
+
+//------------------------------------------------>return ivec4
+ivec4 step(ivec4 a, int b){
+	return ivec4( step(a[0], b) , step(a[1], b), step(a[2], b), step(a[3], b));
+}
+
+ivec4 step(ivec4 a, ivec4 b){
+	return ivec4( step(a[0], b[0]) , step(a[1], b[1]), step(a[2], b[2]), step(a[3], b[3]) );
+}
