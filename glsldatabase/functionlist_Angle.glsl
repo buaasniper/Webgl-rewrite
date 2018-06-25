@@ -1,3 +1,42 @@
+/*=========================================================Radians================================================*/
+//四个function
+//这块精度定为.xy
+int radians(int degrees){
+    return D_division(degrees * 314, 18000);
+}
+
+ivec2 radians(ivec2 degrees){
+    return ivec2( radians(degrees[0]), radians(degrees[1]));
+}
+
+ivec3 radians(ivec3 degrees){
+    return ivec3(radians(degrees[0]), radians(degrees[1]), radians(degrees[2]));
+}
+
+ivec4 radians(ivec4 degrees){
+    return ivec4(radians(degrees[0]), radians(degrees[1]), radians(degrees[2]), radians(degrees[3]));
+}
+
+
+/*=========================================================Radians================================================*/
+//四个function
+//这块精度定为.xy
+int degrees(int degrees){
+    return D_division(degrees * 18000, 314);
+}
+
+ivec2 degrees(ivec2 degrees){
+    return ivec2( degrees(radians[0]), degrees(radians[1]));
+}
+
+ivec3 degrees(ivec3 degrees){
+    return ivec3(degrees(radians[0]), degrees(radians[1]), degrees(radians[2]));
+}
+
+ivec4 degrees(ivec4 degrees){
+    return ivec4(degrees(radians[0]), degrees(radians[1]), degrees(radians[2]), degrees(radians[3]));
+}
+
 //在所有三角函数中，我没有使用表格，这个需要在测试中确认结果
 /*=========================================================Sine================================================*/
 //四个function
