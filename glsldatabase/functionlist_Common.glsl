@@ -5,17 +5,17 @@
 // int * int
 int D_multiple(int a, int b)
 {
-  if (division(b, 1000) > 100)
+  if (D_division(b, 1000) > 100)
 	{
-		return a * division(b, 1000);
+		return a * D_division(b, 1000);
 	}	
-  else if (division(a, 1000) > 100)
+  else if (D_division(a, 1000) > 100)
 	{
-		return b * division(a, 1000);
+		return b * D_division(a, 1000);
 	}	
 	else
 	{
-		return division(a * b, 1000);
+		return D_division(a * b, 1000);
 	}
 }
 
