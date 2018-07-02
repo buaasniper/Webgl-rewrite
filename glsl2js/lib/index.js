@@ -145,11 +145,9 @@ GLSL.prototype.compile = function compile (arg) {
   if (this.preprocess) {
     if (this.preprocess instanceof Function) {
       arg = this.preprocess(arg);
-      console.log("preprocess",arg);
     }
     else {
       arg = prepr(arg);
-      console.log("prepr",arg);
     }
   }
 
@@ -271,7 +269,6 @@ GLSL.prototype.optimizeDescriptor = function (descriptor) {
           descriptor.components = newArr;
 
           for (var id in descriptor.components) {
-            //descriptor.components[id] = descriptor.components[id].map(e => parseInt(e));
             descriptor.components[id] = descriptor.components[id].map(e => parseFloat(e));
           }
 
@@ -287,6 +284,22 @@ GLSL.prototype.optimizeDescriptor = function (descriptor) {
 
   return descriptor;
 }
+
+
+/**
+ * Cache descriptor, return it
+ */
+GLSL.prototype.cache = function (node, value) {
+  if (this.descriptors.has(node)) return this.descriptors.get(node);
+
+  //force descriptor on save
+  if (!(value instanceof String)) value = Descriptor(value);
+
+  this.descriptors.set(node, value);
+
+  return this.descriptors.get(node);
+}
+
 
 
 /**
@@ -1180,24 +1193,6 @@ GLSL.prototype.transforms = {
   //FIXME: not implemented in glsl-parser
   // }
 }
-
-/**
- * Cache descriptor, return it
- */
-GLSL.prototype.cache = function (node, value) {
-  if (this.descriptors.has(node)) return this.descriptors.get(node);
-
-  //force descriptor on save
-  if (!(value instanceof String)) value = Descriptor(value);
-
-  this.descriptors.set(node, value);
-
-  return this.descriptors.get(node);
-}
-
-
-
-
 
 /**
  * Return list if ids for swizzle letters

@@ -8,6 +8,35 @@ var Descriptor = require('./descriptor');
 
 var floatRE = /^-?[0-9]*(?:.[0-9]+)?(?:e-?[0-9]+)?$/i;
 
+var operators = processOperation.operators = {
+	'*': 'multiply',
+	'+': 'add',
+	'-': 'subtract',
+	'/': 'divide',
+	'%': 'mod',
+	'<<': 'lshift',
+	'>>': 'rshift',
+	'==':'equal',
+	'<': 'less',
+	'>': 'greater',
+
+	//https://gcc.gnu.org/onlinedocs/cpp/C_002b_002b-Named-Operators.html#C_002b_002b-Named-Operators
+	'&&': 'and',
+	'&=': 'and_eq',
+	'&': 'bitand',
+	'|': 'bitor',
+	// '~': 'compl',
+	// '!': 'not',
+	'!=': 'not_eq',
+	'||': 'or',
+	'|=': 'or_eq',
+	'^': 'xor',
+	'^=': 'xor_eq'
+};
+
+var opsRE = /\*|\+|\-|\/|\%|\<|\=|\>|\&|\||\!|\^|\~/;
+
+
 /**
  * Return rendered operation
  */
@@ -16,7 +45,6 @@ function processOperation (left, right, operator) {
 	var leftType = left.type;
 	var rightType = right.type;
 	var operatorName = operators[operator];
-  //重新定义新的字符
   switch (operator) {
     case '*':
       return Descriptor(`my_multiple( ${left}, ${right} )`,{});
@@ -263,37 +291,6 @@ function processOperation (left, right, operator) {
 		return opResult;
 	}
 }
-
-var operators = processOperation.operators = {
-	'*': 'multiply',
-	'+': 'add',
-	'-': 'subtract',
-	'/': 'divide',
-	'%': 'mod',
-	'<<': 'lshift',
-	'>>': 'rshift',
-	'==':'equal',
-	'<': 'less',
-	'>': 'greater',
-
-	//https://gcc.gnu.org/onlinedocs/cpp/C_002b_002b-Named-Operators.html#C_002b_002b-Named-Operators
-	'&&': 'and',
-	'&=': 'and_eq',
-	'&': 'bitand',
-	'|': 'bitor',
-	// '~': 'compl',
-	// '!': 'not',
-	'!=': 'not_eq',
-	'||': 'or',
-	'|=': 'or_eq',
-	'^': 'xor',
-	'^=': 'xor_eq'
-};
-
-var opsRE = /\*|\+|\-|\/|\%|\<|\=|\>|\&|\||\!|\^|\~/;
-
-
-
 
 
 module.exports = processOperation;
