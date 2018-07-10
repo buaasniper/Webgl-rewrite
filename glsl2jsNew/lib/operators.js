@@ -45,6 +45,10 @@ function processOperation (left, right, operator) {
 	var leftType = left.type;
 	var rightType = right.type;
 	var operatorName = operators[operator];
+  console.log("left", left);
+  console.log("right", right);
+  console.log("operator", operator);
+  //在这里修改当左边或者右边是数字的时候，自动把数字变成整数，并且乘以了1000倍
   switch (operator) {
     case '*':
       return Descriptor(`my_multiple( ${left}, ${right} )`,{});

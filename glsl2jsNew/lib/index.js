@@ -142,6 +142,10 @@ GLSL.prototype.reset = function () {
  */
 GLSL.prototype.compile = function compile (arg) {
   //apply preprocessor
+  console.log("=====================原版======================");
+  console.log(arg);
+  console.log("=====================结束======================");
+
   if (this.preprocess) {
     if (this.preprocess instanceof Function) {
       arg = this.preprocess(arg);
