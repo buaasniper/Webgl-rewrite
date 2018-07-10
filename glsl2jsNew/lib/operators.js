@@ -45,6 +45,11 @@ function processOperation (left, right, operator) {
 	var leftType = left.type;
 	var rightType = right.type;
 	var operatorName = operators[operator];
+	// right.type = 'int';
+	// right = 2;
+	// right = right.toString();
+	var a = 2.0;
+	var b = Math.floor(a);
   console.log("left", left);
   console.log("right", right);
   console.log("operator", operator);
@@ -53,7 +58,8 @@ function processOperation (left, right, operator) {
     case '*':
       return Descriptor(`my_multiple( ${left}, ${right} )`,{});
     case '+':
-      return Descriptor(`my_add( ${left}, ${right} )`,{});
+	  //return Descriptor(`my_add( ${left}, ${right} )`,{});
+	  return Descriptor(`my_add( ${left}, ${b.toString()} )`,{});
     case '-':
       return Descriptor(`my_subtract( ${left}, ${right} )`,{});
     case '/':

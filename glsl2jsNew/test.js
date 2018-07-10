@@ -12,9 +12,12 @@ uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
 uniform mat3 test;
+#define t 3.0;
 
 void main()
 {
+  int a, b;
+  a = b + t;
   fragTexCoord = vertTexCoord;
   fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
   mProj += mProj;
