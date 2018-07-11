@@ -19,6 +19,7 @@ var operators = processOperation.operators = {
 	'==':'equal',
 	'<': 'less',
 	'>': 'greater',
+	// '=': 'special',
 
 	//https://gcc.gnu.org/onlinedocs/cpp/C_002b_002b-Named-Operators.html#C_002b_002b-Named-Operators
 	'&&': 'and',
@@ -40,6 +41,10 @@ var opsRE = /\*|\+|\-|\/|\%|\<|\=|\>|\&|\||\!|\^|\~/;
 /**
  * Return rendered operation
  */
+
+//在初始阶段，把所有的=变成= 0 + 
+
+
 function processOperation (left, right, operator) {
 	var self = this;
 	var leftType = left.type;
@@ -51,15 +56,25 @@ function processOperation (left, right, operator) {
 	// 	var a = 2.0;
 	// 	var b = Math.floor(a);
 	// 	right.string = b.toString();
-	// console.log("left", left);
-	// console.log("right", right);
-	// console.log("operator", operator);
+	console.log("left", left);
+	console.log("right", right);
+	console.log("operator", operator);
 	// console.log("parseFloat(left.String)",parseFloat(left));
 	// console.log("parseFloat(left.String)",parseFloat(right));
 
-	console.log("数值");
-	 console.log(left);
-	 console.log(right);
+	// console.log("数值");
+	//  console.log(left);
+	//  console.log(right);
+	//  console.log(right[0]);
+	//  console.log(right[1]);
+	//  console.log(right[2]);
+	//  console.log(right[3]);
+	//  console.log(right[4]);
+	//  console.log(right[5]);
+	//  console.log(right[6]);
+	//  console.log(right[7]);
+	//  console.log(right[8]);
+
 	//  console.log(left[0]);
 	//  console.log(right[0]);
 	//  console.log(right[string]);
@@ -82,8 +97,8 @@ function processOperation (left, right, operator) {
 		t_value = Math.floor(t_value);
 		right = t_value.toString();
 	}  
-	console.log(left);
-	 console.log(right);
+	// console.log(left);
+	//  console.log(right);
 
 
   switch (operator) {

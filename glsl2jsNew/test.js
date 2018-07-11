@@ -20,6 +20,7 @@ void main()
   int a, b;
   b = 2;
   a = b + t;
+  a = 23 + 0.123;
   // fragTexCoord = vertTexCoord;
   // fragNormal = (mWorld * vec4(vertNormal, 0.0)).xyz;
   // mProj += mProj;
