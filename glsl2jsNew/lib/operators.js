@@ -48,18 +48,50 @@ function processOperation (left, right, operator) {
 	// right.type = 'int';
 	// right = 2;
 	// right = right.toString();
-	var a = 2.0;
-	var b = Math.floor(a);
-  console.log("left", left);
-  console.log("right", right);
-  console.log("operator", operator);
-  //在这里修改当左边或者右边是数字的时候，自动把数字变成整数，并且乘以了1000倍
+	// 	var a = 2.0;
+	// 	var b = Math.floor(a);
+	// 	right.string = b.toString();
+	// console.log("left", left);
+	// console.log("right", right);
+	// console.log("operator", operator);
+	// console.log("parseFloat(left.String)",parseFloat(left));
+	// console.log("parseFloat(left.String)",parseFloat(right));
+
+	console.log("数值");
+	 console.log(left);
+	 console.log(right);
+	//  console.log(left[0]);
+	//  console.log(right[0]);
+	//  console.log(right[string]);
+	//  console.log(right[2]);
+	//  console.log(right.String);
+	// //  console.log(right.String[0]);
+	//  console.log(right[0].String);
+
+
+	//在这里修改当左边或者右边是数字的时候，自动把数字变成整数，并且乘以了1000倍
+	if (isNaN(left) == false){
+		var t_value = parseFloat(left);
+		t_value *= 1000.0;
+		t_value = Math.floor(t_value);
+		left = t_value.toString();
+	}  
+	if (isNaN(right) == false){
+		var t_value = parseFloat(right);
+		t_value *= 1000.0;
+		t_value = Math.floor(t_value);
+		right = t_value.toString();
+	}  
+	console.log(left);
+	 console.log(right);
+
+
   switch (operator) {
     case '*':
       return Descriptor(`my_multiple( ${left}, ${right} )`,{});
     case '+':
-	  //return Descriptor(`my_add( ${left}, ${right} )`,{});
-	  return Descriptor(`my_add( ${left}, ${b.toString()} )`,{});
+	  return Descriptor(`my_add( ${left}, ${right} )`,{});
+	  //return Descriptor(`my_add( ${left}, ${b.toString()} )`,{});
     case '-':
       return Descriptor(`my_subtract( ${left}, ${right} )`,{});
     case '/':
