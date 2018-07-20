@@ -22,31 +22,6 @@ getCanvas = function(canvasName) {
     this.ident();
   }
   
-  var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
-      var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
-      var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
-      var tem = [];
-      for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
-        tem_varying.push(tem);
-      for (var i = 0; i < index_num; i+= 3){
-        x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
-        y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
-        z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 2];
-        x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 3];
-        y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 4];
-        z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 5];
-        x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 6];
-        y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 7];
-        z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 8];
-        if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
-          for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
-            for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
-              tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);  
-          }
-        }
-      }
-
-      
   Mat3.prototype.ident = function() {
     var d;
     d = this.data;
@@ -1059,7 +1034,29 @@ getCanvas = function(canvasName) {
     ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
 
-    
+    var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
+      var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+      var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+      var tem = [];
+      for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+        tem_varying.push(tem);
+      for (var i = 0; i < index_num; i+= 3){
+        x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
+        y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
+        z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 2];
+        x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 3];
+        y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 4];
+        z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 5];
+        x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 6];
+        y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 7];
+        z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 8];
+        if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+          for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
+            for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+              tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);  
+          }
+        }
+      }
       
       
       //把数值赋给了ProgramDataMap
@@ -1194,28 +1191,40 @@ getCanvas = function(canvasName) {
   
         }
   
-        //在这里进行输出的赋值
-      var VaryingDataMap = [];
-      var i = 0;
-      while (i < finalwords.length){
-        if (finalwords[i] == "varying"){
-        var newData = new Varying_data;
-        i++;
-        if (finalwords[i] == "vec2")
-          newData.varyEleNum = 2;
-        else if (finalwords[i] == "vec3")
-          newData.varyEleNum = 3;
-        else if (finalwords[i] == "vec4")
-          newData.varyEleNum = 4;
-        i++;
-        newData.shaderName = finalwords[i]
-          newData.uniformData = [];
-        VaryingDataMap.push(newData);
-        }
-        i++;
-      }
-
         
+        var fragTexCoord = [];
+        var fragNormal = [];
+        var vPosition = [];
+        var gl_Position = [];
+        var mWorld = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+        var mView = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+        var mProj = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+        for (var i in ProgramDataMap[activeProgramNum].uniformData){
+          var tem = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+          tem[0][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[0]; 
+          tem[0][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[1]; 
+          tem[0][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[2]; 
+          tem[0][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[3]; 
+          tem[1][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[4]; 
+          tem[1][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[5]; 
+          tem[1][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[6]; 
+          tem[2][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[8]; 
+          tem[2][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[9]; 
+          tem[2][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[10];  
+          tem[2][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[11];  
+          tem[3][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[12];  
+          tem[3][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[13];  
+          tem[3][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[14];  
+          tem[3][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[15];
+          tem = math.flatten(tem);
+          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld') 
+            mWorld = tem;
+          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mView')
+            mView = tem;
+          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mProj')
+            mProj = tem;
+        }
+  
         if ((vetexID == 3) ){
         function main () {
           for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3;++ bigI) { 
@@ -1248,7 +1257,7 @@ getCanvas = function(canvasName) {
       /*------------------数据输入部分--------------------------------------*/
     
       /*------------------数据输出部分--------------------------------------*/
-      
+      /*
       var t0 = performance.now();
       //去掉空个的函数
       function trim(s){ 
@@ -1286,7 +1295,14 @@ getCanvas = function(canvasName) {
         return str; 
       }
     
-      
+      var words = trim(testShader);   
+      function replaceAll(str)  
+      {  
+        if(str!=null)  
+        str = str.replace(/;/g," ") 
+          str = str.replace (/\n/g," ") 
+          return str;  
+      }  
       var strNew = words.replace(";","");  
       strNew = replaceAll(strNew);  
       var test = strNew.split(" ");
@@ -1294,53 +1310,30 @@ getCanvas = function(canvasName) {
       for (i in test)
         if (test[i] != "")
         finalwords = finalwords.concat(trim(test[i]));
-
-        var words = trim(testShader);   
-        function replaceAll(str)  
-        {  
-          if(str!=null)  
-          str = str.replace(/;/g," ") 
-            str = str.replace (/\n/g," ") 
-            return str;  
-        }  
     
     
     
-      
-        var fragTexCoord = [];
-        var fragNormal = [];
-        var vPosition = [];
-        var gl_Position = [];
-        var mWorld = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-        var mView = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-        var mProj = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-        for (var i in ProgramDataMap[activeProgramNum].uniformData){
-          var tem = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-          tem[0][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[0]; 
-          tem[0][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[1]; 
-          tem[0][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[2]; 
-          tem[0][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[3]; 
-          tem[1][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[4]; 
-          tem[1][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[5]; 
-          tem[1][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[6]; 
-          tem[2][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[8]; 
-          tem[2][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[9]; 
-          tem[2][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[10];  
-          tem[2][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[11];  
-          tem[3][0] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[12];  
-          tem[3][1] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[13];  
-          tem[3][2] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[14];  
-          tem[3][3] = ProgramDataMap[activeProgramNum].uniformData[i].uniformData[15];
-          tem = math.flatten(tem);
-          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld') 
-            mWorld = tem;
-          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mView')
-            mView = tem;
-          if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mProj')
-            mProj = tem;
+      //在这里进行输出的赋值
+      var VaryingDataMap = [];
+      var i = 0;
+      while (i < finalwords.length){
+        if (finalwords[i] == "varying"){
+        var newData = new Varying_data;
+        i++;
+        if (finalwords[i] == "vec2")
+          newData.varyEleNum = 2;
+        else if (finalwords[i] == "vec3")
+          newData.varyEleNum = 3;
+        else if (finalwords[i] == "vec4")
+          newData.varyEleNum = 4;
+        i++;
+        newData.shaderName = finalwords[i]
+          newData.uniformData = [];
+        VaryingDataMap.push(newData);
         }
-  
-
+        i++;
+      }
+    
     
       for (i in VaryingDataMap){
         var string = "VaryingDataMap[" + i.toString() + "].uniformData = " + VaryingDataMap[i].shaderName + ";";
@@ -1349,7 +1342,7 @@ getCanvas = function(canvasName) {
   
       var t1 = performance.now();
       console.log('输出接口', t1 - t0);
-  
+      */
       }
     
     
