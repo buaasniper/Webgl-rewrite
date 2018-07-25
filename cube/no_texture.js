@@ -262,6 +262,18 @@ tri_p changevalue(tri_p t)
 
 //'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
 var CubeTest = function(type) {
+
+  /*======================发送消息一个的demo===================================*/
+  var domain = 'http://127.0.0.1:9080/index.html';   
+  var iframe = document.getElementById('cal').contentWindow;  
+  iframe.postMessage('555555', domain);
+  console.log("send");
+
+  /*=============================结束============================================*/
+
+
+
+
   var ID = sender.getID();
   this.begin = function(canvas, cb, level) {
     var gl;

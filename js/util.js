@@ -1225,6 +1225,7 @@ getCanvas = function(canvasName) {
             mProj = tem;
         }
   
+        //在这里我们直接进行优化，先进行最简单的传值
         if ((vetexID == 3) ){
         function main () {
           for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3;++ bigI) { 
