@@ -1233,7 +1233,7 @@ getCanvas = function(canvasName) {
           gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
         }
         };
-          
+            
   
         }else{
         function main () {
