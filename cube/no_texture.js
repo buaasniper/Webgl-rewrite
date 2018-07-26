@@ -269,6 +269,12 @@ var CubeTest = function(type) {
   iframe.postMessage('555555', domain);
   console.log("send");
 
+  //接受消息
+  window.addEventListener('message',function(e){
+    console.log("receive from iframe", e);
+  },false);
+
+
   /*=============================结束============================================*/
 
 
