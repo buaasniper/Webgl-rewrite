@@ -1,12 +1,16 @@
-#include <unordered_map>
-#include <string>
-
+#include <iostream>
 using namespace std;
-
-//global variable
-unordered_map<string,int> mymap;
+int* add( int* a){
+    for(int i = 0; i < 5; i++)
+        a[i]++;
+    return a;
+}
 
 int main() {
-  mymap.reserve(7000); // <-- try putting it here
+  int a[5] = {1,2,3,4,5};
+  int *b;
+  b = add(a);
+  for(int i = 0; i < 5; i++)
+    cout << b[i] << endl;
   return 0;
 }
