@@ -1228,12 +1228,19 @@ getCanvas = function(canvasName) {
         //在这里我们直接进行优化，先进行最简单的传值
         if ((vetexID == 3) ){
         function main () {
+          console.log("执行这里");
+          console.log("循环长度",  ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3);
+          console.log("fragTexCoord", fragTexCoord);
+          console.log("vertPosition", vertPosition);
+          console.log("mProj",mProj);
+          console.log("mView",mView);
+          console.log("mWorld",mWorld);
           for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3;++ bigI) { 
           fragTexCoord[bigI] = vertTexCoord[bigI];
           gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
         }
         };
-            
+
   
         }else{
         function main () {
@@ -1249,9 +1256,10 @@ getCanvas = function(canvasName) {
   
       var t0 = performance.now();
       main();
+      console.log("gl_Position", gl_Position);
       // console.log(map1.size, map2.size);
       var t1 = performance.now();
-      // console.log('main', t1 - t0);
+       console.log('main', t1 - t0);
   
     
     
