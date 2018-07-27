@@ -259,25 +259,47 @@ tri_p changevalue(tri_p t)
   return t;
 }
 `;
-
+// var e;
 //'gl_FragColor = vec4(wei_1 * r1 + wei_2 * r2 + wei_3 * r3, wei_1 * g1 + wei_2 * g2 + wei_3 * g3, wei_1 * b1 + wei_2 * b2 + wei_3 * b3, 1.0);'+
 var CubeTest = function(type) {
-
+  // var e = 0;
+  var a = 0;
   /*======================发送消息一个的demo===================================*/
-  var domain = 'http://127.0.0.1:9080/index.html';   
-  var iframe = document.getElementById('cal').contentWindow;  
-  iframe.postMessage('555555', domain);
-  console.log("send");
+  // var domain = 'http://127.0.0.1:9080/index.html';   
+  // var iframe = document.getElementById('cal').contentWindow;  
+  // iframe.postMessage('555555', domain);
+  // console.log("send");
 
-  //接受消息
-  window.addEventListener('message',function(e){
-    console.log("receive from iframe", e);
-  },false);
+  // //接受消息
+  // window.addEventListener('message',function(e){
+  //   // console.log("receive from iframe", e);
+  //     // while (true)
+  //     // {
+  //     //   if (a == 0)
+  //     //     continue;
+  //     //   else
+  //     //     break;
+  //     // }
+  //   a = get_val(e);
+  //   console.log("receive from iframe", a);
+  // },false);
+  // // time.sleep(10)
+  // // console.log('11111111',a);
 
-
+  // // while (true)
+  // // {
+  // //   if (a == 0)
+  // //     continue;
+  // //   else
+  // //     break;
+  // // }
   /*=============================结束============================================*/
+  var get_val = function (e)
+  {
+    return e;
+  }
 
-
+// console.log('111111',a);
 
 
   var ID = sender.getID();
@@ -532,6 +554,7 @@ var CubeTest = function(type) {
       
     };
     requestAnimationFrame(loop);
+    // console.log('11111',a);
   };
 };
 

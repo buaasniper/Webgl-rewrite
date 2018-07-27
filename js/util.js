@@ -1249,6 +1249,105 @@ getCanvas = function(canvasName) {
   
       var t0 = performance.now();
       main();
+
+      // var test_test = function(){
+                // 内存管理
+        const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+        // WebAssembly实例对象的环境配置
+        const importObj = {
+            'global': {},
+            env: {
+                abortStackOverflow: () => { throw new Error('overflow'); },
+                table: new WebAssembly.Table({ initial: 0, maximum: 0, element: 'anyfunc' }),
+                tableBase: 0,
+                memory: memory,
+                memoryBase: 1024,
+                STACKTOP: 0,
+                STACK_MAX: memory.buffer.byteLength,
+            }
+        };
+
+        // var CModule;
+        // var num = 11;
+
+        // fetch('./js/test2.wasm', { credentials: 'same-origin' }).then(res => {
+        //     return res.arrayBuffer()
+        // }).then(bytes => {
+        //     console.log('bytes:', bytes)
+        //     // 利用WebAssembly.instantiate接口将wasm模块的方法与importObject进行映射
+        //     return WebAssembly.instantiate(bytes, importObj)
+        // }).then(obj => {
+        //     console.log('obj:', obj)
+        //     // 执行调用factorial
+        //     CModule = obj.instance.exports;
+        //     var v = CModule._Z9factoriali(num)
+        //     console.log(v);
+        // })
+        // var tttt;
+        var cal_from_wasm = function(num, collector){
+          var Module;
+          var cal = fetch('./js/test20.wasm', { credentials: 'same-origin' }).then(res => {
+              return res.arrayBuffer()
+          }).then(bytes => {
+              console.log('bytes:', bytes)
+              return WebAssembly.instantiate(bytes, importObj)
+          }).then(obj => {
+            function _arrayToHeap(typedArray)
+            {
+              const numBytes = typedArray.length * typedArray.BYTES_PER_ELEMENT;
+              const ptr = Module._malloc(numBytes);
+              const heapBytes = new Uint8Array(Module.HEAPU8.buffer, ptr, numBytes);
+              heapBytes.set(new Uint8Array(typedArray.buffer));
+            }
+
+            function _freeArray(heapBytes)
+            {
+              Module._free(heapBytes.byteOffset);
+            }
+
+            console.log('obj:', obj)
+            Module = obj.instance.exports;
+            Module.sum = function(intArray){
+              const heapBytes = _arrayToHeap(intArray, Module);
+              const ret = Module.ccall(
+                  "sum",
+                  "number",
+                  ["number", "number"],
+                  [3, 2]
+                  // [heapBytes.byteOffset, intArray.length]
+              );
+              _freeArray(heapBytes);
+              return ret;
+            };
+
+            var v = Module.sum([1,2,3],4);
+            console.log(v);
+          });
+        }
+
+        var cc = function(accepted_v){
+          console.log(accepted_v);
+
+        }
+        
+        // var nums = new Array([1,2,43,4,5]);
+        var nums = new Int32Array([1, 2, 3])
+        // var nums = [1,2,3];
+        cal_from_wasm(nums, cc);
+        // console.log(nums);
+        // console.log(tttt);
+        // function factorial(num, callback) {
+        //     // var num = document.getElementById('Input').value;
+        //     var val = CModule._Z9factoriali(num)
+        //     // document.getElementById('Dispaly').innerHTML = `结果：${val}`;
+        //     // setTimeout(console.log(val),50000);
+
+        //     return val;
+        // }
+        
+        //setTimeout("console.log(factorial(10))",4000);
+      // }
+      // test_test();
       // console.log(map1.size, map2.size);
       var t1 = performance.now();
       // console.log('main', t1 - t0);
