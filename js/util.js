@@ -1248,7 +1248,7 @@ getCanvas = function(canvasName) {
           vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
           fragTexCoord[bigI] = vertTexCoord[bigI];
           fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
-          gl_Position[bigI] = my_multiple( MT, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+          gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
           // console.log("this version");
           }
           };
