@@ -1249,6 +1249,7 @@ getCanvas = function(canvasName) {
           fragTexCoord[bigI] = vertTexCoord[bigI];
           fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
           gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+          // console.log("this version");
           }
           };
         }
@@ -1256,10 +1257,23 @@ getCanvas = function(canvasName) {
   
       var t0 = performance.now();
       main();
-      console.log("gl_Position", gl_Position);
+      
+      // console.log("gl_Position", gl_Position);
       // console.log(map1.size, map2.size);
       var t1 = performance.now();
-       console.log('main', t1 - t0);
+      console.log('main', t1 - t0);
+      // console.log("length", ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3);
+      // console.log("vertPosition",vertPosition);
+      // console.log("vertNormal",vertNormal);
+
+      function reduceDimension(arr) {
+        return Array.prototype.concat.apply([], arr);
+      }
+
+      var vert_input = [];
+      vert_input = reduceDimension(vertPosition);
+      // console.log("vert_input", vert_input);
+      // console.log("vertPosition",vertPosition);
   
     
     

@@ -265,7 +265,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         // Main render loop
         //
         var angle = 0;
-        var count = 49;
+        var count = 0;
         var identityMatrix = new Float32Array(16);
         mat4.identity(identityMatrix);
         gl.enable(gl.DEPTH_TEST);
