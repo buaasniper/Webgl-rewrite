@@ -309,7 +309,10 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
           //console.log("gl.LINE_LOOP", gl.LINE_LOOP);
           //console.log("gl.LINES", gl.LINES);
           //console.log("gl.TRIANGLES", gl.TRIANGLES);
+          var t0 = performance.now();
           gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+          var t1 = performance.now();
+          console.log('draw', 1000.0 / (t1 - t0));
 
 
           if (count == 50) {

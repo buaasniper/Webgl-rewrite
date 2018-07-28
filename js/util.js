@@ -1256,13 +1256,13 @@ getCanvas = function(canvasName) {
       }
       var Mt = [];
       Mt = my_multiple( my_multiple( mProj, mView ), mWorld );
-      var t0 = performance.now();
+      // var t0 = performance.now();
       main();
       
       // console.log("gl_Position", gl_Position);
       // console.log(map1.size, map2.size);
-      var t1 = performance.now();
-      console.log('main', t1 - t0);
+      // var t1 = performance.now();
+      // console.log('main', t1 - t0);
       // console.log("length", ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3);
       // console.log("vertPosition",vertPosition);
       // console.log("vertNormal",vertNormal);

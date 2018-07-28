@@ -258,7 +258,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
           t0 = performance.now();
           gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
           var t1 = performance.now();
-          console.log('overall', t1 - t0);
+          console.log('draw', 1000.0 / (t1 - t0));
 
           if (count == 55) {
           cancelAnimationFrame(frame);
