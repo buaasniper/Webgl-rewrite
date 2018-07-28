@@ -58,7 +58,7 @@ void T_transformMat4(float *a, float *m){
 
 }
 
-//a[16], b[4]
+
 vector<float> my_multiple(float *a, float *b){
     float ha;
     float hb;
@@ -98,6 +98,7 @@ float* my_main(float *mProj,float *mView,float *mWorld,float *vertPosition){
     float *ft = new float[3];
     float *gl_Position = new float[20];
     out16 = T_multiply(T_multiply(mProj, mView), mWorld);
+    /*
     vector<float> t;
     for(int i = 0; i < 5; i++){
         ft[0] = vertPosition[i * 3];
@@ -109,6 +110,7 @@ float* my_main(float *mProj,float *mView,float *mWorld,float *vertPosition){
         gl_Position[i * 4 + 2] = t[2];
         gl_Position[i * 4 + 2] = t[3];
     }
+    */
     return gl_Position;
 
 }
