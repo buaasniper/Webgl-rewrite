@@ -9,7 +9,8 @@ using namespace std;
 unordered_map< float, vector<float>> HashMap;
 
 //input a[16] b[16] output out[16]
-float* T_multiply(float *a,float *b)
+//get a
+void T_multiply(float *a,float *b)
 {
 	float *out = new float[16];
     float a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
@@ -41,10 +42,11 @@ float* T_multiply(float *a,float *b)
     out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
     out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
-    return out;
+    a = out;
+
 }
 
-float* T_transformMat4(float *a, float *m){
+void T_transformMat4(float *a, float *m){
     float *out = new float[4];
     // w = 1 !!!!!!!!!!!!!!!!!!!!!
     float x = a[0], y = a[1], z = a[2], w = 1;
@@ -52,7 +54,8 @@ float* T_transformMat4(float *a, float *m){
 	    out[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
 	    out[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
 	    out[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
-    return out;
+    a = out;
+
 }
 
 //a[16], b[4]

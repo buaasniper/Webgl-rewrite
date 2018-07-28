@@ -18,14 +18,15 @@ map1 = new Map;
 map2 = new Map;
 
 var my_multiple = function(a, b) { 
-  if (!a || !b) return a;
-  map1.set(a,b);
+  //if (!a || !b) return a;
+  
   if (map1.get(a)!=undefined) {
     out = map2.get(b); 
     if (out!=undefined) 
       return out;
   } 
-
+  
+  map1.set(a,b);
   if (a.length==16 && b.length==16) {
    out = new Float32Array(16);
    mat4.multiply(out, a, b);
