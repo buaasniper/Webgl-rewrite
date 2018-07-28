@@ -1,3 +1,4 @@
+var t0;
 var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, texture1, texture2) {
   this.vertices = vertices;
   this.indices = indices;
@@ -236,7 +237,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
         var identityMatrix = new Float32Array(16);
         mat4.identity(identityMatrix);
         var angle = 0;
-        var count = 54;
+        var count = 30;
         var ven, ren;
         var identityMatrix = new Float32Array(16);
         mat4.identity(identityMatrix);
@@ -254,10 +255,10 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
           gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
           
-          var t0 = performance.now();
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+          t0 = performance.now();
+          gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
           var t1 = performance.now();
-          // console.log('overall', t1 - t0);
+          console.log('overall', t1 - t0);
 
           if (count == 55) {
           cancelAnimationFrame(frame);
