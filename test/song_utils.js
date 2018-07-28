@@ -25,7 +25,7 @@ var my_multiple = function(a, b) {
     if (out!=undefined) 
       return out;
   } 
-  
+
   map1.set(a,b);
   if (a.length==16 && b.length==16) {
    out = new Float32Array(16);
@@ -34,24 +34,24 @@ var my_multiple = function(a, b) {
    return out;
   }
 
-  if (a.length == 4 && b.length == 16) {
+  // if (a.length == 4 && b.length == 16) {
 
-   out = new Float32Array(4);
+  //  out = new Float32Array(4);
 
-   vec4.transformMat4(out, a, b);
+  //  vec4.transformMat4(out, a, b);
 
-   map2.set(b,out); 
+  //  map2.set(b,out); 
 
-   return out;
+  //  return out;
 
-  } 
+  // } 
 
-  if (b.length == 4 && a.length == 16) {
+  // if (b.length == 4 && a.length == 16) {
    out = new Float32Array(4);
    vec4.transformMat4(out, b, a);
    map2.set(b,out); 
    return out;
-  } 
+  // } 
 }
 
 

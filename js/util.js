@@ -1237,7 +1237,7 @@ getCanvas = function(canvasName) {
           // console.log("mWorld",mWorld);
           for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3;++ bigI) { 
           fragTexCoord[bigI] = vertTexCoord[bigI];
-          gl_Position[bigI] = my_multiple( my_multiple( my_multiple( mProj, mView ), mWorld ), new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+          gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
         }
         };
 
