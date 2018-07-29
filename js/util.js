@@ -1244,32 +1244,75 @@ getCanvas = function(canvasName) {
   
         }else{
         function main () {
-          for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 - 3; bigI += 3 ) { 
-          var big2 = bigI + 1;
-          var big3 = bigI + 2;
+
+          // var tt0 = performance.now();
+          var tt = [];
+          for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
 
           vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
-          vPosition[big2] = my_multiple( mView, new Float32Array([vertPosition[big2][0], vertPosition[big2][1], vertPosition[big2][2], 1]) );
-          vPosition[big3] = my_multiple( mView, new Float32Array([vertPosition[big3][0], vertPosition[big3][1], vertPosition[big3][2], 1]) );
-
-
           fragTexCoord[bigI] = vertTexCoord[bigI];
-          fragTexCoord[big2] = vertTexCoord[big2];
-          fragTexCoord[big3] = vertTexCoord[big3];
-
-
-          fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
-          fragNormal[big2] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[big2][0], vertNormal[big2][1], vertNormal[big2][2], 0]) ))[x]);
-          fragNormal[big3] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[big3][0], vertNormal[big3][1], vertNormal[big3][2], 0]) ))[x]);
-
-
+          // fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
+          tt = my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]));
+          fragNormal[bigI] = [tt[0],tt[1],tt[2]];
           gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
-          gl_Position[big2] = my_multiple( Mt, new Float32Array([vertPosition[big2][0], vertPosition[big2][1], vertPosition[big2][2], 1] ));
-          gl_Position[big3] = my_multiple( Mt, new Float32Array([vertPosition[big3][0], vertPosition[big3][1], vertPosition[big3][2], 1] ));
 
-
-          // console.log("this version");
           }
+          // var tt1 = performance.now();
+          // console.log('1', tt1 - tt0);
+
+
+
+          // var tt0 = performance.now();
+          // for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+
+          //   // vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
+          //   fragTexCoord[bigI] = vertTexCoord[bigI];
+          //   // fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
+          //   // gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+  
+          //   }
+          // var tt1 = performance.now();
+          // console.log('2', tt1 - tt0);
+
+          
+          // var tt0 = performance.now();
+          // var tt = [];
+          // for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+          //   fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
+          //   }
+          //   var tt1 = performance.now();
+          //   console.log('3', tt1 - tt0);
+
+          //   console.log(fragNormal);
+
+
+          // var tt0 = performance.now();
+          // var tt = [];
+          // for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+            // tt = my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]));
+            // fragNormal[bigI] = [tt[0],tt[1],tt[2]];
+
+          //   }
+          //   var tt1 = performance.now();
+          //   console.log('33', tt1 - tt0);
+          //   console.log(fragNormal);
+            
+          
+
+          // var tt0 = performance.now();
+          // for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+
+          //   // vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
+          //   // fragTexCoord[bigI] = vertTexCoord[bigI];
+          //   // fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
+          //   gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+  
+          //   }
+          //   var tt1 = performance.now();
+          //   console.log('4', tt1 - tt0);
+
+
+
           };
         }
       }
