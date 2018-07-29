@@ -253,9 +253,10 @@ var LineTest = function(type) {
                     //gl.drawArrays(gl.LINES, 0, 256);
                     
                     
-
-                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
-                    gl.drawArrays(gl.LINES, 256, 6);
+                    console.log("start", console.log( performance.now()) );
+                    gl.drawArrays(gl.LINE_STRIP, 0, 262);
+                    // gl.drawArrays(gl.LINES, 256, 6);
+                    console.log("end", console.log( performance.now()) );
 
 
                     sender.getData(canvas, ID);

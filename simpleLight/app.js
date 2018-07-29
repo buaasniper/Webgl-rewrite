@@ -315,7 +315,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
           console.log('draw', 1000.0 / (t1 - t0));
 
 
-          if (count == 50) {
+          if (count == 5000) {
                       cancelAnimationFrame(frame);
           sender.getData(canvas, parent.IDs[childNumber]);
           parent.childComplete();

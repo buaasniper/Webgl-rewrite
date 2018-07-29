@@ -738,6 +738,7 @@ getCanvas = function(canvasName) {
   /*=========================关于draw部分的代码====================开头==================*/
   gl.my_drawElements = gl.__proto__.drawElements;
   gl.drawElements = function(mode, count, type, offset){
+    
     var elementArray = [];
     var activeProgram;
     var activeProgramNum;
@@ -796,7 +797,8 @@ getCanvas = function(canvasName) {
   var varyingmap = [];
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(mode, first, count){
-    var startdraw = performance.now();
+    //var startdraw = performance.now();
+    console.log("in drawArrays", performance.now());
     var activeProgram;
     var activeProgramNum;
     activeProgram = getactiveProgram();
@@ -850,7 +852,7 @@ getCanvas = function(canvasName) {
     if (vetexID == 0){
 
     /*------------------readpixel部分--------------------------------------*/
-    
+    console.log("before readpixel", performance.now());
     var testNumber = 1;
     if (testNumber == 1){
 
@@ -878,7 +880,7 @@ getCanvas = function(canvasName) {
     }
     /*------------------readpixel部分--------------------------------------*/
 
-
+    
     var tem = [];
     var coordinates = [];
     var __VertexPositionAttributeLocation1;
@@ -963,7 +965,7 @@ getCanvas = function(canvasName) {
     // console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
     //console.log("开始draw");
 
-    
+    console.log("测试1");
      gl.clearColor(0, 0, 0, 1.0);
      gl.enable(gl.DEPTH_TEST);
      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -975,6 +977,7 @@ getCanvas = function(canvasName) {
   }//vetexID == 0
   
     if (vetexID == 1){
+      console.log("测试2");
     var mWorld = new Float32Array(16);
     var mWorld_fs = new Float32Array(16);
     var mView_fs = new Float32Array(16);
@@ -1318,13 +1321,13 @@ getCanvas = function(canvasName) {
       }
       var Mt = [];
       Mt = my_multiple( my_multiple( mProj, mView ), mWorld );
-      // var t0 = performance.now();
+      var t0 = performance.now();
       main();
       
       // console.log("gl_Position", gl_Position);
       // console.log(map1.size, map2.size);
-      // var t1 = performance.now();
-      // console.log('main', t1 - t0);
+      var t1 = performance.now();
+      console.log('main', t1 - t0);
       // console.log("length", ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3);
       // console.log("vertPosition",vertPosition);
       // console.log("vertNormal",vertNormal);
