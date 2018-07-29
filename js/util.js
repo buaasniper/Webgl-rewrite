@@ -1244,10 +1244,10 @@ getCanvas = function(canvasName) {
   
         }else{
         function main () {
-          for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3; bigI += 3) { 
-          var big2 = ++bigI;
-          var big3 = ++big2;
-          
+          for (var bigI = 0;bigI < ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 - 3; ++bigI ) { 
+          var big2 = bigI + 1;
+          var big3 = bigI + 2;
+
           vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
           vPosition[big2] = my_multiple( mView, new Float32Array([vertPosition[big2][0], vertPosition[big2][1], vertPosition[big2][2], 1]) );
           vPosition[big3] = my_multiple( mView, new Float32Array([vertPosition[big3][0], vertPosition[big3][1], vertPosition[big3][2], 1]) );
@@ -1264,8 +1264,8 @@ getCanvas = function(canvasName) {
 
 
           gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
-          gl_Position[big2] = my_multiple( Mt, new Float32Array([vertPosition[big2][0], vertPosition[big2][1], vertPosition[big2][2], 1] ));
-          gl_Position[big3] = my_multiple( Mt, new Float32Array([vertPosition[big3][0], vertPosition[big3][1], vertPosition[big3][2], 1] ));
+          // gl_Position[big2] = my_multiple( Mt, new Float32Array([vertPosition[big2][0], vertPosition[big2][1], vertPosition[big2][2], 1] ));
+          // gl_Position[big3] = my_multiple( Mt, new Float32Array([vertPosition[big3][0], vertPosition[big3][1], vertPosition[big3][2], 1] ));
 
 
           // console.log("this version");
