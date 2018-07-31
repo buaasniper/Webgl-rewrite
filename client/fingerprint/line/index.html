@@ -151,7 +151,7 @@
 
         textureObject = webgl.createTexture();
         webgl.bindTexture(webgl.TEXTURE_2D, textureObject);
-        webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, true);
+        webgl.pixelStorei(webgl.UNPACK_FLIP_Y_WEBGL, false);
         webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, texSize, texSize, 0,  webgl.RGBA, webgl.UNSIGNED_BYTE, image);
 
 
@@ -180,9 +180,9 @@
         webgl.uniform1f(lineIndex, 0.7);
         webgl.drawArrays(webgl.LINE_STRIP,  0, 256);
 
-        var pixels = new Uint8Array(canvas.width * canvas.height * 4);
-        webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
-        console.log(pixels);
+        // var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+        // webgl.readPixels(0, 0, canvas.width, canvas.height, webgl.RGBA, webgl.UNSIGNED_BYTE, pixels);
+        // console.log(pixels);
         // for i 
         // for ( var i = 0; i < 256; i++ ) {
         //     for ( var j = 0; j <256; j++ ) {
@@ -203,15 +203,15 @@
         //         // image[4*i*texSize+4*j+3] = 255;
         //     }
         // }
-        webgl.clearColor(0.0, 0.0, 1.0, 1.0);
-        webgl.clear(webgl.COLOR_BUFFER_BIT);
+        // webgl.clearColor(0.0, 0.0, 1.0, 1.0);
+        // webgl.clear(webgl.COLOR_BUFFER_BIT);
 
 
         webgl.bindBuffer(webgl.ARRAY_BUFFER, triangleBuffer);
         webgl.enableVertexAttribArray(v3PositionIndex);
         webgl.vertexAttribPointer(v3PositionIndex, 3, webgl.FLOAT, false, 0, 0);
 
-        var texture = textureFromPixelArray(webgl, pixels, webgl.RGBA, canvas.width, canvas.height);
+        var texture = textureFromPixelArray(webgl,webgl.canvas, webgl.RGBA, canvas.width, canvas.height);
 
         webgl.activeTexture(webgl.TEXTURE0);
         webgl.bindTexture(webgl.TEXTURE_2D, texture);
@@ -229,7 +229,8 @@
         function textureFromPixelArray(webgl, dataArray, type, width, height) {
             var texture = webgl.createTexture();
             webgl.bindTexture(webgl.TEXTURE_2D, texture);
-            webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
+            webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, webgl.RGBA, webgl.UNSIGNED_BYTE, webgl.canvas);
+            // webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, canvas.width, canvas.height, 0, webgl.RGBA, webgl.UNSIGNED_BYTE, dataArray);
             webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.NEAREST);
             webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.NEAREST);
             return texture;
