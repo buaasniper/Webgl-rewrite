@@ -252,11 +252,36 @@ var LineTest = function(type) {
                     // Draw the triangle
                     //gl.drawArrays(gl.LINES, 0, 256);
                     
+                    var start =  performance.now();
+                    // console.log("start",  performance.now() );
+                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
+                    var mid = performance.now();
+                    gl.drawArrays(gl.LINES, 256, 6);
+                    var end = performance.now();
+                    console.log("1", mid - start);
+                    console.log("2", end - mid);
+
+
+                    var start =  performance.now();
+                    // console.log("start",  performance.now() );
+                    gl.drawArrays(gl.LINE_STRIP, 0, 128);
+                    var mid = performance.now();
+                    gl.drawArrays(gl.LINES, 128, 128);
+                    var end = performance.now();
+                    console.log("1", mid - start);
+                    console.log("2", end - mid);
+
+                    var start =  performance.now();
+                    // console.log("start",  performance.now() );
+                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
+                    var mid = performance.now();
+                    gl.drawArrays(gl.LINES, 256, 6);
+                    var end = performance.now();
+                    console.log("1", mid - start);
+                    console.log("2", end - mid);
+
                     
-                    console.log("start", console.log( performance.now()) );
-                    gl.drawArrays(gl.LINE_STRIP, 0, 262);
-                    // gl.drawArrays(gl.LINES, 256, 6);
-                    console.log("end", console.log( performance.now()) );
+                    
 
 
                     sender.getData(canvas, ID);

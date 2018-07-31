@@ -798,7 +798,7 @@ getCanvas = function(canvasName) {
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(mode, first, count){
     //var startdraw = performance.now();
-    console.log("in drawArrays", performance.now());
+    //console.log("in drawArrays", performance.now());
     var activeProgram;
     var activeProgramNum;
     activeProgram = getactiveProgram();
@@ -850,34 +850,41 @@ getCanvas = function(canvasName) {
     
     
     if (vetexID == 0){
+    
 
     /*------------------readpixel部分--------------------------------------*/
-    console.log("before readpixel", performance.now());
+    //console.log("before readpixel", performance.now());
     var testNumber = 1;
+    var start = performance.now();
     if (testNumber == 1){
-
       var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-      // console.log("maxTextureUnits",maxTextureUnits);
-      var pixels = new Uint8Array(canvas.width * canvas.height * 4);
-      gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-      // console.log("pixels",pixels);
-      var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
-      function textureFromPixelArray(gl, dataArray, type, width, height) {
-        var texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        //确保不会翻转
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataArray);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        return texture;
-      }
-      //确保不会和前面的texture起冲突
-      // gl.activeTexture(gl.TEXTURE0);
-      // gl.bindTexture(gl.TEXTURE_2D, backtexture);
-      // var backtextureLoc = gl.my_getUniformLocation(activeProgram,"backtexture");
-      // gl.my_uniform1i(backtextureLoc, 0);
+      // var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+      // gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+      // var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
+      // function textureFromPixelArray(gl, dataArray, type, width, height) {
+      //   var texture = gl.createTexture();
+      //   gl.bindTexture(gl.TEXTURE_2D, texture);
+      //   //确保不会翻转
+      //   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataArray);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      //   return texture;
+      // }
+      var backtexture = textureFromPixelArray(gl, gl.RGBA, canvas.width, canvas.height);
+      function textureFromPixelArray(gl, type, width, height) {
+          var texture = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          //确保不会翻转
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, gl.canvas);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+          return texture;
+        }
     }
+    var end = performance.now();
+    console.log("read pixel", end - start);
     /*------------------readpixel部分--------------------------------------*/
 
     
@@ -965,7 +972,7 @@ getCanvas = function(canvasName) {
     // console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
     //console.log("开始draw");
 
-    console.log("测试1");
+    // console.log("测试1");
      gl.clearColor(0, 0, 0, 1.0);
      gl.enable(gl.DEPTH_TEST);
      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -975,6 +982,7 @@ getCanvas = function(canvasName) {
       
 
   }//vetexID == 0
+  
   
     if (vetexID == 1){
       console.log("测试2");
@@ -1122,7 +1130,7 @@ getCanvas = function(canvasName) {
       //这里是转化的第一个版本
       handflag = 1;
       if (handflag == 0){
-        var t0 = performance.now();
+        //var t0 = performance.now();
         for (var i in ProgramDataMap[activeProgramNum].attriData){
         var newData = new Tem_uniform_data;
         newData.shaderName = ProgramDataMap[activeProgramNum].attriData[i].shaderName;
@@ -1159,8 +1167,8 @@ getCanvas = function(canvasName) {
         }
   
   
-        var t1 = performance.now();
-        console.log('convert', t1 - t0);
+        // var t1 = performance.now();
+        // console.log('convert', t1 - t0);
         //  console.log("TemUniformDataMap",TemUniformDataMap);
     
         
