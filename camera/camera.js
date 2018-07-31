@@ -509,7 +509,10 @@ var CameraTest = function(type) {
       //console.log("aaaaaaaaaaaa");
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+      var start = performance.now();
       gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+      var end = performance.now();
+      console.log(1000.0/(end - start));
       if (count == 20) {
                 sender.getData(canvas, ID);
                 cancelAnimationFrame(frame);

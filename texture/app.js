@@ -195,12 +195,14 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         var identityMatrix = new Float32Array(16);
         mat4.identity(identityMatrix);
         var angle = 0;
-        var count = 49;
+        var count = 40;
         var identityMatrix = new Float32Array(16);
   
         mat4.identity(identityMatrix);
         gl.enable(gl.DEPTH_TEST);
+        var start = performance.now();
         var loop = function() {
+
           var frame = requestAnimationFrame(loop);
           angle = count++ / 20;
           mat4.rotate(yRotationMatrix, identityMatrix, angle, [ 0, 1, 0 ]);
@@ -209,19 +211,24 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
           gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
           //console.log("jfhjdkhsfjkdshfjhdsjfhdsjkhfdskjhfjksdhfkjsdhkfjh");
   
-  
+
           gl.clearColor(0.0, 0.0, 0.0, 1.0);
           gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
           gl.bindTexture(gl.TEXTURE_2D, __tex);
           gl.activeTexture(gl.TEXTURE0);
           // console.log("进入drawElements");
+
           gl.drawElements (gl.TRIANGLES, allIndices.length, gl.UNSIGNED_SHORT, 0);
+          
           if (count == 50) {
+
           cancelAnimationFrame(frame);
           sender.getData(canvas, parent.IDs[ID]);
           parent.childComplete();
           }
+          var end = performance.now();
+          console.log(end - start);
         };
         requestAnimationFrame(loop);
 

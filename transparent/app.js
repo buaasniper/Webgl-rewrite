@@ -209,7 +209,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
                 var angle = 0;
-                var count = 49;
+                var count = 20;
                 var ven, ren;
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
@@ -239,7 +239,10 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
                     gl.bindTexture(gl.TEXTURE_2D, tex);
                     gl.activeTexture(gl.TEXTURE0);
+                    var t0 = performance.now();
                     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+                    var t1 = performance.now();
+                    console.log('draw', 1000.0 / (t1 - t0));
                     //ctx.fillText("Hello world", 9, 50);
 
                     if(count == 50){

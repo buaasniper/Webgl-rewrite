@@ -251,12 +251,16 @@ var LineTest = function(type) {
 
                     // Draw the triangle
                     //gl.drawArrays(gl.LINES, 0, 256);
-                    
-                    
+                    // for (var i = 0; i < 20; i ++)
+                    // {
+                        var start = performance.now();
 
-                    gl.drawArrays(gl.LINE_STRIP, 0, 256);
-                    gl.drawArrays(gl.LINES, 256, 6);
 
+                        gl.drawArrays(gl.LINE_STRIP, 0, 262);
+                        // gl.drawArrays(gl.LINES, 256, 6);
+                          console.log(1000.0/(performance.now() - start));
+                    // }
+                    
 
                     sender.getData(canvas, ID);
                     cb(level);
