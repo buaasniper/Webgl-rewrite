@@ -1,10 +1,30 @@
-/**
- * Just names for operators
- *
- * @module  glsl-js/lib/operators
- */
+//修改过的文件
+/*
+lib/index.js 为总开始
+version 1
+lib/operators.js
+修改* + - /
 
-var Descriptor = require('./descriptor');
+version 2
+mat 4
+*/
+
+
+/*
+//深拷贝
+function cloneObject(src) {
+    var dest = {};
+    for(var key in src) {
+        if(typeof src === "object") dest[key] = cloneObject(src[key]);
+        else dest[key] = src[key];
+    }
+
+    return dest;
+}
+
+
+
+*/
 
 var floatRE = /^-?[0-9]*(?:.[0-9]+)?(?:e-?[0-9]+)?$/i;
 
@@ -19,9 +39,8 @@ var operators = processOperation.operators = {
 	'==':'equal',
 	'<': 'less',
 	'>': 'greater',
-	// '=': 'special',
 
-	//https://gcc.gnu.org/onlinedocs/cpp/C_002b_002b-Named-Operators.html#C_002b_002b-Named-Operators
+	
 	'&&': 'and',
 	'&=': 'and_eq',
 	'&': 'bitand',
@@ -35,82 +54,20 @@ var operators = processOperation.operators = {
 	'^=': 'xor_eq'
 };
 
-var opsRE = /\*|\+|\-|\/|\%|\<|\=|\>|\&|\||\!|\^|\~/;
-
-
-/**
- * Return rendered operation
- */
-
-//在初始阶段，把所有的=变成= 0 + 
-
-
 function processOperation (left, right, operator) {
 	var self = this;
 	var leftType = left.type;
 	var rightType = right.type;
 	var operatorName = operators[operator];
-	// right.type = 'int';
-	// right = 2;
-	// right = right.toString();
-	// 	var a = 2.0;
-	// 	var b = Math.floor(a);
-	// 	right.string = b.toString();
-	// console.log("left", left);
-	// console.log("right", right);
-	// console.log("operator", operator);
-	// console.log("parseFloat(left.String)",parseFloat(left));
-	// console.log("parseFloat(left.String)",parseFloat(right));
-
-	// console.log("数值");
-	//  console.log(left);
-	//  console.log(right);
-	//  console.log(right[0]);
-	//  console.log(right[1]);
-	//  console.log(right[2]);
-	//  console.log(right[3]);
-	//  console.log(right[4]);
-	//  console.log(right[5]);
-	//  console.log(right[6]);
-	//  console.log(right[7]);
-	//  console.log(right[8]);
-
-	//  console.log(left[0]);
-	//  console.log(right[0]);
-	//  console.log(right[string]);
-	//  console.log(right[2]);
-	//  console.log(right.String);
-	// //  console.log(right.String[0]);
-	//  console.log(right[0].String);
-
-
-	//在这里修改当左边或者右边是数字的时候，自动把数字变成整数，并且乘以了1000倍
-	if (isNaN(left) == false){
-		var t_value = parseFloat(left);
-		t_value *= 1000.0;
-		t_value = Math.floor(t_value);
-		left = t_value.toString();
-	}  
-	if (isNaN(right) == false){
-		var t_value = parseFloat(right);
-		t_value *= 1000.0;
-		t_value = Math.floor(t_value);
-		right = t_value.toString();
-	}  
-	// console.log(left);
-	//  console.log(right);
-
-
   switch (operator) {
     case '*':
-      return Descriptor(`D_multiple( ${left}, ${right} )`,{});
+      return Descriptor(`my_multiple( ${left}, ${right} )`,{});
     case '+':
-	  return Descriptor(`D_add( ${left}, ${right} )`,{});
-	  //return Descriptor(`my_add( ${left}, ${b.toString()} )`,{});
+      return Descriptor(`my_add( ${left}, ${right} )`,{});
     case '-':
-      return Descriptor(`D_subtract( ${left}, ${right} )`,{});
+      return Descriptor(`my_subtract( ${left}, ${right} )`,{});
     case '/':
-      return Descriptor(`D_divide( ${left}, ${right} )`,{});
+      return Descriptor(`my_divide( ${left}, ${right} )`,{});
   }
 	//1. scalar vs scalar
 	if (this.types[leftType].length == 1 && this.types[rightType].length == 1) {
@@ -350,4 +307,4 @@ function processOperation (left, right, operator) {
 }
 
 
-module.exports = processOperation;
+

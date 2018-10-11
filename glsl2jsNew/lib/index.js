@@ -146,6 +146,7 @@ GLSL.prototype.compile = function compile (arg) {
   console.log(arg);
   console.log("=====================结束======================");
 
+  //预处理部分  这部分可以屏蔽
   if (this.preprocess) {
     if (this.preprocess instanceof Function) {
       arg = this.preprocess(arg);
@@ -155,11 +156,27 @@ GLSL.prototype.compile = function compile (arg) {
     }
   }
 
+  // console.log("=====================preprocess======================");
+  // console.log(arg);
+  // console.log("=====================end=============================");
+
+  //这部分是数据传入的预处理部分  除了define部分全部消除
   arg = this.parse(arg);
+  // console.log("=====================parse===========================");
+  // console.log(arg);
+  // console.log("=====================end=============================");
 
+  //处理函数和位置
   var result = this.process(arg);
+  // console.log("=====================process=========================");
+  // console.log(result);
+  // console.log("=====================end=============================");
 
+  //将已经编译好的重新编辑好
   result = this.stringifyStdlib(this.includes) + '\n' + result;
+  // console.log("=====================stringifyStdlib=================");
+  // console.log(result);
+  // console.log("=====================end=============================");
 
   return result;
 };
@@ -175,6 +192,9 @@ GLSL.prototype.compile = function compile (arg) {
  */
 GLSL.prototype.process = function (node, arg) {
   //we don’t process descriptors
+  //在这里进行修复
+  console.log("node", node);
+  console.log("arg", arg);
 
   if (node instanceof String) {
     return node;

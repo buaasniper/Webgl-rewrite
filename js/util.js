@@ -154,6 +154,68 @@ getCanvas = function(canvasName) {
   
   })();
   
+
+  //worker建造
+  var myWorker1 = new Worker('worker.js');
+  var myWorker2 = new Worker('worker.js');
+  var myWorker3 = new Worker('worker.js');
+
+  //构建一个全局的帧数计时器
+  var FPSNumber = 0;
+  gl.clear = gl.__proto__.clear;
+  gl.clear = function (a){
+    //创造的是是否继续运行
+    var myWorkerState = 0;
+    while (1 ){
+      myWorker1.addEventListener('message', function(e1) {
+        myWorkerState = 1;
+        console.log('myWorker1 said: ', e1.data);
+      }, false);
+      myWorker2.addEventListener('message', function(e2) {
+        myWorkerState = 2;
+        console.log('myWorker2 said: ', e2.data);
+      }, false);
+      myWorker3.addEventListener('message', function(e3) {
+        myWorkerState = 3;
+        console.log('myWorker3 said: ', e3.data);
+      }, false);
+      if (FPSNumber == 1){
+        myWorker1.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+      if (FPSNumber == 2){
+        myWorker2.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+      if (FPSNumber == 3){
+        myWorker3.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+      if (myWorkerState == 1){
+        devide_draw(0, 255, e1.data, gl);
+        myWorker1.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+      if (myWorkerState == 2){
+        devide_draw(0, 255, e2.data, gl);
+        myWorker2.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+      if (myWorkerState == 3){
+        devide_draw(0, 255, e3.data, gl);
+        myWorker3.postMessage(ProgramDataMap,[ProgramDataMap]);
+        break;
+      }
+
+
+    }
+  }
+
+  //创造监听和传输的位置
+  //修改在gl.clear
+
+
+
   /*=============map部分===============================开头============================================*/
   //建立program的map
   var Program_data = function(){
@@ -1370,6 +1432,7 @@ getCanvas = function(canvasName) {
     var t0 = performance.now();
     var newData2 = new Varying_data;
     newData2.shaderName = "text_point";
+    
     newData2.varyEleNum = 2;
     newData2.uniformData = fragTexCoord.map(x => x.map(y => Math.floor(y * 1000)))
     ProgramDataMap[activeProgramNum].varyingData.push(newData2);
@@ -1539,7 +1602,7 @@ getCanvas = function(canvasName) {
     } 
     devide_draw(left, mid, left_varying, gl);
     }
-  
+
     if (right_number <= uniform_number){
     if (right_number > 0){
       var right_canvas_buffer = [
@@ -1598,7 +1661,7 @@ getCanvas = function(canvasName) {
   function devide_draw_height(left, right, bot, top, tem_varying, gl){
     var canvas_left;
     var canvas_mid;
-    var canvas_right;
+    var canvas_right; 
     var canvas_bot;
     var canvas_top;
     var tem = [];
@@ -1719,6 +1782,7 @@ getCanvas = function(canvasName) {
       else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
         gl.my_uniform3iv(loc_array[i], top_varying[i]);
       //   console.log("top_varying",i,top_varying[i]);
+      
       }
   
       else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
@@ -1732,6 +1796,9 @@ getCanvas = function(canvasName) {
     else{
     if (mid == left){
       //console.log("left", left, "right", right, "bot", bot, "top", top, "number", top_number);
+      // decide split to top and bot and send datamap
+      ProgramDataMap[activeProgramNun].varyingData[i].varyEleNum = ProgramDataMap[activeProgramNum].VaryingDataMap[i];
+      gl.my_uniform4iv(loc_array[i], left_varying[i]);
       return;
     } 
     devide_draw_height(left, right, mid, top, top_varying, gl);

@@ -13,6 +13,8 @@ uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
 uniform mat3 test;
+int test1;
+ivec2 test2;
 #define t 3.1415;
 
 void main()

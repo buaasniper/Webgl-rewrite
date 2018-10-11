@@ -22,6 +22,10 @@ var types = require('./types');
  */
 function Descriptor (str, options) {
 	//strings which are rendered to something
+	
+	// console.log("str",str);
+	// console.log("options",options);
+
 	if (str != null) {
 		var descriptor = new String((str+'').trim());
 		descriptor.visible = true;
