@@ -312,7 +312,7 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
           var t0 = performance.now();
           gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
           var t1 = performance.now();
-          console.log('draw', 1000.0 / (t1 - t0));
+          console.log('draw', t1 - t0);
 
 
           if (count == 5000) {

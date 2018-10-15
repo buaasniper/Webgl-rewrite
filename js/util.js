@@ -345,6 +345,8 @@ getCanvas = function(canvasName) {
       var Compiler = GLSL();
       //console.log("testShader",testShader);
       compiled = Compiler.compile(testShader);
+      console.log("run compiled", vetexID);
+      console.log(compiled);
       // console.log("shader",testShader);
       // console.log("compiled",compiled);
   
