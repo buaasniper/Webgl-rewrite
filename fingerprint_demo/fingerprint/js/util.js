@@ -264,9 +264,111 @@ rewrite = function(gl, canvas){
 
   /*~~~~~~~~~~~~~~~~~~~~ attribute 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-
-
+  /*------------gl.getAttribLocation------开头-------------*/
+  //重新定义getAttribLocation
+  //这块需要建立一个新的map，记录随机产生的数字和其对应关系的
+  gl.my_getAttribLocation = gl.__proto__.getAttribLocation;
+  gl.getAttribLocation = function (programName, shaderName){
+    for (i = 0; i < AttributeLocMap.length; i++){
+    if ((AttributeLocMap[i].programName == programName) && (AttributeLocMap[i].shaderName == shaderName))
+      return AttributeLocMap[i].randomNumber;
+    } 
+    var newData = new Attribute_loc;
+    newData.randomNumber = creatNumber(); // 通过creatNumber得到一个确定的函数
+    newData.programName = programName;
+    newData.shaderName = shaderName;
+    AttributeLocMap.push(newData);
+    return newData.randomNumber;   //将位置的数值返回以方便在gl.vertexAttribPointer中将两个map进行关连
   
+  }
+  
+  
+  //用getAttribLocation的函数
+  var __Locnumber = 100; //初始化函数
+  //单独建立函数的原因是在单个program的时候，单一__Locnumber是可行的，我担心在three.js多program和多attribute的情况下，可能会出问题，先暂时写成这样，调试的时候再做修改。
+  creatNumber = function(){
+    __Locnumber++;
+    return __Locnumber;
+  }
+  /*--------------------------------------------------------*/ 
+
+
+
+
+  gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
+  gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
+  
+    //先提取getAttribLocation能获得的glsl部分的信息
+    var ShaderData = new Attribute_loc;
+    ShaderData = getShaderData(positionAttributeLocation);
+  
+    //提取bufferdata中的信息
+    var BufferData = new Buffer_data;
+    BufferData = getBufferData();
+ 
+    //在这里生成一个新的attribute条目
+    // 这个版本需要考虑重复赋值这种情况
+    addAttriMap(ShaderData,BufferData,size,stride/4,offset/4);
+  }
+  
+  /*------------gl.vertexAttribPointer------开头-------------*/
+  //用在vertexAttribPointer中的函数
+  //提取getAttribLocation能获得的glsl部分的信息
+  var getShaderData = function(positionAttributeLocation){
+    for (var i = 0; i < AttributeLocMap.length; i++){
+    if (AttributeLocMap[i].randomNumber == positionAttributeLocation)
+      return AttributeLocMap[i];
+    }
+  
+  }
+  
+  //提取bufferdata中的信息
+  var getBufferData = function(){
+    for (var i = 0; i < BufferDataMap.length; i++){
+    if (BufferDataMap[i].activeFlag == 1)
+      return BufferDataMap[i];
+    }
+  }
+  
+  //考虑了attribute会被重复赋值的情况。
+  //需要判断是否需要重组bufferdata
+  var addAttriMap = function( ShaderData = new Attribute_loc,BufferData = new Buffer_data,size,stride,offset){
+    //这是一种特殊情况
+    if (stride == 0)
+    stride = size;
+    var newAttri = new Attri_data;
+    //var temData = [];
+    newAttri.shaderName = ShaderData.shaderName;
+    newAttri.programName = ShaderData.programName;
+    for (var i = 0; i < AttriDataMap.length; i++){
+    if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
+      AttriDataMap[i].attriEleNum = size;
+      for (var i = 0; i * stride < BufferData.bufferData.length; i++){
+        for (var j = i * stride + offset; j < i * stride + offset + size; j++)
+          AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(BufferData.bufferData[j]);
+      }
+      return;
+    }
+    }
+    newAttri.attriEleNum = size;
+    for (var i = 0; i * stride < BufferData.bufferData.length; i++){
+      for (var j = i * stride + offset; j < i * stride + offset + size; j++)
+        newAttri.uniformData = newAttri.uniformData.concat(BufferData.bufferData[j]);
+    }
+    //console.log("newAttri",newAttri);
+  
+    // 将attribute加入map
+    AttriDataMap.push(newAttri);
+  }
+  
+  /*----------------------------------------------------------------------*/ 
+  
+  
+  
+
+
+
+
   /*^^^^^^^^^^^^^^^^^^^^^^^^attribute 部分^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
