@@ -106,7 +106,14 @@ rewrite = function(gl, canvas){
   
   gl.my_shaderSource = gl.__proto__.shaderSource;
   gl.shaderSource = function(shaderName,shaderSource){
+
+    //正式使用时候的
+    //shaderSource = manualChangeShader(shaderSource);
     gl.my_shaderSource(shaderName,shaderSource);
+    //测试时使用的
+    // console.log(shaderSource);
+    shaderSource = manualChangeShader(shaderSource);
+
     for (var i = 0; i < ShaderDataMap.length; i++){
     if (ShaderDataMap[i].shaderName == shaderName){
       ShaderDataMap[i].shaderSource = shaderSource;
@@ -138,21 +145,8 @@ rewrite = function(gl, canvas){
       } 
       else
       ProgramDataMap[i].fragSource = shaderData.shaderSource;
+      console.log(shaderData.shaderSource);
       ProgramDataMap[i].activeFlag = 0;
-
-
-      //这是做测试
-      // console.log(shaderData.shaderSource);
-var aim = `precision mediump float;
-
-varying vec3 fragColor;
-void main()
-{
-  gl_FragColor = vec4(fragColor, 1.0);
-}`;
-      // console.log(aim);
-      if (shaderData.shaderSource == aim)
-        console.log("can know what is that");
       return;
     }
     }
