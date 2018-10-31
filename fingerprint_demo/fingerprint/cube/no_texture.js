@@ -309,9 +309,10 @@ var CubeTest = function(type) {
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
       gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
 
-      console.log('test version 3');
-      console.log(ShaderDataMap);
-      console.log(ProgramDataMap);
+      console.log('test version 4');
+      //console.log(ShaderDataMap);
+      //console.log(ProgramDataMap);
+      console.log(BufferDataMap);
 
       if (count == 20) {
         sender.getData(gl, ID);

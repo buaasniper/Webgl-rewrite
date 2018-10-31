@@ -186,14 +186,92 @@ rewrite = function(gl, canvas){
 
   /*~~~~~~~~~~~~~~~~~~~~ buffer 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   //bindbuffer 用于激活  而且bind的buffer有两种形式
+  //gl.ARRAY_BUFFER 34962
+  //gl.ELEMENT_ARRAY_BUFFER 34963
+  gl.my_bindBuffer = gl.__proto__.bindBuffer;
+  gl.bindBuffer = function (bufferType, bufferName){
+    //console.log("bufferName",bufferName);
+    //bindbuffernum ++;
+    initBufferMap(bufferType); // 重新把之前所有active的buffer状态归位inactive
+    addBufferMap(bufferType, bufferName);  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
+    activeBufferMap(bufferType, bufferName); //激活当前的buffer
+  
+  
+    //这块还是需要让原始代码运行
+    // *******************************这块在去掉另外一套系统后，应该可以删除
+    gl.my_bindBuffer(bufferType, bufferName);
+  }
+    /*------------用在bindbuffer 的几个函数-------------*/   
+  // 重新把之前所有active的buffer状态归位inactive
+  initBufferMap = function(bufferType){
 
+    if (bufferType == 34963){
+      for (i = 0; i < BufferDataMap.length; i++)
+        BufferDataMap[i].activeElement = 0;
+    }
+    else{
+      for (i = 0; i < BufferDataMap.length; i++)
+        BufferDataMap[i].activeFlag = 0;  
 
-
-
-
-
-
+    }
+  }
+  
+  //判断是否拥有这条buffer，如果没有的话就直接加入这个buffer
+  addBufferMap = function(bufferType, bufferName){
+    //如果出现了重复的buffer，要在原始基础上直接赋值
+    for (i = 0; i < BufferDataMap.length; i++){
+      if (BufferDataMap[i].bufferName == bufferName)
+        return;
+    }
+    var newData = new Buffer_data();
+    newData.bufferType = bufferType;
+    newData.bufferName = bufferName;
+    BufferDataMap.push(newData);
+    return;
+  }
+  
+  //激活当前的buffer
+  activeBufferMap = function(bufferType, bufferName){
+    for (i = 0; i < BufferDataMap.length; i++)
+    if (BufferDataMap[i].bufferName == bufferName){
+      if (bufferType == 34962)
+        BufferDataMap[i].activeFlag = 1;
+      else
+        BufferDataMap[i].activeElement = 1;
+      return;
+    }
+  }
+  /*----------------------------------------------------*/
+  //重新定义bufferData
+  gl.my_glbufferData = gl.__proto__.bufferData;
+  gl.bufferData = function (bufferType, bufferData, c){
+    if (bufferType == 34962){
+      for (i = 0; i < BufferDataMap.length; i++){
+        if (BufferDataMap[i].activeFlag == 1)
+          BufferDataMap[i].bufferData = bufferData;
+      }
+    }else{
+      for (i = 0; i < BufferDataMap.length; i++){
+        if (BufferDataMap[i].activeElement == 1)
+          BufferDataMap[i].bufferData = bufferData;
+      }
+    }
+  } 
+  
   /*^^^^^^^^^^^^^^^^^^^^^^buffer 部分 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
+
+  /*~~~~~~~~~~~~~~~~~~~~ attribute 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+
+  
+  /*^^^^^^^^^^^^^^^^^^^^^^^^attribute 部分^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
+
+
   
 
 
