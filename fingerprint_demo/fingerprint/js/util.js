@@ -363,13 +363,179 @@ rewrite = function(gl, canvas){
   
   /*----------------------------------------------------------------------*/ 
   
+
+/*^^^^^^^^^^^^^^^^^^^^^^^^attribute 部分^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+/*~~~~~~~~~~~~~~~~~~~~~ uniform 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//my_getUniformLocation
+  //这块需要建立一个新的map，记录随机产生的数字和其对应关系的
+  gl.my_getUniformLocation = gl.__proto__.getUniformLocation;
+  gl.getUniformLocation = function (programName, shaderName){
+    // 如果出现了重复的，就直接返回原始值
+    for (i = 0; i < UniformLocMap.length;i++){
+    if ((UniformLocMap[i].programName == programName) && (UniformLocMap[i].shaderName == shaderName))
+      return UniformLocMap[i].randomNumber;
+    }
+  
+    var newData = new Uniform_loc;
+    newData.randomNumber = creatNumber();
+    newData.programName = programName;
+    newData.shaderName = shaderName;
+    UniformLocMap.push(newData);
   
   
+    //开启map状态
+    return newData.randomNumber;   
+  
+  }
+  
+  //进入uniform 赋值区域  需要重新定义大量函数， 放在一起定义就好了
+  //这个类型是int 0 还是 float 1
+  //传入loc，data，type, num
+  //个数是1的情况
+  gl.my_uniform1i = gl.__proto__.uniform1i;
+  gl.uniform1i = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 0, 1);
+  }
+  
+  gl.my_uniform1iv = gl.__proto__.uniform1iv;
+  gl.uniform1iv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 0, 1);
+  }
+  
+  gl.my_uniform1f = gl.__proto__.uniform1f;
+  gl.uniform1f = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 1);
+  }
+  
+  gl.my_uniform1fv = gl.__proto__.uniform1fv;
+  gl.uniform1fv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 1);
+  }
+  
+  //个数是2的情况
+  gl.my_uniform2i = gl.__proto__.uniform2i;
+  gl.uniform2i = function (uniformLoc, uniformData0, uniformData1){
+    var uniformData = [uniformData0, uniformData1];
+    AddUniformMap(uniformLoc, uniformData, 0, 2);
+  }
+  
+  gl.my_uniform2iv = gl.__proto__.uniform2iv;
+  gl.uniform2iv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 0, 2);
+  }
+  
+  gl.my_uniform2f = gl.__proto__.uniform2f;
+  gl.uniform2f = function (uniformLoc,  uniformData0, uniformData1){
+    var uniformData = [uniformData0, uniformData1];
+    AddUniformMap(uniformLoc, uniformData, 1, 2);
+  }
+  
+  gl.my_uniform2fv = gl.__proto__.uniform2fv;
+  gl.uniform2fv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 2);
+  }
+  
+  //个数是3的情况
+  gl.my_uniform3i = gl.__proto__.uniform3i;
+  gl.uniform3i = function (uniformLoc, uniformData0, uniformData1, uniformData2){
+    var uniformData = [uniformData0, uniformData1, uniformData2];
+    AddUniformMap(uniformLoc, uniformData, 0, 3);
+  }
+//    var __testnumber = 0;
+  gl.my_uniform3iv = gl.__proto__.uniform3iv;
+  gl.uniform3iv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 0, 3);
+  //   console.log("__testnumber",__testnumber++);
+  //   console.log("fdsfdsfsdfdsfds");
+  }
+  
+  gl.my_uniform3f = gl.__proto__.uniform3f;
+  gl.uniform3f = function (uniformLoc,  uniformData0, uniformData1, uniformData2){
+    var uniformData = [uniformData0, uniformData1, uniformData2];
+    AddUniformMap(uniformLoc, uniformData, 1, 3);
+  }
+  
+  gl.my_uniform3fv = gl.__proto__.niform3fv;
+  gl.niform3fv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 3);
+  }
+  
+  //个数是4的情况
+  gl.my_uniform4i = gl.__proto__.uniform4i;
+  gl.uniform4i = function (uniformLoc, uniformData0, uniformData1, uniformData2,uniformData3){
+    var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
+    AddUniformMap(uniformLoc, uniformData, 0, 4);
+  }
+  
+  gl.my_uniform4iv = gl.__proto__.uniform4iv;
+  gl.uniform4iv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 0, 4);
+  }
+  
+  gl.my_uniform4f = gl.__proto__.uniform4f;
+  gl.uniform4f = function (uniformLoc,  uniformData0, uniformData1, uniformData2, uniformData3){
+    var uniformData = [uniformData0, uniformData1, uniformData2, ,uniformData3];
+    AddUniformMap(uniformLoc, uniformData, 1, 4);
+  }
+  
+  gl.my_uniform4fv = gl.__proto__.uniform4fv;
+  gl.uniform4fv = function (uniformLoc, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 4);
+  }
+  
+  //matrix 
+  //在这里不考虑2*3， 2*4， 3*4 这几种情况
+  gl.my_uniformMatrix2fv = gl.__proto__.uniformMatrix2fv;
+  gl.uniformMatrix2fv = function (uniformLoc,transpose, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 12);
+  }
+  
+  gl.my_uniformMatrix3fv = gl.__proto__.uniformMatrix3fv;
+  gl.uniformMatrix3fv = function (uniformLoc,transpose, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 13);
+  }
+  
+  gl.my_uniformMatrix4fv = gl.__proto__.uniformMatrix4fv;
+  gl.uniformMatrix4fv = function (uniformLoc,transpose, uniformData){
+    AddUniformMap(uniformLoc, uniformData, 1, 14);
+  }
+  
+  
+  /*------------gl.uniformXX和gl.uniformMatrix4XX------开头-------------*/
+  //需要考虑重复赋值的情况
+  var AddUniformMap = function(uniformLoc, uniformData, type, size){
+    var newUniform = new Uniform_data;
+    var newUniformLoc = new Uniform_loc;
+    newUniformLoc = getUniformLoc(uniformLoc);
+    newUniform.programName = newUniformLoc.programName;
+    newUniform.shaderName = newUniformLoc.shaderName;
+    for (var i = 0; i < UniformDataMap.length; i++){
+    if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
+      UniformDataMap[i].uniformNum = size;
+      UniformDataMap[i].uniformType = type;
+      UniformDataMap[i].uniformData = uniformData;
+      UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+      return;
+    }
+    }
+    newUniform.uniformNum = size;
+    newUniform.uniformType = type;
+    newUniform.uniformData = uniformData;
+    newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+    UniformDataMap.push(newUniform);
+  }
+  
+  var getUniformLoc = function(randomNumber){
+    for (var i = 0; i < UniformLocMap.length; i++)
+    if (randomNumber == UniformLocMap[i].randomNumber)
+      return UniformLocMap[i];
+  }
+  
+  /*---------------------------------------------------------------*/ 
+  
 
-
-
-
-  /*^^^^^^^^^^^^^^^^^^^^^^^^attribute 部分^^^^^^^^^^^^^^^^^^^^^^^^*/
+/*^^^^^^^^^^^^^^^^^^^^^^^^uniform 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
 
