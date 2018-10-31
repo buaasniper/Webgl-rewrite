@@ -1,5 +1,5 @@
 manualChangeShader = function(shaderSource){
-console.log("in manualChangeShader");
+//console.log("in manualChangeShader");
 
 //test 1
 //cube 的两个shader

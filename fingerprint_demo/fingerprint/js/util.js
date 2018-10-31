@@ -7,6 +7,7 @@
       this.programName = undefined; //program的名字
     this.vertexSource = undefined; //vetex的source
     this.fragSource = undefined //frag的source
+    this.shaderJsID = undefined; //Js code 执行的ID
       this.attriData = [];  //重新建立一个新的Attri_data object的array
     this.uniformData = []; //重新建立一个新的Uniform_data object的array
     this.varyingData = []; //重新建立一个新的Varying_data object的array
@@ -17,6 +18,7 @@
     this.shaderTpye = undefined; //35633为vetex 35632为frag
     this.shaderName = undefined; //shader的实际赋值
     this.shaderSource = undefined; //shader的源代码（这块是直接用来修改的）
+    this.shaderJsID = undefined; //Js code 执行的ID
     }
     var ShaderDataMap = [];
     
@@ -77,6 +79,8 @@
     this.varyEleNum = undefined;  //记录varying最终要变成vec2还是vc3
     this.uniformData = []; //这个是记录最终生成的数值，直接通过uniform传入的
     }
+
+    var vetexID;
     
     /*==========================map部分======================================结尾*/
 
@@ -89,6 +93,7 @@ rewrite = function(gl, canvas){
   AttributeLocMap = [];
   UniformDataMap = [];
   UniformLocMap = [];
+
   
   
   
@@ -117,6 +122,8 @@ rewrite = function(gl, canvas){
     for (var i = 0; i < ShaderDataMap.length; i++){
     if (ShaderDataMap[i].shaderName == shaderName){
       ShaderDataMap[i].shaderSource = shaderSource;
+      if (ShaderDataMap[i].shaderTpye == 35633)
+        ShaderDataMap[i].shaderJsID = vetexID;
       return;
     }
     }
@@ -142,10 +149,11 @@ rewrite = function(gl, canvas){
       if (shaderData.shaderTpye == 35633){
       //console.log("shaderData.shaderSource -->-->",shaderData.shaderSource);
       ProgramDataMap[i].vertexSource = shaderData.shaderSource;
+      ProgramDataMap[i].shaderJsID = shaderData.shaderJsID;
       } 
       else
-      ProgramDataMap[i].fragSource = shaderData.shaderSource;
-      console.log(shaderData.shaderSource);
+      ProgramDataMap[i].fragSource = shaderData.shaderSource; 
+      //console.log(shaderData.shaderSource);
       ProgramDataMap[i].activeFlag = 0;
       return;
     }
