@@ -27,8 +27,8 @@
     this.bufferName = undefined;  //bindBuffer 时候使用的名字  
     this.bufferType = undefined;  //依照这个来判断是array还是element_array
     this.bufferData = undefined;  //存储buffer本身的数值
-    this.activeFlag = undefined;  //这个是需要判断当前bindbuffer到底使用的是哪一个buffer，这个buffer是否被激活
-    this.activeElement = undefined;  //判断哪一个Element为最后加入的，也就为激活状态
+    this.activeFlag = undefined;  //ARRAY_BUFFER绑定状态
+    this.activeElement = undefined;  //ELEMENT_ARRAY_BUFFER绑定状态
     
     }
     var BufferDataMap = [];
@@ -85,7 +85,7 @@
     /*==========================map部分======================================结尾*/
 
 rewrite = function(gl, canvas){
-  console.log("version 4");
+  console.log("version 5");
   ProgramDataMap = [];
   ShaderDataMap = [];
   BufferDataMap = [];
@@ -98,7 +98,7 @@ rewrite = function(gl, canvas){
   
   
   
-  /*====================关于program和shader source部分的代码=================开头=======================*/
+  /*~~~~~~~~~~~~~~~~~~~~ program 部分 和 shader 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   //重新定义createShader
   gl.my_createShader = gl.__proto__.createShader;
   gl.createShader = function (shaderTpye){
@@ -112,6 +112,7 @@ rewrite = function(gl, canvas){
   gl.my_shaderSource = gl.__proto__.shaderSource;
   gl.shaderSource = function(shaderName,shaderSource){
 
+    /*============================demo===================================*/
     //正式使用时候的
     //shaderSource = manualChangeShader(shaderSource);
     gl.my_shaderSource(shaderName,shaderSource);
@@ -166,6 +167,33 @@ rewrite = function(gl, canvas){
       return (ShaderDataMap[i]);
     }
   }
+
+  gl.my_useProgram =  gl.__proto__.useProgram;
+  gl.useProgram = function (programName){
+    //这块执行原函数，只需要知道使用了哪一个program就可以了
+    gl.my_useProgram(programName);
+    for (var i = 0; i < ProgramDataMap.length; i++)
+    //console/log("我们运行了useProgram");
+    if (ProgramDataMap[i].programName == programName){
+      //console.log("我们激活了program的状态");
+      ProgramDataMap[i].activeFlag = 1;
+    } 
+    else
+      ProgramDataMap[i].activeFlag = 0;
+  }
+
+  /*^^^^^^^^^^^^program 部分 和 shader 部分 ^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  /*~~~~~~~~~~~~~~~~~~~~ buffer 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  //bindbuffer 用于激活  而且bind的buffer有两种形式
+
+
+
+
+
+
+
+  /*^^^^^^^^^^^^^^^^^^^^^^buffer 部分 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
   
 
 
