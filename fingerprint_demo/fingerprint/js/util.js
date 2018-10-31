@@ -537,6 +537,64 @@ rewrite = function(gl, canvas){
 
 /*^^^^^^^^^^^^^^^^^^^^^^^^uniform 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+/*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+//attribute的数据将要在这里重复形成最新的数据
+gl.my_drawElements = gl.__proto__.drawElements;
+gl.drawElements = function(mode, count, type, offset){
+  
+  var elementArray = [];
+  var activeProgram;
+  var activeProgramNum;
+  activeProgram = getactiveProgram();
+  activeProgramNum = getactiveProgramNum();
+  // var t0 = performance.now();
+  elementArray = getElementArray(count,offset);
+  // var t1 = performance.now();
+  // console.log('prepare for drawarrays', t1 - t0);
+  for (var i = 0; i < AttriDataMap.length; i++){
+    var newData = new Attri_data;
+    if( AttriDataMap[i].programName == activeProgram){
+      newData.programName = AttriDataMap[i].programName;
+      newData.shaderName = AttriDataMap[i].shaderName;
+      newData.attriEleNum = AttriDataMap[i].attriEleNum;
+      newData.uniformData = AttriDataMap[i].uniformData;
+
+      newData.uniformData = [];
+      for (var j = 0; j < elementArray.length; j++){
+        for (var k = elementArray[j] * newData.attriEleNum; k <  (elementArray[j] + 1) * newData.attriEleNum; k++)
+          newData.uniformData.push(AttriDataMap[i].uniformData[k]);
+      }
+      ProgramDataMap[activeProgramNum].attriData.push(newData);
+    }
+  }
+  gl.drawArrays(mode, 0 , count);
+}
+
+getactiveProgram = function(){
+  for (var i = 0; i < ProgramDataMap.length; i++)
+    if (ProgramDataMap[i].activeFlag == 1)
+      return ProgramDataMap[i].programName;
+}
+
+getactiveProgramNum = function(){
+  for (var i = 0; i < ProgramDataMap.length; i++)
+    if (ProgramDataMap[i].activeFlag == 1)
+      return i;
+}
+
+getElementArray = function(count,offset){
+  var elementArray = [];
+  var returnArray = [];
+  for (var i = 0; i < BufferDataMap.length; i++)
+    if (BufferDataMap[i].activeElement == 1)
+      elementArray = BufferDataMap[i].bufferData;
+  return elementArray.slice(offset, offset + count);
+}
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~ draw 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 
 
 
