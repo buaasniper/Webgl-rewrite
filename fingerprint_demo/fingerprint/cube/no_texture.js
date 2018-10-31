@@ -308,6 +308,10 @@ var CubeTest = function(type) {
       //    gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
       gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+
+      console.log('test version 2');
+      console.log(ProgramDataMap);
+
       if (count == 20) {
         sender.getData(gl, ID);
         cancelAnimationFrame(frame);
