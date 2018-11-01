@@ -924,8 +924,8 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl,canvas);
-  gl = catchShader(gl, canvas);
+  gl = rewrite(gl,canvas);
+  //gl = catchShader(gl, canvas);
   return gl;
 }
 
@@ -946,8 +946,8 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl,canvas);
-  gl = catchShader(gl, canvas);
+  gl = rewrite(gl,canvas);
+  //gl = catchShader(gl, canvas);
   return gl;
 }
 
