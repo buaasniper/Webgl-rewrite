@@ -131,6 +131,7 @@ and how they are implemented on the GPU
         drawLight();
         return drawCamera();
       };
+      console.log("开始绘画");
       draw();
       return gl.animationInterval((function(_this) {
         return function(frame) {
