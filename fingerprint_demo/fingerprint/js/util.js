@@ -114,11 +114,12 @@ rewrite = function(gl, canvas){
 
     /*============================demo===================================*/
     //正式使用时候的
-    //shaderSource = manualChangeShader(shaderSource);
+    shaderSource = manualChangeShader(shaderSource);
+    //console.log(shaderSource);
     gl.my_shaderSource(shaderName,shaderSource);
     //测试时使用的
     // console.log(shaderSource);
-    shaderSource = manualChangeShader(shaderSource);
+    //shaderSource = manualChangeShader(shaderSource);
 
     for (var i = 0; i < ShaderDataMap.length; i++){
     if (ShaderDataMap[i].shaderName == shaderName){
@@ -537,7 +538,10 @@ rewrite = function(gl, canvas){
 
 /*^^^^^^^^^^^^^^^^^^^^^^^^uniform 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-/*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~ draw 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //attribute的数据将要在这里重复形成最新的数据
 gl.my_drawElements = gl.__proto__.drawElements;
 gl.drawElements = function(mode, count, type, offset){
@@ -591,18 +595,297 @@ getElementArray = function(count,offset){
   return elementArray.slice(offset, offset + count);
 }
 
+/*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+//mode
+  //gl.POINTS 0
+  //gl.LINES 1
+  //gl.LINE_LOOP 2
+  //gl.LINE_STRIP 3
+  //gl.TRIANGLES 4
+  var varyingmap = [];
+  gl.my_drawArrays = gl.__proto__.drawArrays;
+  gl.drawArrays = function(mode, first, count){
+    //var startdraw = performance.now();
+    //console.log("in drawArrays", performance.now());
+    var activeProgram;
+    var activeProgramNum;
+    activeProgram = getactiveProgram();
+    activeProgramNum = getactiveProgramNum();
+    //没有进入gl.element直接进入这个gl.drawelement
+    //加入attribute的部分
+    // console.log("BufferDataMap",BufferDataMap);
+    // console.log("AttriDataMap",AttriDataMap);
+    if (ProgramDataMap[activeProgramNum].attriData.length == 0){
+      for (var i = 0; i < AttriDataMap.length; i++)
+        if( AttriDataMap[i].programName == activeProgram){
+          var newData = new Attri_data;
+          newData.programName = AttriDataMap[i].programName;
+          newData.shaderName = AttriDataMap[i].shaderName;
+          newData.attriEleNum = AttriDataMap[i].attriEleNum;
+          newData.uniformData = [];
+          // console.log("start",newData.attriEleNum * first);
+          // console.log("end",newData.attriEleNum * (first + count));
+          //在这里面添加first和count
+          for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
+            newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
+          ProgramDataMap[activeProgramNum].attriData.push(newData);
+        }
 
+    }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~ draw 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    //加入uniform的部分
+    for(var i = 0; i < UniformDataMap.length; i++){
+      if (UniformDataMap[i].programName == activeProgram){
+        var newData = new Uniform_data;
+        newData.programName = UniformDataMap[i].programName;
+        newData.shaderName = UniformDataMap[i].shaderName;
+        newData.uniformNum = UniformDataMap[i].uniformNum;
+        newData.uniformType = UniformDataMap[i].uniformType;
+        newData.uniformActive = UniformDataMap[i].uniformActive;
+        newData.uniformData = [];
+        for (var idx in UniformDataMap[i].uniformData)
+          newData.uniformData.push(UniformDataMap[i].uniformData[idx]);
+        ProgramDataMap[activeProgramNum].uniformData.push(newData);
+      }
+    } 
 
+    //这是cube camera测试的
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 1){
+      console.log("begin work");
+      var mWorld = new Float32Array(16);
+      var mWorld_fs = new Float32Array(16);
+      var mView_fs = new Float32Array(16);
+      var mView = new Float32Array(16);
+      var mProj = new Float32Array(16);
+      var vertPosition = [];
+      var vertColor = [];
+      var varyingmap = [];
+      var __VertexPositionAttributeLocation1;
+      //attribute 读取阶段
+      for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertPosition")
+          vertPosition = ProgramDataMap[activeProgramNum].attriData[i].uniformData;         
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "vertColor")
+          vertColor = ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+      }
 
-
+      console.log("vertColor",vertColor);
+      //uniform 读取阶段
+      for (var i = 0; i < ProgramDataMap[activeProgramNum].uniformData.length; i++){
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mWorld")
+          mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;         
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mView")
+          mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == "mProj")
+          mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+      }
+  
+      //进入vetex计算部分
+      mat4.copy(mWorld_fs, mWorld);
+      mat4.copy(mView_fs, mView);
+      mat4.transpose(mWorld, mWorld);
+      mat4.transpose(mView, mView);
+      mat4.transpose(mProj, mProj);
+      mat4.mul(mView, mView, mProj);
+      mat4.mul(mWorld, mWorld, mView);
+  
+      //进入计算阶段
+      //手工去完成自动化的那部分
+      
+      var newData1 = new Varying_data;
+      newData1.shaderName = "tri_point";
+      newData1.varyEleNum = 3;
+      newData1.uniformData = my_m4.vec_max_mul(vertPosition, mWorld);
+      for (var i =0; i < newData1.uniformData.length; i++)
+        if (i % 3 != 2)
+          newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
+        else
+          newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
+      ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+  
+      var newData2 = new Varying_data;
+      newData2.shaderName = "tri_color";
+      newData2.varyEleNum = 3;
+      for (var i = 0; i < vertColor.length; i++){
+        newData2.uniformData = newData2.uniformData.concat(vertColor[i]);
+        newData2.uniformData[i] = Math.round(((newData2.uniformData[i] )) * 1000);
+      } 
+      ProgramDataMap[activeProgramNum].varyingData.push(newData2);
 
   
+  
+      var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length / 3;
+        var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+        var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+        var tem = [];
+        for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+          tem_varying.push(tem);
+        for (var i = 0; i < index_num; i+= 3){
+          x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3];
+          y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 1];
+          z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 2];
+          x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 3];
+          y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 4];
+          z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 5];
+          x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 6];
+          y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 7];
+          z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i * 3 + 8];
+          if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+            for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
+              for (k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+                tem_varying[j] = tem_varying[j].concat(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);  
+            }
+          }
+        }
+        
+        
+        //把数值赋给了ProgramDataMap
+        for (var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+          ProgramDataMap[activeProgramNum].varyingData[i].uniformData = [];
+          for(var j = 0; j < tem_varying[i].length; j++)
+            ProgramDataMap[activeProgramNum].varyingData[i].uniformData = ProgramDataMap[activeProgramNum].varyingData[i].uniformData.concat(tem_varying[i][j]);
+        }
+  
+  
+      var canvas_buffer = [-1.0, -1.0, 
+        1.0, -1.0, 
+        -1.0,  1.0, 
+        -1.0,  1.0,
+        1.0, -1.0, 
+        1.0,  1.0]; 
+      var new_vertex_buffer = gl.createBuffer();
+      gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+      gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+      __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'vertPosition');
+      gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+      gl.enableVertexAttribArray(__VertexPositionAttributeLocation1); 
+      gl.my_useProgram(activeProgram);
+      var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "tri_point");
+      var traingles_fra_loc = gl.my_getUniformLocation(activeProgram, "tri_color");
+      var traingles_num_loc = gl.my_getUniformLocation(activeProgram, "tri_number");
+      // console.log(traingles_vex_loc);
+      // console.log(traingles_fra_loc);
+      // console.log(gl.my_getUniformLocation(activeProgram, "tri_numberdsds"));
+      gl.my_uniform1i(traingles_num_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length/3);
+      gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+      gl.my_uniform3iv(traingles_fra_loc, ProgramDataMap[activeProgramNum].varyingData[1].uniformData);
+      console.log("开始画了");
+      // console.log("ProgramDataMap",ProgramDataMap);
+      gl.my_drawArrays(gl.TRIANGLES, 0, 6);  
+    }
+
+
+
+  }
+
+
+
 
 
   return gl;
 }
+
+
+//计算矩阵的库
+var my_m4 = {
+  
+  projection: function(width, height, depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return [
+    2 / width, 0, 0, 0,
+    0, -2 / height, 0, 0,
+    0, 0, 2 / depth, 0,
+    -1, 1, 0, 1,
+    ];
+  },
+  
+  vec_max_mul: function(a,b){
+    var result = [];
+    // 这个系数是我确定的，这个之后再确认
+    var number = 0.1 * 1.5;
+    var b00 = b[0 * 4 + 0];
+    var b01 = b[0 * 4 + 1];
+    var b02 = b[0 * 4 + 2];
+    var b03 = b[0 * 4 + 3];
+    var b10 = b[1 * 4 + 0];
+    var b11 = b[1 * 4 + 1];
+    var b12 = b[1 * 4 + 2];
+    var b13 = b[1 * 4 + 3];
+    var b20 = b[2 * 4 + 0];
+    var b21 = b[2 * 4 + 1];
+    var b22 = b[2 * 4 + 2];
+    var b23 = b[2 * 4 + 3];
+    var b30 = b[3 * 4 + 0];
+    var b31 = b[3 * 4 + 1];
+    var b32 = b[3 * 4 + 2];
+    var b33 = b[3 * 4 + 3];
+    //console.log(b00,b01,b02);
+    for (var i = 0; i < a.length; i += 3){
+      var w = a[i] * b30 + a[i+1] * b31 + a[i+2] * b32 + b33;
+      result = result.concat((a[i] * b00 + a[i+1] * b01 + a[i+2] * b02 + b03) / w);
+      result = result.concat((a[i] * b10 + a[i+1] * b11 + a[i+2] * b12 + b13) / w);
+      result = result.concat((a[i] * b20 + a[i+1] * b21 + a[i+2] * b22 + b23) / w);
+    }
+    //console.log("result", result);
+    return result;
+  
+  },
+  
+  multiply: function(a, b) {
+    var a00 = a[0 * 4 + 0];
+    var a01 = a[0 * 4 + 1];
+    var a02 = a[0 * 4 + 2];
+    var a03 = a[0 * 4 + 3];
+    var a10 = a[1 * 4 + 0];
+    var a11 = a[1 * 4 + 1];
+    var a12 = a[1 * 4 + 2];
+    var a13 = a[1 * 4 + 3];
+    var a20 = a[2 * 4 + 0];
+    var a21 = a[2 * 4 + 1];
+    var a22 = a[2 * 4 + 2];
+    var a23 = a[2 * 4 + 3];
+    var a30 = a[3 * 4 + 0];
+    var a31 = a[3 * 4 + 1];
+    var a32 = a[3 * 4 + 2];
+    var a33 = a[3 * 4 + 3];
+    var b00 = b[0 * 4 + 0];
+    var b01 = b[0 * 4 + 1];
+    var b02 = b[0 * 4 + 2];
+    var b03 = b[0 * 4 + 3];
+    var b10 = b[1 * 4 + 0];
+    var b11 = b[1 * 4 + 1];
+    var b12 = b[1 * 4 + 2];
+    var b13 = b[1 * 4 + 3];
+    var b20 = b[2 * 4 + 0];
+    var b21 = b[2 * 4 + 1];
+    var b22 = b[2 * 4 + 2];
+    var b23 = b[2 * 4 + 3];
+    var b30 = b[3 * 4 + 0];
+    var b31 = b[3 * 4 + 1];
+    var b32 = b[3 * 4 + 2];
+    var b33 = b[3 * 4 + 3];
+    return [
+    b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
+    b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
+    b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
+    b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
+    b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
+    b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
+    b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
+    b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
+    b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
+    b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
+    b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
+    b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
+    b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
+    b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
+    b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
+    b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33,
+    ];
+  }
+  };
+  
+  
 
 getCanvas = function(canvasName) {
     var canvas = $('#' + canvasName);

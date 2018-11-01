@@ -95,6 +95,7 @@ void main()
       if ( draw_pixel ){
         renew_Zbuffer;
         gl_FragColor = vec4 (col_transfer( colrgb, 100));
+        gl_FragColor = vec4(gl_FragCoord.x/255.0, gl_FragCoord.y/255.0, 0.0, 1.0);
       } 
     }
   } 
