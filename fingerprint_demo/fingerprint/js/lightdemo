@@ -4,6 +4,74 @@ precision highp float;
 precision highp int;
 /*================test 1=========*/
 `
+truct DirectionalLight
+{
+	ivec3 direction;
+	ivec3 diffuse;
+	ivec3 specular;
+};
+#define uniformNumber 228
+uniform ivec3 tri_point[225];
+uniform ivec2 text_point[225];
+uniform ivec3 nor_point[225];
+uniform ivec4 vPositionVary[225];
+uniform int tri_number;
+struct tri_p {
+  int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+};
+struct txt_p {
+  int x1, y1, x2, y2, x3,  y3;
+};
+struct txt_coord{
+  int x, y;
+};
+#define init tri_p tri; txt_p texcoord; int z; z = -512;gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);int z0; txt_coord fragTexCoord;
+#define assign tri.x0 = int(gl_FragCoord.x); tri.y0 = int(gl_FragCoord.y); tri.x1 = tri_point[i][0]; tri.y1 = tri_point[i][1]; tri.z1 = tri_point[i][2]; tri.x2 = tri_point[i+1][0]; tri.y2 = tri_point[i+1][1]; tri.z2 = tri_point[i+1][2]; tri.x3 = tri_point[i+2][0]; tri.y3 = tri_point[i+2][1]; tri.z3 = tri_point[i+2][2];texcoord.x1 = text_point[i][0]; texcoord.y1 = text_point[i][1];texcoord.x2 = text_point[i+1][0]; texcoord.y2 = text_point[i+1][1];texcoord.x3 = text_point[i+2][0]; texcoord.y3 = text_point[i+2][1];
+#define changePosition tri = changevalue(tri); 
+#define cal_Zbuffer z0 = cal_z(tri);
+#define pixel_on_triangle ( i < (tri_number * 3) ) && (judge(tri) == 1)
+#define draw_pixel (z0 >= -512) && (z0 <= 512) && (z0 > bot)
+#define renew_Zbuffer fragTexCoord = calCoord(texcoord, tri);
+int judge(tri_p t);
+int f_judge(tri_p t);
+int PinAB(int tx0, int ty0, int tx1, int ty1, int tx2, int ty2);   
+int f_PinAB(float tx0, float ty0, float tx1, float ty1, float tx2, float ty2);
+int cal_z(tri_p tri);
+int division(int a, int b);  
+int mod(int a, int b);  
+int isqrt(int a);
+int D_dot(ivec3 x, ivec3 y);
+int D_max(int a, int b);
+int D_multiple(int a, int b);
+ivec3 D_multiple(ivec3 x, int b);
+ivec3 D_multiple(ivec3 x, ivec3 y);
+ivec3 D_division(ivec3 x, int y);
+int D_division(int x, int y);
+tri_p changevalue(tri_p tri);
+
+
+txt_coord calCoord(txt_p f, tri_p t);
+ivec4 D_texture2D(sampler2D sampler,txt_coord t); 
+ivec4 cal_color(vec4 color0, vec4 color1, vec4 color2, vec4 color3, int wei_x, int wei_y); 
+ivec3 D_normalize(ivec3 a);
+vec4 col_transfer(ivec4 color); 
+vec4 col_transfer(ivec3 color, int a);   
+vec3 col_transfer(ivec3 color);
+ivec3 D_reflect(ivec3 x, ivec3 y);  
+int D_pow(int a, int b); 
+// r,g,b 0 - 255   a 0 - 100   
+
+uniform ivec3 ambientLightIntensity;
+uniform DirectionalLight sun;
+uniform sampler2D sampler;
+int  wei_1, wei_2, wei_3;
+ivec4 result[80];
+int zbuffer[80];
+int z1, z2, z3;
+int j;
+ivec4 result1, result2, result3;
+int bot , top;
+ivec4 resultbot, resulttop;
 precision highp float;
 precision highp int;
 #define SHADER_NAME MeshPhongMaterial
@@ -192,13 +260,108 @@ vec3 linePlaneIntersect( in vec3 pointOnLine, in vec3 lineDirection, in vec3 poi
 
 void main() {
 	#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
-	vUv = uv * offsetRepeat.zw + offsetRepeat.xy;
+	bot = -512;
+  top = -512;
+  resultbot = ivec4(0 ,0 ,0 ,0);
+  resulttop = ivec4(0 ,0 ,0 ,0);
+  init;
+  for (int i = 0; i < uniformNumber; i+= 3){
+    assign;
+    //changePosition;
+    if ( pixel_on_triangle ){
+        cal_Zbuffer;
+      if ( draw_pixel ){
+        renew_Zbuffer;
+        ivec3 fragNormal = ivec3 ( D_multiple( wei_1 , nor_point[i][0]) + D_multiple(wei_2 , nor_point[i+1][0]) + D_multiple(wei_3 , nor_point[i+2][0])   ,           D_multiple(wei_1 , nor_point[i][1]) + D_multiple(wei_2 , nor_point[i+1][1]) + D_multiple(wei_3 , nor_point[i+2][1]) ,             D_multiple(wei_1 , nor_point[i][2]) + D_multiple(wei_2 , nor_point[i+1][2]) + D_multiple(wei_3 , nor_point[i+2][2])    );
+		  	ivec4 vPosition = ivec4 ( D_multiple(wei_1 , vPositionVary[i][0]) + D_multiple(wei_2 , vPositionVary[i+1][0]) + D_multiple(wei_3 , vPositionVary[i+2][0])   , D_multiple(wei_1 , vPositionVary[i][1]) + D_multiple(wei_2 , vPositionVary[i+1][1]) + D_multiple(wei_3 , vPositionVary[i+2][1]) , D_multiple(wei_1 , vPositionVary[i][2]) + D_multiple(wei_2 , vPositionVary[i+1][2]) + D_multiple(wei_3 , vPositionVary[i+2][2]),  D_multiple(wei_1 , vPositionVary[i][3]) + D_multiple(wei_2 , vPositionVary[i+1][3]) + D_multiple(wei_3 , vPositionVary[i+2][3])    );
+        ivec3 lightDirection = D_normalize(sun.direction - vPosition.xyz);
+        ivec3 normSunDir = D_normalize(sun.direction);
+        ivec3 surfaceNormal = D_normalize(fragNormal);
+        ivec4 texel = D_texture2D(sampler, fragTexCoord);
+
+        int specularLightWeighting = 0;
+        ivec3 eyeDirection = D_normalize(-vPosition.xyz);
+        ivec3 reflectionDirection = D_reflect(-lightDirection, surfaceNormal);
+        specularLightWeighting = D_pow(D_max(D_dot(reflectionDirection, eyeDirection), 0), 16);
+
+        int diffuseLightWeighting = D_max(D_dot(surfaceNormal, sun.direction), 0);
+
+        ivec3 lightIntensity = ambientLightIntensity +
+                D_multiple(sun.specular , specularLightWeighting)  + 
+                D_multiple(sun.diffuse , diffuseLightWeighting);
+		vUv = uv * offsetRepeat.zw + offsetRepeat.xy;
+                
+        if (z0 > top){
+          bot = top;
+          resultbot = resulttop;
+          top = z0;
+          resulttop = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
+        }else{
+          bot = z0;
+          resultbot = ivec4(D_multiple(texel.rgb , lightIntensity), 1);
+        }
+      } 
+    }
+  }
+  gl_FragColor = vec4 ( col_transfer(D_multiple(resulttop.xyz , 900) + D_multiple(resultbot.xyz , 900) ), 1.0 );
+  
+	
 #endif
 	#if defined( USE_LIGHTMAP ) || defined( USE_AOMAP )
-	vUv2 = uv2;
+	init;
+  for (int i = 0; i < uniformNumber; i+= 3){
+    assign;
+    //changePosition;
+    if ( pixel_on_triangle ){
+        cal_Zbuffer;
+      if ( draw_pixel ){
+        renew_Zbuffer;
+		vUv2 = uv2;
+        gl_FragColor = vec4 (col_transfer( colrgb, 100));
+      } 
+    }
+  } 
+}
+	
 #endif
 	#ifdef USE_COLOR
-	vColor.xyz = color.xyz;
+	init;
+  for (int i = 0; i < uniformNumber; i+= 3){
+    assign;
+    //changePosition;
+    if ( pixel_on_triangle ){
+        cal_Zbuffer;
+      if ( draw_pixel ){
+        renew_Zbuffer;
+        ivec3 fragNormal = ivec3 ( D_multiple( wei_1 , nor_point[i][0]) + D_multiple(wei_2 , nor_point[i+1][0]) + D_multiple(wei_3 , nor_point[i+2][0])   ,           D_multiple(wei_1 , nor_point[i][1]) + D_multiple(wei_2 , nor_point[i+1][1]) + D_multiple(wei_3 , nor_point[i+2][1]) ,             D_multiple(wei_1 , nor_point[i][2]) + D_multiple(wei_2 , nor_point[i+1][2]) + D_multiple(wei_3 , nor_point[i+2][2])    );
+		  	ivec4 vPosition = ivec4 ( D_multiple(wei_1 , vPositionVary[i][0]) + D_multiple(wei_2 , vPositionVary[i+1][0]) + D_multiple(wei_3 , vPositionVary[i+2][0])   , D_multiple(wei_1 , vPositionVary[i][1]) + D_multiple(wei_2 , vPositionVary[i+1][1]) + D_multiple(wei_3 , vPositionVary[i+2][1]) , D_multiple(wei_1 , vPositionVary[i][2]) + D_multiple(wei_2 , vPositionVary[i+1][2]) + D_multiple(wei_3 , vPositionVary[i+2][2]),  D_multiple(wei_1 , vPositionVary[i][3]) + D_multiple(wei_2 , vPositionVary[i+1][3]) + D_multiple(wei_3 , vPositionVary[i+2][3])    );
+        ivec3 lightDirection = D_normalize(sun.direction - vPosition.xyz);
+        ivec3 normSunDir = D_normalize(sun.direction);
+        ivec3 surfaceNormal = D_normalize(fragNormal);
+        ivec4 texel0 = D_texture2D(image0, fragTexCoord);
+        ivec4 texel1 = D_texture2D(image1, fragTexCoord);
+
+        int specularLightWeighting = 0;
+        ivec3 eyeDirection = D_normalize(-vPosition.xyz);
+        ivec3 reflectionDirection = D_reflect(-lightDirection, surfaceNormal);
+        specularLightWeighting = D_pow(D_max(D_dot(reflectionDirection, eyeDirection), 0), 16);
+
+        int diffuseLightWeighting = D_max(D_dot(surfaceNormal, sun.direction), 0);
+
+        ivec3 lightIntensity = ambientLightIntensity +
+                D_multiple(sun.specular , specularLightWeighting)  + 
+                D_multiple(sun.diffuse , diffuseLightWeighting);
+                
+		vColor.xyz = color.xyz;
+        gl_FragColor = vec4(col_transfer(D_multiple( D_division (texel0.rgb * texel1.rgb, 255)  , lightIntensity)) , 1.0);
+        //gl_FragColor = col_transfer( texel1);
+
+
+      } 
+    }
+  } 
+}
+	
 #endif
 	
 vec3 objectNormal = vec3( normal );
