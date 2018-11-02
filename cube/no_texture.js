@@ -70,6 +70,8 @@ void main()
       if ( draw_pixel ){
         renew_Zbuffer;
         gl_FragColor = vec4 (col_transfer( colrgb, 100));
+        //gl_FragColor = vec4 (float(mod (tri_point[i][0], 99))/255.0, float(mod (tri_point[i][1], 99))/255.0, float(mod (tri_point[i][2], 99))/255.0, 1.0);
+        //gl_FragColor = vec4 (1.0, 0.0, 0.0, 1.0);
       } 
     }
   } 
@@ -318,6 +320,7 @@ var CubeTest = function(type) {
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
     gl.shaderSource(vertexShader, vertCode);
+    console.log(fragCod1e);
     gl.shaderSource(fragmentShader, fragCod1e);
 
     gl.compileShader(vertexShader);

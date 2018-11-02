@@ -32,7 +32,8 @@ void main()
 {
   gl_FragColor = vec4(fragColor, 1.0);
 }`)
-return `precision mediump float;
+return `
+precision mediump float;
 #define uniformNumber 336
 uniform ivec3 tri_point[333];
 uniform ivec3 tri_color[333];
@@ -89,13 +90,12 @@ void main()
   init;
   for (int i = 0; i < uniformNumber; i+= 3){
     assign;
-    //changePosition;
+    changePosition;
     if ( pixel_on_triangle ){
         cal_Zbuffer;
       if ( draw_pixel ){
         renew_Zbuffer;
         gl_FragColor = vec4 (col_transfer( colrgb, 100));
-        gl_FragColor = vec4(gl_FragCoord.x/255.0, gl_FragCoord.y/255.0, 0.0, 1.0);
       } 
     }
   } 
@@ -283,7 +283,8 @@ tri_p changevalue(tri_p t)
   t.y3 = division( (t.y3 + 1000) * 32, 250);
   t.z3 = division( (t.z3 + 1000) * 32, 250);
   return t;
-}`;
+}
+`;
 
 
 
