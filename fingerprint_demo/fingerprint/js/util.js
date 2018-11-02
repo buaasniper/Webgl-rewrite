@@ -115,7 +115,7 @@ rewrite = function(gl, canvas){
     /*============================demo===================================*/
     //正式使用时候的
     shaderSource = manualChangeShader(shaderSource);
-    //console.log(shaderSource);
+    // console.log(shaderSource);
     gl.my_shaderSource(shaderName,shaderSource);
     //测试时使用的
     // console.log(shaderSource);
@@ -649,6 +649,143 @@ getElementArray = function(count,offset){
       }
     } 
 
+
+     // line 部分   
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 0){
+    
+
+      /*------------------readpixel部分--------------------------------------*/
+      //console.log("before readpixel", performance.now());
+      var testNumber = 1;
+      var start = performance.now();
+      if (testNumber == 1){
+        var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        // var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+        // gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        // var backtexture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
+        // function textureFromPixelArray(gl, dataArray, type, width, height) {
+        //   var texture = gl.createTexture();
+        //   gl.bindTexture(gl.TEXTURE_2D, texture);
+        //   //确保不会翻转
+        //   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataArray);
+        //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        //   return texture;
+        // }
+        var backtexture = textureFromPixelArray(gl, gl.RGBA, canvas.width, canvas.height);
+        function textureFromPixelArray(gl, type, width, height) {
+            var texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            //确保不会翻转
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, gl.canvas);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            return texture;
+          }
+      }
+      var end = performance.now();
+      console.log("read pixel", end - start);
+      /*------------------readpixel部分--------------------------------------*/
+  
+      
+      var tem = [];
+      var coordinates = [];
+      var __VertexPositionAttributeLocation1;
+      
+      // console.log("ProgramDataMap", ProgramDataMap);
+      //attribute 读取阶段
+      for (var i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == "coordinates")
+          coordinates = ProgramDataMap[activeProgramNum].attriData[i].uniformData;          
+      }
+      //console.log("coordinates",coordinates);
+      
+      //这种情况下要考虑mode的样子，先把数据传输进来
+      // console.log("mode",mode);
+      //console.log("coordinates",coordinates);
+      // 我现在先按照test的来画，去判断双draw的部分
+      
+      //这块coordinates出了问题，但是我不确定是不是对的，等会在处理
+  
+      // testNumber = 1;
+      // if (testNumber == 1){
+      if (mode == 3){
+        // tem.length = 0;
+        for (var i = 0; i <  coordinates.length/3 - 1; i++){
+          tem = tem.concat(coordinates[3 * i]);
+          tem = tem.concat(coordinates[3 * i + 1]);
+          tem = tem.concat(coordinates[3 * i + 2]);
+          tem = tem.concat(coordinates[3 * i + 3]);
+          tem = tem.concat(coordinates[3 * i + 4]);
+          tem = tem.concat(coordinates[3 * i + 5]);
+        }
+      }
+      // for (var i = 0; i < 1500;i++)
+      //    tem = tem.concat(0);
+      if (mode == 1){
+        // tem.length = 0;
+        for (var i = 0; i <  coordinates.length/3; i++){
+          tem = tem.concat(coordinates[3 * i]);
+          tem = tem.concat(coordinates[3 * i + 1]);
+          tem = tem.concat(coordinates[3 * i + 2]);
+        }
+         for (var i = 0; i < 1500;i++)
+           tem = tem.concat(0);
+      }
+      
+      //  console.log("coordinates",coordinates);
+      //  console.log("tem",tem);
+      var newData1 = new Varying_data;
+      newData1.shaderName = "line_point";
+      newData1.varyEleNum = 3;
+      // newData1.uniformData.length = 0;
+      newData1.uniformData = tem;
+      // console.log("asaadxasdscdsvsfdbvfdsbgf",newData1.uniformData);
+      for (var i =0; i < newData1.uniformData.length; i++)
+        if (i % 3 != 2)
+          newData1.uniformData[i] = Math.round(newData1.uniformData[i] * 1000);
+        else
+          newData1.uniformData[i] = -1 * Math.round(newData1.uniformData[i] * 1000);
+      ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+      //关于那一条斜线的数据，可以认为处理掉，无所谓的
+      //console.log("ProgramDataMap", ProgramDataMap);
+  
+      //清除上一个的数据
+      //gl.clearColor(0.0, 0.0, 1.0, 1.0);
+      //gl.clear(gl.COLOR_BUFFER_BIT);
+  
+      var canvas_buffer = [-1.0, -1.0, 
+        1.0, -1.0, 
+        -1.0,  1.0, 
+        -1.0,  1.0,
+        1.0, -1.0, 
+        1.0,  1.0]; 
+      var new_vertex_buffer = gl.createBuffer();
+      gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+      gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(canvas_buffer), gl.STATIC_DRAW);
+      __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(activeProgram, 'coordinates');
+      gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+      gl.enableVertexAttribArray(__VertexPositionAttributeLocation1); 
+      gl.my_useProgram(activeProgram);
+      var traingles_vex_loc = gl.my_getUniformLocation(activeProgram, "line_point");
+      gl.my_uniform3iv(traingles_vex_loc, ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+      // console.log("ProgramDataMap[activeProgramNum].varyingData[0].uniformData",ProgramDataMap[activeProgramNum].varyingData[0].uniformData);
+      //console.log("开始draw");
+  
+      // console.log("测试1");
+       gl.clearColor(0, 0, 0, 1.0);
+       gl.enable(gl.DEPTH_TEST);
+       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  
+      gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+      // console.log("画了");
+        
+  
+    }//vetexID == 0
+    
+
     //这是cube camera测试的
     if (ProgramDataMap[activeProgramNum].shaderJsID == 1){
       console.log("begin work");
@@ -773,6 +910,12 @@ getElementArray = function(count,offset){
       // console.log("ProgramDataMap",ProgramDataMap);
       gl.my_drawArrays(gl.TRIANGLES, 0, 6);  
     }
+
+
+    //数据清除
+    ProgramDataMap[activeProgramNum].attriData = [];
+    ProgramDataMap[activeProgramNum].uniformData = [];
+    ProgramDataMap[activeProgramNum].varyingData = [];
 
 
 
