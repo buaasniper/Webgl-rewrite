@@ -911,6 +911,11 @@ getElementArray = function(count,offset){
       gl.my_drawArrays(gl.TRIANGLES, 0, 6);  
     }
 
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 2){
+      console.log("进入2");
+
+    }
+
 
     //数据清除
     ProgramDataMap[activeProgramNum].attriData = [];
@@ -1091,8 +1096,8 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl,canvas);
-  gl = catchShader(gl, canvas);
+  gl = rewrite(gl,canvas);
+  // gl = catchShader(gl, canvas);
   return gl;
 }
 
@@ -1113,8 +1118,8 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //gl = rewrite(gl,canvas);
-  gl = catchShader(gl, canvas);
+  gl = rewrite(gl,canvas);
+  // gl = catchShader(gl, canvas);
   return gl;
 }
 
