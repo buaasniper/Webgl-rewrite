@@ -1029,11 +1029,17 @@ var my_m4 = {
   };
 
   catchShader = function(gl, canvas){
-    gl.my_shaderSource = gl.__proto__.shaderSource;
-    gl.shaderSource = function(shaderName,shaderSource){
-      gl.my_shaderSource(shaderName,shaderSource);
-      console.log("*************************************************************");
-      console.log(shaderSource);
+    // gl.my_shaderSource = gl.__proto__.shaderSource;
+    // gl.shaderSource = function(shaderName,shaderSource){
+    //   gl.my_shaderSource(shaderName,shaderSource);
+    //   console.log("*************************************************************");
+    //   console.log(shaderSource);
+    // }
+    gl.my_activeTexture = gl.__proto__.activeTexture;
+    gl.activeTexture = function(a){
+      gl.my_activeTexture(a);
+      console.log("texture",a);
+
     }
 
     return gl;
@@ -1067,8 +1073,8 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl,canvas);
-  //gl = catchShader(gl, canvas);
+  //gl = rewrite(gl,canvas);
+  gl = catchShader(gl, canvas);
   return gl;
 }
 
@@ -1089,8 +1095,8 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl,canvas);
-  //gl = catchShader(gl, canvas);
+  //gl = rewrite(gl,canvas);
+  gl = catchShader(gl, canvas);
   return gl;
 }
 
