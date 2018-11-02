@@ -1035,12 +1035,30 @@ var my_m4 = {
     //   console.log("*************************************************************");
     //   console.log(shaderSource);
     // }
-    gl.my_activeTexture = gl.__proto__.activeTexture;
-    gl.activeTexture = function(a){
-      gl.my_activeTexture(a);
-      console.log("texture",a);
 
+    // gl.my_activeTexture = gl.__proto__.activeTexture;
+    // gl.activeTexture = function(a){
+    //   gl.my_activeTexture(a);
+    //   console.log("texture",a);
+
+    // }
+    gl.my_useProgram =  gl.__proto__.useProgram;
+    gl.useProgram = function (programName){
+      gl.my_useProgram(programName);
+      console.log("use program");
     }
+
+    gl.my_drawArrays = gl.__proto__.drawArrays;
+    gl.drawArrays = function(mode, first, count){
+      gl.my_drawArrays(mode, first, count);
+      console.log("my_drawArrays",mode);
+    }
+
+    gl.my_drawElements = gl.__proto__.drawElements;
+  gl.drawElements = function(mode, count, type, offset){
+    gl.my_drawElements(mode, count, type, offset);
+    console.log("drawElements", mode);
+  }
 
     return gl;
 
