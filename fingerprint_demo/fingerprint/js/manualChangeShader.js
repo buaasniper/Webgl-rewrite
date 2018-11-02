@@ -5,9 +5,9 @@ manualChangeShader = function(shaderSource){
 //line
 if (shaderSource == `attribute vec3 coordinates;void main(void) { gl_Position = vec4(coordinates, 1.0);}`){
 vetexID = 0;
-return ` attribute vec2 vertPosition;
+return ` attribute vec2 coordinates;
 void main(void) {
-gl_Position =  vec4(vertPosition, 0.0, 1.0);
+gl_Position =  vec4(coordinates, 0.0, 1.0);
 gl_PointSize = 1.0;
 }`;
 }
