@@ -1163,6 +1163,148 @@ getElementArray = function(count,offset){
 
 
 
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 4){
+      // console.log(ProgramDataMap);
+
+      //读取数据
+      //attribute 读取
+      //vec3 vec2
+      var vertPosition = [];
+      var vertTexCoord = [];
+      var vertNormal = [];
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'vertPosition'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              vertPosition.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+            vertPosition.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }
+
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'vertTexCoord'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              vertTexCoord.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+              vertTexCoord.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }
+
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'vertNormal'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              vertNormal.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+              vertNormal.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }
+
+      //uniform 读取
+      var mWorld = [];
+      var mView = [];
+      var mProj = [];
+      for (var i in ProgramDataMap[activeProgramNum].uniformData){
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mWorld') 
+          mWorld = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mView')
+          mView = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'mProj')
+          mProj = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+      }
+
+      //vertex shader 运行
+      var fragTexCoord = [];
+      var gl_Position = [];
+      var fragNormal = [];
+      var vPosition = [];
+      var Mt = [];
+      Mt = my_multiple( my_multiple( mProj, mView ), mWorld );
+      var tt = [];
+      for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+        vPosition[bigI] = my_multiple( mView, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1]) );
+        fragTexCoord[bigI] = vertTexCoord[bigI];
+        // fragNormal[bigI] = [0, 1, 2].map(x => (my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]) ))[x]);
+        tt = my_multiple( mWorld, new Float32Array([vertNormal[bigI][0], vertNormal[bigI][1], vertNormal[bigI][2], 0]));
+        fragNormal[bigI] = [tt[0],tt[1],tt[2]];
+        gl_Position[bigI] = my_multiple( Mt, new Float32Array([vertPosition[bigI][0], vertPosition[bigI][1], vertPosition[bigI][2], 1] ));
+      }
+
+      //放进varying数据
+      var newData1 = new Varying_data;
+      newData1.shaderName = "tri_point";
+      newData1.varyEleNum = 3;
+      newData1.uniformData = handle_gl_Position(gl_Position);
+      ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+
+    
+      var t0 = performance.now();
+      var newData2 = new Varying_data;
+      newData2.shaderName = "text_point";
+      newData2.varyEleNum = 2;
+      newData2.uniformData = fragTexCoord.map(x => x.map(y => Math.floor(y * 1000)))
+      ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+
+      var newData3 = new Varying_data;
+      newData3.shaderName = "nor_point";
+      newData3.varyEleNum = 3;
+      // fragNormal = math.flatten(fragNormal);
+      // console.log(fragNormal);
+      newData3.uniformData = fragNormal.map(x => x.map(y => Math.floor(y * 1000)))
+          ProgramDataMap[activeProgramNum].varyingData.push(newData3);
+
+      var newData4 = new Varying_data;
+      newData4.shaderName = "vPosition";
+      newData4.varyEleNum = 4;
+      newData4.uniformData = fragTexCoord.map(x => x.map(y => Math.floor(y * 1000)))
+      ProgramDataMap[activeProgramNum].varyingData.push(newData4);
+
+      //判断是否是正面
+      var t0 = performance.now();
+      var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length;
+      var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+      var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+      for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+        tem_varying.push([]);
+      for (var i = 0; i < index_num; i += 3){
+        x1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i][0];
+        y1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i][1];
+        z1 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i][2];
+        x2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 1][0];
+        y2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 1][1];
+        z2 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 1][2];
+        x3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 2][0];
+        y3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 2][1];
+        z3 = ProgramDataMap[activeProgramNum].varyingData[0].uniformData[i + 2][2];
+        if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+        for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++){
+          for (k = 0; k < 3; k++)
+          tem_varying[j].push(ProgramDataMap[activeProgramNum].varyingData[j].uniformData[i + k]);
+        }
+        }
+      }
+      for (var idx in tem_varying)
+        tem_varying[idx] = math.flatten(tem_varying[idx]);
+
+    
+
+      devide_draw(0, 255, tem_varying, gl);
+    }
+
+
+
+
 
 
     //数据清除
