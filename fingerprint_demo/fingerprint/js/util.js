@@ -938,9 +938,9 @@ getElementArray = function(count,offset){
           var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
           for (j = 0; j < tem.length / number; j++){
             if (number == 3)
-              vertTexCoord.push( [tem[j], tem[j+1], tem[j+2]]);
+              vertTexCoord.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
             else
-              vertTexCoord.push( [tem[j], tem[j+1]]);
+              vertTexCoord.push( [tem[j*2], tem[j*2+1]]);
           }
         }
       }
