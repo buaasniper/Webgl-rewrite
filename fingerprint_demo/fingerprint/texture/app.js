@@ -167,7 +167,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 45;
+      var count = 49;
       var identityMatrix = new Float32Array(16);
 
       mat4.identity(identityMatrix);

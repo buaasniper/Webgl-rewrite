@@ -39,7 +39,7 @@ gl_PointSize = 1.0;
 
 
 //texture
-if (shaderSource == `precision mediump float;
+if (shaderSource.replace("\n"," ").replace(/\s+/g, '') == `precision mediump float;
 
 attribute vec3 vertPosition;
 attribute vec2 vertTexCoord;
@@ -52,7 +52,7 @@ void main()
 {
   fragTexCoord = vertTexCoord;
   gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
-}`){
+}`.replace("\n"," ").replace(/\s+/g, '')){
 vetexID = 2;
 return ` attribute vec2 vertPosition;
 void main(void) {
@@ -449,7 +449,7 @@ tri_p changevalue(tri_p t)
 
 
 //texture
-if (shaderSource == `precision mediump float;
+if (shaderSource.replace("\n"," ").replace(/\s+/g, '') == `precision mediump float;
 
 varying vec2 fragTexCoord;
 uniform sampler2D sampler;
@@ -457,8 +457,8 @@ uniform sampler2D sampler;
 void main()
 {
   gl_FragColor = texture2D(sampler, fragTexCoord);
-}`){
-return ` precision mediump float;
+}`.replace("\n"," ").replace(/\s+/g, '')){
+return `precision mediump float;
 #define uniformNumber 336
 uniform ivec3 tri_point[333];
 uniform ivec2 text_point[333];
@@ -722,6 +722,7 @@ tri_p changevalue(tri_p t)
   t.z3 = division( (t.z3 + 1000) * 32, 250);
   return t;
 }
+
 `;
 }
 
