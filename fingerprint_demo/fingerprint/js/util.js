@@ -541,6 +541,20 @@ rewrite = function(gl, canvas){
 
 
 
+/*~~~~~~~~~~~~~~~~~~~~~~~texture 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//强制要求是 gl.NEAREST
+gl.my_texParameteri = gl.__proto__.texParameteri;
+gl.my_texParameteri = function(a , b, c){
+  gl.my_texParameteri(a, b, gl.NEAREST); 
+}
+
+
+
+
+
+/*^^^^^^^^^^^^^^^^^^^^^^^^texture 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~ draw 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //attribute的数据将要在这里重复形成最新的数据
 gl.my_drawElements = gl.__proto__.drawElements;
