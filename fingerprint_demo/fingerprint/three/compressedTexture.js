@@ -144,7 +144,7 @@ This makes use of a variety of different webgl compressed texture extensions
         this.renderer.setClearColor('#050505');
         this.renderer.setPixelRatio(1);
         this.renderer.setSize(canvas.width, canvas.height);
-        this.counter = 0;
+        this.counter = 9;
         animate = (function(_this) {
           return function() {
             var frame, i, len, mesh, ref, time;

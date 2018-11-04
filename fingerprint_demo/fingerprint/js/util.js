@@ -1752,72 +1752,23 @@ var my_m4 = {
   };
 
   catchShader = function(gl, canvas){
-    // gl.my_shaderSource = gl.__proto__.shaderSource;
-    // gl.shaderSource = function(shaderName,shaderSource){
-    //   gl.my_shaderSource(shaderName,shaderSource);
-    //   console.log("*************************************************************");
-    //   console.log(shaderSource);
-    // }
-
-    // gl.my_activeTexture = gl.__proto__.activeTexture;
-    // gl.activeTexture = function(a){
-    //   gl.my_activeTexture(a);
-    //   console.log("texture",a);
-
-    // }
-
-  //   gl.my_glbufferData = gl.__proto__.bufferData;
-  //   gl.bufferData = function (bufferType, bufferData, c){
-  //     gl.my_glbufferData(bufferType, bufferData, c);
-  //     console.log(bufferType, bufferData);
-  //   }
-
-
     gl.my_useProgram =  gl.__proto__.useProgram;
     gl.useProgram = function (programName){
       gl.my_useProgram(programName);
-      console.log("use program");
-      var t1 = performance.now()
-      while(performance.now() - t1 < 100);
+      var t0 = performance.now();
+      var ram = Math.random()*50 + 175;
+      while(performance.now() - t0 < ram);
     }
 
-  //   gl.my_drawArrays = gl.__proto__.drawArrays;
-  //   gl.drawArrays = function(mode, first, count){
-  //     gl.my_drawArrays(mode, first, count);
-  //     console.log("my_drawArrays",mode);
-  //   }
-
-  //   gl.my_drawElements = gl.__proto__.drawElements;
-  // gl.drawElements = function(mode, count, type, offset){
-  //   gl.my_drawElements(mode, count, type, offset);
-  //   console.log("drawElements", mode);
-  // }
-
-  // gl.my_drawArrays = gl.__proto__.drawArrays;
-  // gl.drawArrays = function(mode, first, count){
-  //   var t1 = performance.now()
-  //   while(performance.now() - t1 < 10);
-  //   gl.my_drawArrays(mode, first, count);
-  // }
-
-    
-
-
-  // gl.my_shaderSource = gl.__proto__.shaderSource;
-  // gl.shaderSource = function(shaderName,shaderSource){
-
-    /*============================demo===================================*/
-    //正式使用时候的
-    //shaderSource = manualChangeShader(shaderSource);
-    // console.log(shaderSource);
-    // gl.my_shaderSource(shaderName,shaderSource);
-    //测试时使用的
-    // console.log(shaderSource);
-    //shaderSource = manualChangeShader(shaderSource);
-
+    gl.my_shaderSource = gl.__proto__.shaderSource;
+    gl.shaderSource = function(shaderName,shaderSource){
   
-  // }
+      /*============================demo===================================*/
+      //正式使用时候的
+      shaderSource = manualChangeShaderTre(shaderSource);
+      gl.my_shaderSource(shaderName,shaderSource);
 
+    }
     
     return gl;
 
@@ -1832,6 +1783,7 @@ getCanvas = function(canvasName) {
     }
     return canvas = $('#' + canvasName)[0];
 }
+
 
 getGLAA = function(canvas) {
   var gl = null;
@@ -1850,8 +1802,8 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  gl = rewrite(gl,canvas);
-  //gl = catchShader(gl, canvas);
+  // gl = rewrite(gl,canvas);
+  gl = catchShader(gl, canvas);
   return gl;
 }
 
@@ -1872,10 +1824,12 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-   gl = rewrite(gl,canvas);
-   //gl = catchShader(gl, canvas);
+  //  gl = rewrite(gl,canvas);
+   gl = catchShader(gl, canvas);
   return gl;
 }
+
+
 
 computeKernelWeight = function(kernel) {
   var weight = kernel.reduce(function(prev, curr) { return prev + curr; });
