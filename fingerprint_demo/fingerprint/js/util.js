@@ -1765,11 +1765,21 @@ var my_m4 = {
     //   console.log("texture",a);
 
     // }
-  //   gl.my_useProgram =  gl.__proto__.useProgram;
-  //   gl.useProgram = function (programName){
-  //     gl.my_useProgram(programName);
-  //     console.log("use program");
+
+  //   gl.my_glbufferData = gl.__proto__.bufferData;
+  //   gl.bufferData = function (bufferType, bufferData, c){
+  //     gl.my_glbufferData(bufferType, bufferData, c);
+  //     console.log(bufferType, bufferData);
   //   }
+
+
+    gl.my_useProgram =  gl.__proto__.useProgram;
+    gl.useProgram = function (programName){
+      gl.my_useProgram(programName);
+      console.log("use program");
+      var t1 = performance.now()
+      while(performance.now() - t1 < 100);
+    }
 
   //   gl.my_drawArrays = gl.__proto__.drawArrays;
   //   gl.drawArrays = function(mode, first, count){
@@ -1782,20 +1792,31 @@ var my_m4 = {
   //   gl.my_drawElements(mode, count, type, offset);
   //   console.log("drawElements", mode);
   // }
-  gl.my_shaderSource = gl.__proto__.shaderSource;
-  gl.shaderSource = function(shaderName,shaderSource){
+
+  // gl.my_drawArrays = gl.__proto__.drawArrays;
+  // gl.drawArrays = function(mode, first, count){
+  //   var t1 = performance.now()
+  //   while(performance.now() - t1 < 10);
+  //   gl.my_drawArrays(mode, first, count);
+  // }
+
+    
+
+
+  // gl.my_shaderSource = gl.__proto__.shaderSource;
+  // gl.shaderSource = function(shaderName,shaderSource){
 
     /*============================demo===================================*/
     //正式使用时候的
     //shaderSource = manualChangeShader(shaderSource);
-    console.log(shaderSource);
-    gl.my_shaderSource(shaderName,shaderSource);
+    // console.log(shaderSource);
+    // gl.my_shaderSource(shaderName,shaderSource);
     //测试时使用的
     // console.log(shaderSource);
     //shaderSource = manualChangeShader(shaderSource);
 
   
-  }
+  // }
 
     
     return gl;
@@ -1817,7 +1838,7 @@ getGLAA = function(canvas) {
   for (var i = 0; i < 4; ++i) {
     gl = canvas.getContext(
         [ "webgl", "experimental-webgl", "moz-webgl", "webkit-3d" ][i], {
-          antialias : true,
+          antialias : false,
           preserveDrawingBuffer : true,
           willReadFrequently : false,
           depth: true

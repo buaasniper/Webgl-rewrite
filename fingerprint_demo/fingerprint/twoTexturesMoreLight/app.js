@@ -217,7 +217,7 @@ var TwoTexturesMoreLightTest = function(vertices, indices, texCoords, normals, t
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 45;
+      var count = 54;
       var ven, ren;
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);

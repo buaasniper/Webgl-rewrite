@@ -7,7 +7,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
     this.canvas = null;
     this.cb = null;
     this.level = null;
-    this.numChildren = 8;
+    this.numChildren = 2;
     this.children = [];
     this.IDs = sender.getIDs(this.numChildren);
     this.numChildrenRun = 0;
@@ -199,7 +199,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
                 var angle = 0;
-                var count = 45;
+                var count = 49;
                 var ven, ren;
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
@@ -252,18 +252,18 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                         self.childLoaded();
                         self.children.push(new RunTransparent(vsText, fsText, 9, 1, self));
                         self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 10, 2, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 11, 3, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 50, 4, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 79, 5, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 80, 6, self));
-                        self.childLoaded();
-                        self.children.push(new RunTransparent(vsText, fsText, 81, 7, self));
-                        self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 10, 2, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 11, 3, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 50, 4, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 79, 5, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 80, 6, self));
+                        // self.childLoaded();
+                        // self.children.push(new RunTransparent(vsText, fsText, 81, 7, self));
+                        // self.childLoaded();
                     }
                 }, self);
             }

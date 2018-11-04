@@ -7,7 +7,7 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
   this.canvas = null;
   this.cb = null;
   this.level = null;
-  this.numChildren = 3;
+  this.numChildren = 1;
   this.children = [];
   this.IDs = sender.getIDs(this.numChildren);
 
@@ -202,10 +202,10 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 49;
+      var count = 50;
       var end = 51;
       if (ID == 2) {
-        count = 98;
+        count = 99;
         end = 100;
       }
       var ven, ren;
