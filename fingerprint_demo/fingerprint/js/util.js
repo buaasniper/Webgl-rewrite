@@ -559,7 +559,6 @@ gl.my_texParameteri = function(a , b, c){
 //attribute的数据将要在这里重复形成最新的数据
 gl.my_drawElements = gl.__proto__.drawElements;
 gl.drawElements = function(mode, count, type, offset){
-  
   var elementArray = [];
   var activeProgram;
   var activeProgramNum;
@@ -619,6 +618,34 @@ getElementArray = function(count,offset){
   var varyingmap = [];
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(mode, first, count){
+    console.log("begin wasm part");
+  //     var instance = matrixCalculator.instance;
+  // var imports = matrixCalculator.imports;
+
+  var mat1 = [];
+  for (var i = 0;i < 65536;++ i) mat1.push(i/10.0);
+  var mat2 = [];
+  for (var i = 0;i < 30;++ i) mat2.push(i);
+
+  matrixCalculator.loadMatrix(0, mat1);
+  matrixCalculator.loadMatrix(1, mat2);
+
+  var opMatrix = [];
+  for (var i = 0;i < 16;++ i) opMatrix.push(i/32.0);
+
+  var t0 = performance.now();
+  var resLength = matrixCalculator.doMatMul(0, opMatrix);
+
+  var t1 = performance.now();
+  console.log('time in ms: ', t1 - t0);
+  console.log('res', matrixCalculator.res);
+
+  var opMatrix = [];
+  for (var i = 0;i < 9;++ i) opMatrix.push(i);
+  var resLength = matrixCalculator.doMatMul(1, opMatrix);
+  console.log('res', matrixCalculator.res);
+
+
     //var startdraw = performance.now();
     //console.log("in drawArrays", performance.now());
     var activeProgram;
@@ -1802,8 +1829,8 @@ getGLAA = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  // gl = rewrite(gl,canvas);
-  gl = catchShader(gl, canvas);
+  gl = rewrite(gl,canvas);
+  // gl = catchShader(gl, canvas);
   return gl;
 }
 
@@ -1824,8 +1851,8 @@ getGL = function(canvas) {
   if (!gl) {
     alert('Your browser does not support WebGL');
   }
-  //  gl = rewrite(gl,canvas);
-   gl = catchShader(gl, canvas);
+   gl = rewrite(gl,canvas);
+  //  gl = catchShader(gl, canvas);
   return gl;
 }
 
