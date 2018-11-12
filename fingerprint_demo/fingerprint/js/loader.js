@@ -226,7 +226,7 @@ var startfunc = function() {
       // this.testList.push(new LineTest('normal'));
       // this.testList.push(new LineTest('aa'));
       // this.testList.push(new TextureTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.texture));
-      // this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
+      this.testList.push(new TextureTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.texture));
       // this.testList.push(new SimpleLightTest(this.susanVertices, this.susanIndices, this.susanTexCoords, this.susanNormals, this.texture));
       // this.testList.push(new SimpleLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
       // this.testList.push(new MoreLightTest(this.combinedVertices, this.combinedIndices, this.combinedTexCoords, this.combinedNormals, this.texture));
@@ -236,7 +236,7 @@ var startfunc = function() {
       //  this.testList.push(new ClippingTest());
       // this.testList.push(new BubbleTest());
       //  this.testList.push(new CompressedTextureTest());
-      this.testList.push(new ShadowTest());
+      // this.testList.push(new ShadowTest());
       this.asyncTests = [];
       //language detection is done by another js file
       //this.asyncTests.push(new LanguageDector());

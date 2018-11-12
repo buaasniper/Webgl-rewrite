@@ -971,7 +971,7 @@ getElementArray = function(count,offset){
 
     if (ProgramDataMap[activeProgramNum].shaderJsID == 2){
       // console.log(ProgramDataMap);
-
+      console.log("进入");
       //读取数据
       //attribute 读取
       //vec3 vec2
@@ -1451,10 +1451,11 @@ getElementArray = function(count,offset){
 
     /*-------------------------draw array--------------------------------------*/
   
-    var uniform_number  = 75;
+    // var uniform_number  = 75;
+    var uniform_number  = 0;
   
     function devide_draw(left, right, tem_varying, gl){
-    
+      console.log("version 1");
       var tem = [];
       var left_varying = [];
       var right_varying = [];

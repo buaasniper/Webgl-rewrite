@@ -167,7 +167,7 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 30;
+      var count = 49;
       var identityMatrix = new Float32Array(16);
 
       mat4.identity(identityMatrix);
@@ -201,15 +201,15 @@ var TextureTest = function(vertices, indices, texCoords, texture) {
         //console.log(" 总共时间===================== ", ttt1 - ttt0);
         ttt0 = ttt1;
         if (count == 50) {
-          console.log("fps", 1000/ (testarr / 15), num);
-          console.log(timearr);
+          // console.log("fps", 1000/ (testarr / 15), num);
+          // console.log(timearr);
           var sum = function(x,y){ return x+y;};　　//求和函数
           var square = function(x){ return x*x;};　　//数组中每个元素求它的平方
           var mean = timearr.reduce(sum)/timearr.length;
           var deviations = timearr.map(function(x){return x-mean;});
           var stddev = Math.sqrt(deviations.map(square).reduce(sum)/(timearr.length-1));
-          console.log("mean", mean);
-          console.log("stddev", stddev);
+          // console.log("mean", mean);
+          // console.log("stddev", stddev);
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();
