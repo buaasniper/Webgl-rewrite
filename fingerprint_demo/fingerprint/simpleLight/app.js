@@ -197,10 +197,14 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
       // Main render loop
       //
       var angle = 0;
-      var count = 49;
+      var count = 20;
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       gl.enable(gl.DEPTH_TEST);
+      ttt0 = performance.now();
+      var testarr = 0;
+      var num = 0;
+      var timearr = [];
       var loop = function() {
         var frame = requestAnimationFrame(loop);
         angle = count++ / 20;
@@ -216,8 +220,25 @@ var SimpleLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.activeTexture(gl.TEXTURE0);
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
+        ttt1 = performance.now();
+        if (count > 35){
+          testarr += (ttt1 - ttt0);
+          timearr.push(ttt1 - ttt0);
+          num++;
+        }
+        //console.log(testarr);
+        //console.log(" 总共时间===================== ", ttt1 - ttt0);
+        ttt0 = ttt1;
         if (count == 50) {
+          console.log("fps", 1000/ (testarr / 20), num);
+          console.log(timearr);
+          var sum = function(x,y){ return x+y;};　　//求和函数
+          var square = function(x){ return x*x;};　　//数组中每个元素求它的平方
+          var mean = timearr.reduce(sum)/timearr.length;
+          var deviations = timearr.map(function(x){return x-mean;});
+          var stddev = Math.sqrt(deviations.map(square).reduce(sum)/(timearr.length-1));
+          console.log("mean", mean);
+          console.log("stddev", stddev);
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[childNumber]);
           parent.childComplete();

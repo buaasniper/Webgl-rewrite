@@ -20,7 +20,7 @@ and how they are implemented on the GPU
       this.cb = cb;
       try {
         gl = new WebGLFramework(canvas, {
-          antialias: false,
+          antialias: true,
           preserveDrawingBuffer: true,
           willReadFrequently: false,
           depth: true

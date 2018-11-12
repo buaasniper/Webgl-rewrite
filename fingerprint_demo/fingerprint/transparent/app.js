@@ -199,7 +199,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
                 var angle = 0;
-                var count = 49;
+                var count = 0;
                 var ven, ren;
                 var identityMatrix = new Float32Array(16);
                 mat4.identity(identityMatrix);
@@ -223,7 +223,7 @@ var TransparentTest = function (vertices, indices, texCoords, normals, texture) 
                     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
                     //ctx.fillText("Hello world", 9, 50);
 
-                    if(count == 50){
+                    if(count == 30){
                         cancelAnimationFrame(frame);
                         sender.getData(gl, parent.IDs[childNumber]);
                         parent.childComplete();

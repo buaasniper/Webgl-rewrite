@@ -202,8 +202,8 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       var angle = 0;
-      var count = 50;
-      var end = 51;
+      var count = 20;
+      var end = 50;
       if (ID == 2) {
         count = 99;
         end = 100;
@@ -212,6 +212,9 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
       var identityMatrix = new Float32Array(16);
       mat4.identity(identityMatrix);
       gl.enable(gl.DEPTH_TEST);
+      
+      var testarr = 0;
+      var num = 0;
       var loop = function() {
         var frame = requestAnimationFrame(loop);
         angle = count++ / 20;
@@ -224,9 +227,20 @@ var MoreLightTest = function(vertices, indices, texCoords, normals, texture) {
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.activeTexture(gl.TEXTURE0);
+        ttt0 = performance.now();
+        // console.log("必须的时间", performance.now() - ttt0)
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
+        ttt1 = performance.now();
+        // console.log(" 总共时间===================== ", ttt1 - ttt0);
+        if (count > 30){
+          testarr += (ttt1 - ttt0);
+          num++;
+        }
+        // console.log(testarr);
+        
+        // ttt0 = ttt1;
         if (count == end) {
+          console.log("fps", 1000/ (testarr / 20), num);
           cancelAnimationFrame(frame);
           sender.getData(gl, parent.IDs[ID]);
           parent.childComplete();
