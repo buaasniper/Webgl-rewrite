@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Unigl",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "For Google Body",
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "options_page": "options.html",
   "background": {
