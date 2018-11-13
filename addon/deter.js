@@ -23,25 +23,95 @@ var gl = document.getElementsByTagName("canvas")[1].getContext("webgl");
 
 gl.my_shaderSource = gl.__proto__.shaderSource;
 gl.shaderSource = function(shaderName,shaderSource){
-    console.log("version 10"); 
-    console.log(shaderSource);
+    console.log("version 16"); 
+    
     shaderSource = manualChangeShader(shaderSource);
+    console.log(shaderSource);
     gl.my_shaderSource(shaderName,shaderSource);
 }
 
 var manualChangeShader = function(shaderSource){
-    if ( shaderSource.replace("\n"," ").replace(/\s+/g, '') != 'a')
-        console.log("test");
+    if ( shaderSource.replace("\\n"," ").replace(/\\s+/g, '') ==   
+    \`  
+    #ifdef GL_ES
+    precision mediump float;
+    #endif
+    
+    uniform sampler2D u_texture;
+    uniform float u_opacity;
+    uniform vec4  u_slice1;
+    uniform vec4  u_slice2;
+    uniform vec4  u_slice3;
+    
+    varying vec3 v_vertex;
+    varying vec3 v_normal;
+    varying vec2 v_texcoord;
+    
+    const vec3 kLightVector = vec3(0.3, 0.3, -0.9);
+    const vec3 kHalfVector = vec3(0.154, 0.154, -0.974);
+    
+    void main(void) {
+      vec4 vertex = vec4(v_vertex, 1.0);
+      if (dot(vertex, u_slice1) > 0.0 &&
+          dot(vertex, u_slice2) > 0.0 &&
+          dot(vertex, u_slice3) > 0.0) discard;
+        
+      vec3 normal = normalize(v_normal);
+      // half-Lambert lighting.
+      float light = 0.5 + 0.5*dot(normal, kLightVector);
+      float diffuse = light*u_opacity;
+      // Specular with fake fresnel effect.
+      float specular = max(0.0, dot(normal, kHalfVector));
+      specular *= 0.7 + 0.3*normal.z;
+      specular *= specular;
+      specular *= u_opacity;
+      vec3 fetch = texture2D(u_texture, v_texcoord).rgb;
+      gl_FragData[0] = vec4(diffuse*fetch + vec3(specular), u_opacity);
+    }\`.replace("\\n"," ").replace(/\\s+/g, '')    ){
+        shaderSource = \`  
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        
+        uniform sampler2D u_texture;
+        uniform float u_opacity;
+        uniform vec4  u_slice1;
+        uniform vec4  u_slice2;
+        uniform vec4  u_slice3;
+        
+        varying vec3 v_vertex;
+        varying vec3 v_normal;
+        varying vec2 v_texcoord;
+        
+        const vec3 kLightVector = vec3(0.3, 0.3, -0.9);
+        const vec3 kHalfVector = vec3(0.154, 0.154, -0.974);
+        
+        void main(void) {
+          vec4 vertex = vec4(v_vertex, 1.0);
+          if (dot(vertex, u_slice1) > 0.0 &&
+              dot(vertex, u_slice2) > 0.0 &&
+              dot(vertex, u_slice3) > 0.0) discard;
+            
+          vec3 normal = normalize(v_normal);
+          // half-Lambert lighting.
+          float light = 0.5 + 0.5*dot(normal, kLightVector);
+          float diffuse = light*u_opacity;
+          // Specular with fake fresnel effect.
+          float specular = max(0.0, dot(normal, kHalfVector));
+          specular *= 0.7 + 0.3*normal.z;
+          specular *= specular;
+          specular *= u_opacity;
+          vec3 fetch = texture2D(u_texture, v_texcoord).rgb;
+          gl_FragColor = vec4(diffuse*fetch + vec3(specular), u_opacity);
+        }\`;
+        console.log("finish change!!!!!!!!!!!!");
 
+    }
 
-
+        
     return shaderSource;
 
 }
-
-
-
-
 
 
 
