@@ -1265,14 +1265,8 @@ getElementArray = function(count,offset){
         tem_varying[idx] = math.flatten(tem_varying[idx]);
 
   
-      // var tt0;
-      // tt0 = performance.now();
-      // console.log("判断正面", tt0 - tt1);
-      devide_draw(0, 255, tem_varying, gl);
 
-      // var tt00;
-      // tt00 = performance.now();
-      // console.log("画", tt00 - tt0);
+      devide_draw(0, 255, tem_varying, gl);
     }
 
 

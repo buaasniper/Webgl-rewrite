@@ -155,7 +155,14 @@ manualChangeShader = function(shaderSource){
         return `#ifdef GL_ES
         precision mediump float;
         #endif
-        
+        void main(void) {
+         
+          gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+        `
+    }
+
+    /* 
         uniform sampler2D u_texture;
         uniform float u_opacity;
         uniform vec4  u_slice1;
@@ -168,9 +175,8 @@ manualChangeShader = function(shaderSource){
         
         const vec3 kLightVector = vec3(0.3, 0.3, -0.9);
         const vec3 kHalfVector = vec3(0.154, 0.154, -0.974);
-        
-        void main(void) {
-          vec4 vertex = vec4(v_vertex, 1.0);
+
+         vec4 vertex = vec4(v_vertex, 1.0);
           if (dot(vertex, u_slice1) > 0.0 &&
               dot(vertex, u_slice2) > 0.0 &&
               dot(vertex, u_slice3) > 0.0) discard;
@@ -185,10 +191,7 @@ manualChangeShader = function(shaderSource){
           specular *= specular;
           specular *= u_opacity;
           vec3 fetch = texture2D(u_texture, v_texcoord).rgb;
-          gl_FragData[0] = vec4(diffuse*fetch + vec3(specular), 1.0);
-        }
-        `
-    }
+    */
 
 //program 2======================================================================== 
     if (shaderSource.replace("\n"," ").replace(/\s+/g, '') == `uniform mat4 u_mvp;
@@ -221,7 +224,6 @@ manualChangeShader = function(shaderSource){
         void main(void) {
         gl_Position =  vec4(coordinates, 0.0, 1.0);
         gl_PointSize = 1.0;
-        }_Position = u_mvp * u_effect * vec4(a_position, 1.0);
         }
         `;
     }
@@ -248,20 +250,8 @@ manualChangeShader = function(shaderSource){
     
     `.replace("\n"," ").replace(/\s+/g, '')){
         console.log("I am in the shader B");
-        return `precision highp float;
-        varying vec4 v_color;
-        varying vec3 v_vertex;
-        
-        uniform vec4  u_slice1;
-        uniform vec4  u_slice2;
-        uniform vec4  u_slice3;
-        
+        return `precision highp float;    
         void main() {
-          vec4 vertex = vec4(v_vertex, 1.0);
-          if (dot(vertex, u_slice1) > 0.0 &&
-              dot(vertex, u_slice2) > 0.0 &&
-              dot(vertex, u_slice3) > 0.0) discard;
-        
           gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }`;
     }
@@ -357,13 +347,7 @@ manualChangeShader = function(shaderSource){
         return `#ifdef GL_ES
         precision mediump float;
         #endif
-        
-        uniform sampler2D u_texture;
-        uniform vec4 u_color;
-        varying vec2 v_texcoord;
-        
         void main() {
-          vec4 fetch = texture2D(u_texture, v_texcoord);
           gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
         `;
@@ -476,6 +460,8 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
       ProgramDataMap[i].activeFlag = 0;
   }
 
+
+  
   /*^^^^^^^^^^^^program 部分 和 shader 部分 ^^^^^^^^^^^^^^^^^^^^^^^^*/
 
   /*~~~~~~~~~~~~~~~~~~~~ buffer 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -799,25 +785,27 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
   /*------------gl.uniformXX和gl.uniformMatrix4XX------开头-------------*/
   //需要考虑重复赋值的情况
   var AddUniformMap = function(uniformLoc, uniformData, type, size){
-    var newUniform = new Uniform_data;
-    var newUniformLoc = new Uniform_loc;
-    newUniformLoc = getUniformLoc(uniformLoc);
-    newUniform.programName = newUniformLoc.programName;
-    newUniform.shaderName = newUniformLoc.shaderName;
-    for (var i = 0; i < UniformDataMap.length; i++){
-    if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
-      UniformDataMap[i].uniformNum = size;
-      UniformDataMap[i].uniformType = type;
-      UniformDataMap[i].uniformData = uniformData;
-      UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
-      return;
+    if (uniformLoc != undefined){
+      var newUniform = new Uniform_data;
+      var newUniformLoc = new Uniform_loc;
+      newUniformLoc = getUniformLoc(uniformLoc);
+      newUniform.programName = newUniformLoc.programName;
+      newUniform.shaderName = newUniformLoc.shaderName;
+      for (var i = 0; i < UniformDataMap.length; i++){
+      if ((newUniform.programName == UniformDataMap[i].programName) && (newUniform.shaderName == UniformDataMap[i].shaderName)){
+        UniformDataMap[i].uniformNum = size;
+        UniformDataMap[i].uniformType = type;
+        UniformDataMap[i].uniformData = uniformData;
+        UniformDataMap[i].uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+        return;
+      }
+      }
+      newUniform.uniformNum = size;
+      newUniform.uniformType = type;
+      newUniform.uniformData = uniformData;
+      newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
+      UniformDataMap.push(newUniform);
     }
-    }
-    newUniform.uniformNum = size;
-    newUniform.uniformType = type;
-    newUniform.uniformData = uniformData;
-    newUniform.uniformActive = 1;   // 这个是在后面和shader互动的时候使用的
-    UniformDataMap.push(newUniform);
   }
   
   var getUniformLoc = function(randomNumber){
@@ -842,6 +830,9 @@ gl.my_texParameteri = function(a , b, c){
 }
 
 
+
+
+
 /*^^^^^^^^^^^^^^^^^^^^^^^^texture 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 var tt5;
 
@@ -849,6 +840,7 @@ var tt5;
 //attribute的数据将要在这里重复形成最新的数据
 gl.my_drawElements = gl.__proto__.drawElements;
 gl.drawElements = function(mode, count, type, offset){
+  console.log("我要开始画了");
   tt5 = performance.now();
   var elementArray = [];
   var activeProgram;
@@ -896,6 +888,522 @@ getElementArray = function(count,offset){
       elementArray = BufferDataMap[i].bufferData;
   return elementArray.slice(offset, offset + count);
 }
+
+
+/*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+//mode
+  //gl.POINTS 0
+  //gl.LINES 1
+  //gl.LINE_LOOP 2
+  //gl.LINE_STRIP 3
+  //gl.TRIANGLES 4
+  var varyingmap = [];
+  gl.my_drawArrays = gl.__proto__.drawArrays;
+  gl.drawArrays = function(mode, first, count){
+    var activeProgram;
+    var activeProgramNum;
+    activeProgram = getactiveProgram();
+    activeProgramNum = getactiveProgramNum();
+
+    if (ProgramDataMap[activeProgramNum].attriData.length == 0){
+      for (var i = 0; i < AttriDataMap.length; i++)
+        if( AttriDataMap[i].programName == activeProgram){
+          var newData = new Attri_data;
+          newData.programName = AttriDataMap[i].programName;
+          newData.shaderName = AttriDataMap[i].shaderName;
+          newData.attriEleNum = AttriDataMap[i].attriEleNum;
+          newData.uniformData = [];
+          // console.log("start",newData.attriEleNum * first);
+          // console.log("end",newData.attriEleNum * (first + count));
+          //在这里面添加first和count
+          for(var j = newData.attriEleNum * first; j < newData.attriEleNum * (first + count); j++)
+            newData.uniformData = newData.uniformData.concat(AttriDataMap[i].uniformData[j]);
+          ProgramDataMap[activeProgramNum].attriData.push(newData);
+        }
+
+    }
+
+    for(var i = 0; i < UniformDataMap.length; i++){
+      if (UniformDataMap[i].programName == activeProgram){
+        var newData = new Uniform_data;
+        newData.programName = UniformDataMap[i].programName;
+        newData.shaderName = UniformDataMap[i].shaderName;
+        newData.uniformNum = UniformDataMap[i].uniformNum;
+        newData.uniformType = UniformDataMap[i].uniformType;
+        newData.uniformActive = UniformDataMap[i].uniformActive;
+        newData.uniformData = [];
+        for (var idx in UniformDataMap[i].uniformData)
+          newData.uniformData.push(UniformDataMap[i].uniformData[idx]);
+        ProgramDataMap[activeProgramNum].uniformData.push(newData);
+      }
+    } 
+
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 1){
+      //读取数据
+      //attribute 读取
+      //vec3 vec2
+      //一维数据变二维数据
+      var a_position = [];
+      var a_texcoord = [];
+      var a_normal = [];
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'a_position'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              a_position.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+              a_position.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }
+
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'a_texcoord'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              a_texcoord.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+              a_texcoord.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }
+
+      for (i = 0; i < ProgramDataMap[activeProgramNum].attriData.length; i++){
+        if (ProgramDataMap[activeProgramNum].attriData[i].shaderName == 'a_normal'){
+          var number = ProgramDataMap[activeProgramNum].attriData[i].attriEleNum;
+          var tem =  ProgramDataMap[activeProgramNum].attriData[i].uniformData;
+          for (j = 0; j < tem.length / number; j++){
+            if (number == 3)
+              a_normal.push( [tem[j*3], tem[j*3+1], tem[j*3+2]]);
+            else
+              a_normal.push( [tem[j*2], tem[j*2+1]]);
+          }
+        }
+      }    
+
+      //uniform 读取
+      var u_mvp = [];
+      var u_effect = [];
+      for (var i in ProgramDataMap[activeProgramNum].uniformData){
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'u_mvp') 
+          u_mvp = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+        if (ProgramDataMap[activeProgramNum].uniformData[i].shaderName == 'u_effect')
+          u_effect = ProgramDataMap[activeProgramNum].uniformData[i].uniformData;
+      }
+
+      //vertex shader 运行
+      var v_texcoord = [];
+      var gl_Position = [];
+      var v_normal = [];
+      var v_vertex = [];
+      var Mt = [];
+      Mt = my_multiple( u_mvp, u_effect );
+      var tt = [];
+      v_texcoord = a_texcoord;
+      v_vertex = a_position;
+      for (var bigI = 0,  ll = ProgramDataMap[activeProgramNum].attriData[0].uniformData.length / 3 ;bigI <  ll; ++bigI ) { 
+        tt = my_multiple( Mt, new Float32Array([a_normal[bigI][0], a_normal[bigI][1], a_normal[bigI][2], 0]));
+        v_normal[bigI] = [tt[0],tt[1],tt[2]];
+        gl_Position[bigI] = my_multiple( Mt, new Float32Array([a_position[bigI][0], a_position[bigI][1], a_position[bigI][2], 1] ));
+      }
+
+       //放进varying数据
+       var newData1 = new Varying_data;
+       newData1.shaderName = "tri_point";
+       newData1.varyEleNum = 3;
+       newData1.uniformData = handle_gl_Position(gl_Position);
+       ProgramDataMap[activeProgramNum].varyingData.push(newData1);
+ 
+     
+       var t0 = performance.now();
+       var newData2 = new Varying_data;
+       newData2.shaderName = "text_point";
+       newData2.varyEleNum = 2;
+       newData2.uniformData = v_texcoord.map(x => x.map(y => Math.floor(y * 1000)))
+       ProgramDataMap[activeProgramNum].varyingData.push(newData2);
+  
+       var newData3 = new Varying_data;
+       newData3.shaderName = "nor_point";
+       newData3.varyEleNum = 3;
+       newData3.uniformData = v_normal.map(x => x.map(y => Math.floor(y * 1000)))
+           ProgramDataMap[activeProgramNum].varyingData.push(newData3);
+ 
+       var newData4 = new Varying_data;
+       newData4.shaderName = "vPosition";
+       newData4.varyEleNum = 3;
+       newData4.uniformData = v_vertex.map(x => x.map(y => Math.floor(y * 1000)))
+       ProgramDataMap[activeProgramNum].varyingData.push(newData4);
+
+
+        //判断是否是正面
+      var t0 = performance.now();
+      var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length;
+      var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
+      var tem_varying = []; //创建临时的varying二维数组去储存所有的数据
+      for(j = 0; j < ProgramDataMap[activeProgramNum].varyingData.length; j++)
+        tem_varying.push([]);
+      var tem_uniformData = ProgramDataMap[activeProgramNum].varyingData[0].uniformData;
+      for (var i = 0; i < index_num; i += 3){
+        x1 = tem_uniformData[i][0];
+        y1 = tem_uniformData[i][1];
+        z1 = tem_uniformData[i][2];
+        x2 = tem_uniformData[i + 1][0];
+        y2 = tem_uniformData[i + 1][1];
+        z2 = tem_uniformData[i + 1][2];
+        x3 = tem_uniformData[i + 2][0];
+        y3 = tem_uniformData[i + 2][1];
+        z3 = tem_uniformData[i + 2][2];
+        if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+        var t_length = ProgramDataMap[activeProgramNum].varyingData.length;
+        var t_varyingData = ProgramDataMap[activeProgramNum].varyingData;
+          for(j = 0; j < t_length; j++){
+            for (k = 0; k < 3; k++)
+            tem_varying[j].push(t_varyingData[j].uniformData[i + k]);
+          }
+        }
+      }
+      for (var idx in tem_varying)
+        tem_varying[idx] = math.flatten(tem_varying[idx]);
+
+
+      
+      devide_draw(0, 255, tem_varying, gl);
+
+
+
+
+    }//end ID = 1
+
+     //数据清除
+     ProgramDataMap[activeProgramNum].attriData = [];
+     ProgramDataMap[activeProgramNum].uniformData = [];
+     ProgramDataMap[activeProgramNum].varyingData = [];
+ 
+
+  }//drawarray
+
+
+
+
+
+    /*-------------------------draw array--------------------------------------*/
+  
+    // var uniform_number  = 75;
+    var uniform_number  = 0;
+  
+    function devide_draw(left, right, tem_varying, gl){
+      console.log("version 1");
+      var tem = [];
+      var left_varying = [];
+      var right_varying = [];
+      var tri_number = tem_varying[0].length / 9;
+      var mid = Math.floor((left + right) / 2);
+      var left_number = 0;
+      var right_number = 0;
+      var __Program;
+      var activeProgramNum;
+      var __VertexPositionAttributeLocation1;
+      __Program = getactiveProgram();
+      activeProgramNum = getactiveProgramNum();
+      var canvas_left;
+      var canvas_mid;
+      var canvas_right;
+    
+    
+      for (var i = 0; i < tem_varying.length; i++){
+      left_varying.push([]);
+      right_varying.push([]);
+      }
+      for (var i = 0; i < tri_number; i++){
+      if (!((tem_varying[0][i * 9] >= mid) && (tem_varying[0][i * 9 + 3] >= mid) && (tem_varying[0][i * 9 + 6] >= mid))){
+        left_number ++;
+        //后加入同一化的代码
+        for (var j = 0; j < tem_varying.length; j++){
+        for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+          left_varying[j].push(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+        }
+    
+      }   
+      if (!((tem_varying[0][i * 9] <= mid) && (tem_varying[0][i * 9 + 3] <= mid) && (tem_varying[0][i * 9 + 6] <= mid))){
+        right_number ++;
+        //后加入的代码
+        for (var j = 0; j < tem_varying.length; j++){
+        for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+          right_varying[j].push(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+        }     
+      }
+      }
+    
+      if (left_number <= uniform_number){
+      if (left_number > 0){
+    
+        var right_canvas_buffer = [
+        left * 2 / 255 - 1.0,     -1.0, 
+        mid * 2 / 255 - 1.0,      -1.0, 
+        left * 2 / 255 - 1.0,      1.0, 
+        left * 2 / 255 - 1.0,      1.0,
+        mid * 2 / 255 - 1.0,      -1.0, 
+        mid * 2 / 255 - 1.0,       1.0]; 
+        // console.log("left",left, "right", mid);
+    
+        var new_vertex_buffer = gl.createBuffer();
+        gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+        gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+        __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+    
+        gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+        gl.enableVertexAttribArray(__VertexPositionAttributeLocation1); 
+        gl.my_useProgram(__Program);
+        var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+        gl.my_uniform1i(traingles_num_loc, left_number);
+        transUniform(__Program);
+        //要实现自动化的代码
+        var loc_array = [];
+        for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+        loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+        if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+          gl.my_uniform2iv(loc_array[i], left_varying[i]);
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
+          gl.my_uniform3iv(loc_array[i], left_varying[i]);
+        //   console.log("left_varying",i,left_varying[i]);
+        }
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+          gl.my_uniform4iv(loc_array[i], left_varying[i]);
+        else
+          console.log("暂时还没有写这种情况");
+        }
+        //console.log("left");
+        //console.log("left_varying",left_varying);
+        gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      }
+      else{
+      if (mid == right){
+    
+        devide_draw_height(left, right, 0, 255, tem_varying , gl);
+        return;
+      } 
+      devide_draw(left, mid, left_varying, gl);
+      }
+    
+      if (right_number <= uniform_number){
+      if (right_number > 0){
+        var right_canvas_buffer = [
+        mid * 2 / 255 - 1.0, -1.0, 
+        right * 2 / 255 - 1.0, -1.0, 
+        mid * 2 / 255 - 1.0,  1.0, 
+        mid * 2 / 255 - 1.0,  1.0,
+        right * 2 / 255 - 1.0, -1.0, 
+        right * 2 / 255 - 1.0,  1.0]; 
+        // console.log("left",mid, "right", right);
+        var new_vertex_buffer = gl.createBuffer();
+        gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+        gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+        __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+        gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+        gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);   
+        gl.my_useProgram(__Program);
+        var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+        gl.my_uniform1i(traingles_num_loc, right_number);
+        transUniform(__Program);
+        //要实现自动化的代码
+        var loc_array = [];
+        for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+        loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+        if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+          gl.my_uniform2iv(loc_array[i], right_varying[i]);
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
+          gl.my_uniform3iv(loc_array[i], right_varying[i]);
+        //   console.log("right_varying",i,  right_varying[i]);
+        }
+    
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+          gl.my_uniform4iv(loc_array[i], right_varying[i]);
+        else 
+          console.log("暂时还没有写这种情况");
+        }
+    
+        gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      }
+      else{
+      if (mid == left){
+    
+        devide_draw_height(left, right, 0, 255, tem_varying, gl);
+    
+        return;
+      } 
+      devide_draw(mid, right, right_varying, gl);
+      }
+      return;
+    }
+    
+    
+    
+    
+    function devide_draw_height(left, right, bot, top, tem_varying, gl){
+      var canvas_left;
+      var canvas_mid;
+      var canvas_right;
+      var canvas_bot;
+      var canvas_top;
+      var tem = [];
+      var bot_varying = [];
+      var top_varying = [];
+      var tri_number = tem_varying[0].length / 9;
+      var mid = Math.floor((bot + top) / 2);
+      var bot_number = 0;
+      var top_number = 0;
+      var __Program;
+      var activeProgramNum;
+      var __VertexPositionAttributeLocation1;
+      __Program = getactiveProgram();
+      activeProgramNum = getactiveProgramNum();
+    
+    
+      //console.log("中间点", mid);
+      for (var i = 0; i < tem_varying.length; i++){
+      bot_varying.push(tem);
+      top_varying.push(tem);
+      }
+      for (var i = 0; i < tri_number; i++){
+      if (!((tem_varying[0][i * 9 + 1] >= mid) && (tem_varying[0][i * 9 + 4] >= mid) && (tem_varying[0][i * 9 + 7] >= mid))){
+        bot_number ++;
+        //后加入同一化的代码
+        for (var j = 0; j < tem_varying.length; j++){
+        for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+          bot_varying[j] = bot_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+        } 
+      }   
+      if (!((tem_varying[0][i * 9 + 1] <= mid) && (tem_varying[0][i * 9 + 4] <= mid) && (tem_varying[0][i * 9 + 7] <= mid))){
+    
+        top_number ++;
+        //后加入同一化的代码
+        for (var j = 0; j < tem_varying.length; j++){
+        for (var k = 0; k < 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum; k++)
+          top_varying[j] = top_varying[j].concat(tem_varying[j][i * 3 * ProgramDataMap[activeProgramNum].varyingData[j].varyEleNum + k]);
+        }
+      }
+      }
+      if (bot_number <= uniform_number){
+    
+      if (bot_number > 0){
+        var right_canvas_buffer = [
+        left * 2 / 255 - 1.0,   bot * 2 / 255 -1.0, 
+        right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
+        left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0, 
+        left * 2 / 255 - 1.0,    mid * 2 / 255 -1.0,
+        right * 2 / 255 - 1.0,    bot * 2 / 255 -1.0, 
+        right * 2 / 255 - 1.0,    mid * 2 / 255 -1.0]; 
+    
+        var new_vertex_buffer = gl.createBuffer();
+        gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+        gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+        __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+        gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+        gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);   
+        gl.my_useProgram(__Program);
+        var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+        gl.my_uniform1i(traingles_num_loc, bot_number);
+        transUniform(__Program);
+        //要实现自动化的代码
+        var loc_array = [];
+        for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+        loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+        if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+          gl.my_uniform2iv(loc_array[i], bot_varying[i]);
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
+          gl.my_uniform3iv(loc_array[i], bot_varying[i]);
+        //   console.log("bot_varying",i,bot_varying[i]);
+        }
+    
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+          gl.my_uniform4iv(loc_array[i], bot_varying[i]);
+        else 
+          console.log("暂时还没有写这种情况");
+        }
+    
+        gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      }
+      else{
+      if (mid == top){
+    
+        return;
+      } 
+      devide_draw_height(left, right, bot, mid, bot_varying, gl);
+      } 
+    
+      if (top_number <= uniform_number){
+    
+      if (top_number > 0){
+        var right_canvas_buffer = [
+        left * 2 / 255 - 1.0, mid * 2 / 255 -1.0, 
+        right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
+        left * 2 / 255 - 1.0,  top * 2 / 255 -1.0, 
+        left * 2 / 255 - 1.0,  top * 2 / 255 -1.0,
+        right * 2 / 255 - 1.0,  mid * 2 / 255 -1.0, 
+        right * 2 / 255 - 1.0,  top * 2 / 255 -1.0]; 
+    
+    
+        var new_vertex_buffer = gl.createBuffer();
+        gl.my_bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
+        gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(right_canvas_buffer), gl.STATIC_DRAW);
+        __VertexPositionAttributeLocation1 = gl.my_getAttribLocation(__Program, 'vertPosition');
+        gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, 2 ,gl.FLOAT, gl.FALSE, 2 * Float32Array.BYTES_PER_ELEMENT , 0); 
+        gl.enableVertexAttribArray(__VertexPositionAttributeLocation1);   
+        gl.my_useProgram(__Program);
+        var traingles_num_loc = gl.my_getUniformLocation(__Program, "tri_number");
+        gl.my_uniform1i(traingles_num_loc, top_number);
+        transUniform(__Program);
+        //要实现自动化的代码
+        var loc_array = [];
+        for(var i = 0; i < ProgramDataMap[activeProgramNum].varyingData.length; i++){
+        loc_array[i] = gl.my_getUniformLocation(__Program, ProgramDataMap[activeProgramNum].varyingData[i].shaderName);
+        if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 2)
+          gl.my_uniform2iv(loc_array[i], top_varying[i]);
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 3){
+          gl.my_uniform3iv(loc_array[i], top_varying[i]);
+        //   console.log("top_varying",i,top_varying[i]);
+        }
+    
+        else if (ProgramDataMap[activeProgramNum].varyingData[i].varyEleNum == 4)
+          gl.my_uniform4iv(loc_array[i], top_varying[i]);
+        else 
+          console.log("暂时还没有写这种情况");
+        }
+        gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      }
+      else{
+      if (mid == left){
+        //console.log("left", left, "right", right, "bot", bot, "top", top, "number", top_number);
+        return;
+      } 
+      devide_draw_height(left, right, mid, top, top_varying, gl);
+      }
+      return;
+    }
+    
+    transUniform = function(__Program){
+      for (var i = 0; i < ProgramDataMap.length; i++){
+      if (ProgramDataMap[i].activeFlag == 1){
+        for (var j = 0; j < ProgramDataMap[i].uniformData.length; j++){
+        var loc = gl.my_getUniformLocation(__Program, ProgramDataMap[i].uniformData[j].shaderName);
+        if (loc != null){ 
+          var multiple = 1000;
+          gl.my_uniform3i(loc, ProgramDataMap[i].uniformData[j].uniformData[0] * multiple, ProgramDataMap[i].uniformData[j].uniformData[1] * multiple, ProgramDataMap[i].uniformData[j].uniformData[2] * multiple);
+        }
+        }
+      }
+      }
+    }
+    
+  
 
 
 
