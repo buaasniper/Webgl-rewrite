@@ -267,7 +267,7 @@ function initialize() {
     // Update the FPS timer.
     fpsTimer.update(elapsedTime);
     fpsElem.innerHTML = fpsTimer.averageFPS;
-
+    console.log("");
     app.update(elapsedTime);
     app.render();
   }
@@ -343,7 +343,7 @@ void main() {
   gl_FragColor = vec4((
   vec4(1,1,1,1) * (diffuse * litR.y
                         + specular * litR.z * specularFactor)).rgb,
-      diffuse.a);
+      1.0);
 }
 </script>
 </html>

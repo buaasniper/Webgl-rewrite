@@ -394,8 +394,10 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
     gl.my_shaderSource = gl.__proto__.shaderSource;
     gl.shaderSource = function(shaderName,shaderSource){
         // console.log("version 25"); 
-        shaderSource = manualChangeShader(shaderSource);
-        // console.log(shaderSource);
+
+        //shaderSource = manualChangeShader(shaderSource);
+
+        console.log(shaderSource);
         gl.my_shaderSource(shaderName,shaderSource);
         for (var i = 0; i < ShaderDataMap.length; i++){
             if (ShaderDataMap[i].shaderName == shaderName){
@@ -577,6 +579,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
 
   gl.my_vertexAttribPointer = gl.__proto__.vertexAttribPointer;
   gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
+    // var t0 = performance.now();
   
     //先提取getAttribLocation能获得的glsl部分的信息
     var ShaderData = new Attribute_loc;
@@ -589,6 +592,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
     //在这里生成一个新的attribute条目
     // 这个版本需要考虑重复赋值这种情况
     addAttriMap(ShaderData,BufferData,size,stride/4,offset/4);
+    // console.log("vertexAttribPointer", performance.now() - t0);
   }
   
   /*------------gl.vertexAttribPointer------开头-------------*/
@@ -621,19 +625,27 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
     newAttri.shaderName = ShaderData.shaderName;
     newAttri.programName = ShaderData.programName;
     for (var i = 0; i < AttriDataMap.length; i++){
-    if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
-      AttriDataMap[i].attriEleNum = size;
-      for (var i = 0; i * stride < BufferData.bufferData.length; i++){
-        for (var j = i * stride + offset; j < i * stride + offset + size; j++)
-          AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(BufferData.bufferData[j]);
+      if ( (newAttri.shaderName == AttriDataMap[i].shaderName) && (newAttri.programName == AttriDataMap[i].programName) ){
+        AttriDataMap[i].attriEleNum = size;
+        AttriDataMap[i].uniformData = [];
+        var a = [];
+        // console.log("BufferData.bufferData.length",BufferData.bufferData.length);
+        for (var j = 0; j * stride < BufferData.bufferData.length; j++){
+          for (var k = j * stride + offset; k < j * stride + offset + size; k++){
+            a.push(BufferData.bufferData[k]);
+            // AttriDataMap[i].uniformData = AttriDataMap[i].uniformData.concat(BufferData.bufferData[j]);
+            // console.log(i , j);
+          }
+        }
+        // console.log("aaaaa",a);
+        AttriDataMap[i].uniformData = a;
+        return;
       }
-      return;
-    }
     }
     newAttri.attriEleNum = size;
     for (var i = 0; i * stride < BufferData.bufferData.length; i++){
       for (var j = i * stride + offset; j < i * stride + offset + size; j++)
-        newAttri.uniformData = newAttri.uniformData.concat(BufferData.bufferData[j]);
+        newAttri.uniformData.push(BufferData.bufferData[j]);
     }
     //console.log("newAttri",newAttri);
   
@@ -651,6 +663,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
   //这块需要建立一个新的map，记录随机产生的数字和其对应关系的
   gl.my_getUniformLocation = gl.__proto__.getUniformLocation;
   gl.getUniformLocation = function (programName, shaderName){
+    // var t0 = performance.now();
     // 如果出现了重复的，就直接返回原始值
     for (i = 0; i < UniformLocMap.length;i++){
     if ((UniformLocMap[i].programName == programName) && (UniformLocMap[i].shaderName == shaderName))
@@ -663,7 +676,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
     newData.shaderName = shaderName;
     UniformLocMap.push(newData);
   
-  
+    // console.log("getUniformLocation", performance.now() - t0);
     //开启map状态
     return newData.randomNumber;   
   
@@ -781,6 +794,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
     AddUniformMap(uniformLoc, uniformData, 1, 14);
   }
   
+
   
   /*------------gl.uniformXX和gl.uniformMatrix4XX------开头-------------*/
   //需要考虑重复赋值的情况
@@ -823,6 +837,27 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~texture 部分 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// gl.my_createTexture = gl.__proto__.createTexture;
+// gl.createBuffer = function(){
+//   console.log("gl.createBuffer");
+//   return gl.my_createTexture();
+// }
+
+
+// gl.my_bindTexture = gl.__proto__.bindTexture;
+// gl.bindTexture = function(a , b){
+//   console.log("gl.bindTexture");
+//   gl.my_bindTexture(a,b);
+// }
+
+// gl.my_texImage2D = gl.__proto__.texImage2D;
+// gl.texImage2D = function(a,b,c,d,e,f,g,h,i){
+//   console.log("gl.texImage2D");
+//   gl.my_texImage2D(a,b,c,d,e,f,g,h,i);
+
+// }
+
+
 //强制要求是 gl.NEAREST
 gl.my_texParameteri = gl.__proto__.texParameteri;
 gl.my_texParameteri = function(a , b, c){
@@ -840,8 +875,9 @@ var tt5;
 //attribute的数据将要在这里重复形成最新的数据
 gl.my_drawElements = gl.__proto__.drawElements;
 gl.drawElements = function(mode, count, type, offset){
-  console.log("我要开始画了");
-  tt5 = performance.now();
+  // console.log("我要开始画了");
+  //tt5 = performance.now();
+  // var t0 = performance.now();
   var elementArray = [];
   var activeProgram;
   var activeProgramNum;
@@ -865,7 +901,11 @@ gl.drawElements = function(mode, count, type, offset){
       ProgramDataMap[activeProgramNum].attriData.push(newData);
     }
   }
+  // console.log("ProgramDataMap",ProgramDataMap);
+  // console.log("drawElements",performance.now() - t0);
+  // t0 = performance.now();
   gl.drawArrays(mode, 0 , count);
+  // console.log("drawarrays", performance.now() - t0);
 }
 
 getactiveProgram = function(){
@@ -889,7 +929,8 @@ getElementArray = function(count,offset){
   return elementArray.slice(offset, offset + count);
 }
 
-
+var Num = 0;
+var NumID = 0;
 /*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 //mode
   //gl.POINTS 0
@@ -900,6 +941,8 @@ getElementArray = function(count,offset){
   var varyingmap = [];
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(mode, first, count){
+
+    console.log(Num, NumID);
     var activeProgram;
     var activeProgramNum;
     activeProgram = getactiveProgram();
@@ -937,8 +980,8 @@ getElementArray = function(count,offset){
         ProgramDataMap[activeProgramNum].uniformData.push(newData);
       }
     } 
-
-    if (ProgramDataMap[activeProgramNum].shaderJsID == 1){
+//改回来!!!!!!!!!!!!!!!!!!!
+    if (ProgramDataMap[activeProgramNum].shaderJsID == 1000){
       //读取数据
       //attribute 读取
       //vec3 vec2
