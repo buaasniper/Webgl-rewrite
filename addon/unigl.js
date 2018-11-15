@@ -495,7 +495,7 @@ manualChangeShader = function(shaderSource){
                 cal_Zbuffer;
               if ( draw_pixel ){
                 renew_Zbuffer;
-                gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
+                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
               } 
             }
           } 
@@ -1613,7 +1613,6 @@ getElementArray = function(count,offset){
 }
 
 var Num = 0;
-var NumID = 0;
 /*^^^^^^^^^^^^^^^^^^^^^^^^draw 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 //mode
   //gl.POINTS 0
@@ -1625,7 +1624,9 @@ var NumID = 0;
   gl.my_drawArrays = gl.__proto__.drawArrays;
   gl.drawArrays = function(mode, first, count){
 
-    console.log(Num++, NumID++);
+    console.log(Num++);
+    if (Num > 1000)
+      return;
     var activeProgram;
     var activeProgramNum;
     activeProgram = getactiveProgram();
