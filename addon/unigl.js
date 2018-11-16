@@ -487,18 +487,19 @@ manualChangeShader = function(shaderSource){
         // r,g,b 0 - 255   a 0 - 100  
         void main()
         {
-          int tx , ty;
-          tx = int(gl_FragCoord.x) ; 
-          ty = int(gl_FragCoord.y) ; 
-          txt_coord backCoord;
-          backCoord.x = tx;
-          backCoord.y = ty;
-          gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
+          // int tx , ty;
+          // tx = int(gl_FragCoord.x) ; 
+          // ty = int(gl_FragCoord.y) ; 
+          // txt_coord backCoord;
+          // backCoord.x = tx;
+          // backCoord.y = ty;
+          // gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
           init;
           for (int i = 0; i < uniformNumber; i+= 3){
             assign;
             //changePosition;
             if ( pixel_on_triangle ){
+                //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
                 cal_Zbuffer;
               if ( draw_pixel ){
                 renew_Zbuffer;
