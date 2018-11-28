@@ -1039,6 +1039,12 @@ var code = '(' + function() {
       AttributeLocMap = [];
       UniformDataMap = [];
       UniformLocMap = [];
+
+
+      var rewriteflag = 0;
+      //判断是否进图rewrite的部分
+
+      if (rewriteflag == 0){
   
       console.log("I am in the rewrite part");
   
@@ -1585,6 +1591,7 @@ var code = '(' + function() {
   //attribute的数据将要在这里重复形成最新的数据
   gl.my_drawElements = gl.__proto__.drawElements;
   gl.drawElements = function(mode, count, type, offset){
+    gl.viewport(0, 0, 256, 256 );
     Num++;
     if (Num != 22)
         return;
@@ -2361,10 +2368,48 @@ var code = '(' + function() {
     
   
   
-  
+      
   
   
       flag = 1;
+    }else{
+      //这里是观看效果的地方！！！！！！！！！！！！！！！！！！！！！！！
+      var ElementNum = 0;
+      gl.my_drawElements = gl.__proto__.drawElements;
+      gl.drawElements = function(mode, count, type, offset){
+        gl.my_viewport(0, 0, 256, 256 );
+        ElementNum++;
+        // console.log(ElementNum);
+        if (ElementNum != 20){
+          gl.my_drawElements(mode, count, type, offset);
+          // console.log('gl.drawElements',mode, count, type, offset);
+        }    
+      }
+
+
+
+      // gl.my_clear = gl.__proto__.clear;
+      // gl.clear = function(a){
+      //   console.log("clear");
+      // }
+
+      gl.my_viewport = gl.__proto__.viewport;
+      gl.viewport= function(a, b, c, d){
+        gl.my_viewport(a, b, 512, 512);
+        console.log("gl.viewport",a,b,c,d);
+      }
+
+      
+
+      gl.my_drawArrays = gl.__proto__.drawArrays;
+      gl.drawArrays = function(mode, first, count){
+        gl.my_drawArrays(mode, first, count);
+        console.log('gl.drawArrays');
+      }
+
+    }
+
+
   }
   })
   
