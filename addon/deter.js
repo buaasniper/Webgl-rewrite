@@ -501,13 +501,14 @@ var code = '(' + function() {
             txt_coord backCoord;
             backCoord.x = tx;
             backCoord.y = ty;
-            gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
+            // gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
             init;
             for (int i = 0; i < uniformNumber; i+= 3){
               assign;
               //changePosition;
               if ( pixel_on_triangle ){
-                  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                  //gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
                   cal_Zbuffer;
                 if ( draw_pixel ){
                   renew_Zbuffer;
@@ -2059,6 +2060,8 @@ var code = '(' + function() {
         var canvas_left;
         var canvas_mid;
         var canvas_right;
+
+        console.log(ProgramDataMap[1]);
       
       
         for (var i = 0; i < tem_varying.length; i++){
@@ -2380,7 +2383,7 @@ var code = '(' + function() {
         gl.my_viewport(0, 0, 256, 256 );
         ElementNum++;
         // console.log(ElementNum);
-        if (ElementNum != 20){
+        if (ElementNum == 22){
           gl.my_drawElements(mode, count, type, offset);
           // console.log('gl.drawElements',mode, count, type, offset);
         }    
@@ -2388,14 +2391,14 @@ var code = '(' + function() {
 
 
 
-      // gl.my_clear = gl.__proto__.clear;
-      // gl.clear = function(a){
-      //   console.log("clear");
-      // }
+      gl.my_clear = gl.__proto__.clear;
+      gl.clear = function(a){
+        console.log("clear");
+      }
 
       gl.my_viewport = gl.__proto__.viewport;
       gl.viewport= function(a, b, c, d){
-        gl.my_viewport(a, b, 512, 512);
+        gl.my_viewport(a, b, 256, 256);
         console.log("gl.viewport",a,b,c,d);
       }
 
