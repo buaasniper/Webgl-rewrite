@@ -206,17 +206,17 @@ var code = '(' + function() {
   var my_multiple = function(a, b) { 
     //if (!a || !b) return a;
     
-    if (map1.get(a)!=undefined) {
-      out = map2.get(b); 
-      if (out!=undefined) 
-        return out;
-    } 
+    // if (map1.get(a)!=undefined) {
+    //   out = map2.get(b); 
+    //   if (out!=undefined) 
+    //     return out;
+    // } 
     
-    map1.set(a,b);
+    // map1.set(a,b);
     if (a.length==16 && b.length==16) {
      out = new Float32Array(16);
      my_mat4.multiply(out, a, b);
-     map2.set(b,out); 
+    //  map2.set(b,out); 
      return out;
     }
   
@@ -226,7 +226,7 @@ var code = '(' + function() {
   
      my_vec4.transformMat4(out, a, b);
   
-     map2.set(b,out); 
+    //  map2.set(b,out); 
   
      return out;
   
@@ -235,7 +235,7 @@ var code = '(' + function() {
     if (b.length == 4 && a.length == 16) {
      out = new Float32Array(4);
      my_vec4.transformMat4(out, b, a);
-     map2.set(b,out); 
+    //  map2.set(b,out); 
      return out;
     } 
   }
@@ -945,17 +945,17 @@ var code = '(' + function() {
       var my_multiple = function(a, b) { 
         //if (!a || !b) return a;
         
-        if (map1.get(a)!=undefined) {
-          out = map2.get(b); 
-          if (out!=undefined) 
-            return out;
-        } 
+        // if (map1.get(a)!=undefined) {
+        //   out = map2.get(b); 
+        //   if (out!=undefined) 
+        //     return out;
+        // } 
         
-        map1.set(a,b);
+        // map1.set(a,b);
         if (a.length==16 && b.length==16) {
          out = new Float32Array(16);
          my_mat4.multiply(out, a, b);
-         map2.set(b,out); 
+        //  map2.set(b,out); 
          return out;
         }
       
@@ -965,7 +965,7 @@ var code = '(' + function() {
       
          my_vec4.transformMat4(out, a, b);
       
-         map2.set(b,out); 
+        //  map2.set(b,out); 
       
          return out;
       
@@ -974,7 +974,7 @@ var code = '(' + function() {
         if (b.length == 4 && a.length == 16) {
          out = new Float32Array(4);
          my_vec4.transformMat4(out, b, a);
-         map2.set(b,out); 
+        //  map2.set(b,out); 
          return out;
         } 
       }
@@ -1030,8 +1030,8 @@ var code = '(' + function() {
 
       var canvas = document.getElementsByTagName("canvas")[1];
       canvas.style = '';
-      canvas.height = 256;
-      canvas.width = 256;
+      // canvas.height = 256;
+      // canvas.width = 256;
       var gl = document.getElementsByTagName("canvas")[1].getContext("webgl");
       ProgramDataMap = [];
       ShaderDataMap = [];
@@ -1592,10 +1592,11 @@ var code = '(' + function() {
   //attribute的数据将要在这里重复形成最新的数据
   gl.my_drawElements = gl.__proto__.drawElements;
   gl.drawElements = function(mode, count, type, offset){
-    gl.viewport(0, 0, 256, 256 );
+    gl.viewport(0, 0, canvas.height, canvas.width );
     Num++;
-    if (Num != 22)
-        return;
+    console.log(Num);
+    if (Num < 800)
+         return;
     // console.log("我要开始画了");
     //tt5 = performance.now();
     // var t0 = performance.now();
@@ -2029,6 +2030,15 @@ var code = '(' + function() {
        ProgramDataMap[activeProgramNum].attriData = [];
        ProgramDataMap[activeProgramNum].uniformData = [];
        ProgramDataMap[activeProgramNum].varyingData = [];
+
+
+       console.log("*************************************");
+       console.log(ProgramDataMap);
+       console.log(ShaderDataMap);
+       console.log(BufferDataMap);
+       console.log(AttriDataMap);
+       console.log(AttributeLocMap);
+
    
   
     }//drawarray
@@ -2133,6 +2143,7 @@ var code = '(' + function() {
           console.log(left_varying);
           console.log(left_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+          gl.deleteBuffer(new_vertex_buffer);
         }
         }
         else{
@@ -2185,6 +2196,7 @@ var code = '(' + function() {
           console.log(right_varying);
           console.log(right_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+          gl.deleteBuffer(new_vertex_buffer);
         }
         }
         else{
@@ -2289,6 +2301,7 @@ var code = '(' + function() {
           console.log(bot_number);
       
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+          gl.deleteBuffer(new_vertex_buffer);
         }
         }
         else{
@@ -2342,6 +2355,7 @@ var code = '(' + function() {
           console.log(top_varying);
           console.log(top_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
+          gl.deleteBuffer(new_vertex_buffer);
         }
         }
         else{
