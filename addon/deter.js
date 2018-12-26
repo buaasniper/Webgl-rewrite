@@ -1595,8 +1595,12 @@ var code = '(' + function() {
     gl.viewport(0, 0, canvas.height, canvas.width );
     Num++;
     console.log(Num);
-    if (Num < 800)
-         return;
+
+
+    // if (Num < 800)
+    //      return;
+
+
     // console.log("我要开始画了");
     //tt5 = performance.now();
     // var t0 = performance.now();
@@ -2032,12 +2036,12 @@ var code = '(' + function() {
        ProgramDataMap[activeProgramNum].varyingData = [];
 
 
-       console.log("*************************************");
-       console.log(ProgramDataMap);
-       console.log(ShaderDataMap);
-       console.log(BufferDataMap);
-       console.log(AttriDataMap);
-       console.log(AttributeLocMap);
+      //  console.log("*************************************");
+      //  console.log(ProgramDataMap);
+      //  console.log(ShaderDataMap);
+      //  console.log(BufferDataMap);
+      //  console.log(AttriDataMap);
+      //  console.log(AttributeLocMap);
 
    
   
@@ -2053,7 +2057,7 @@ var code = '(' + function() {
       // var uniform_number  = 0;
     
       function devide_draw(left, right, tem_varying, gl){
-        console.log("进入devide_draw");
+        // console.log("进入devide_draw");
         var tem = [];
         var left_varying = [];
         var right_varying = [];
@@ -2071,7 +2075,7 @@ var code = '(' + function() {
         var canvas_mid;
         var canvas_right;
 
-        console.log(ProgramDataMap[1]);
+        // console.log(ProgramDataMap[1]);
       
       
         for (var i = 0; i < tem_varying.length; i++){
@@ -2138,10 +2142,10 @@ var code = '(' + function() {
           }
           //console.log("left");
           //console.log("left_varying",left_varying);
-          console.log("left");
-          console.log(right_canvas_buffer);
-          console.log(left_varying);
-          console.log(left_number);
+          // console.log("left");
+          // console.log(right_canvas_buffer);
+          // console.log(left_varying);
+          // console.log(left_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
@@ -2191,10 +2195,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("right");
-          console.log(right_canvas_buffer);
-          console.log(right_varying);
-          console.log(right_number);
+          // console.log("right");
+          // console.log(right_canvas_buffer);
+          // console.log(right_varying);
+          // console.log(right_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
@@ -2295,10 +2299,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("bot");
-          console.log(right_canvas_buffer);
-          console.log(bot_varying);
-          console.log(bot_number);
+          // console.log("bot");
+          // console.log(right_canvas_buffer);
+          // console.log(bot_varying);
+          // console.log(bot_number);
       
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
@@ -2350,10 +2354,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("top");
-          console.log(right_canvas_buffer);
-          console.log(top_varying);
-          console.log(top_number);
+          // console.log("top");
+          // console.log(right_canvas_buffer);
+          // console.log(top_varying);
+          // console.log(top_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
