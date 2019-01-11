@@ -1603,11 +1603,21 @@ var code = '(' + function() {
   gl.drawElements = function(mode, count, type, offset){
     gl.viewport(0, 0, canvas.height, canvas.width );
     Num++;
+<<<<<<< HEAD
     // console.log(Num,clear_arr);
 
     if (Num < 9760)
          return;
          
+=======
+    console.log(Num);
+
+
+    // if (Num < 800)
+    //      return;
+
+
+>>>>>>> 2d2bc06add80c84ba63eb31fd5ab0d3087278d72
     // console.log("我要开始画了");
     //tt5 = performance.now();
     // var t0 = performance.now();
