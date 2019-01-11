@@ -501,14 +501,14 @@ var code = '(' + function() {
             txt_coord backCoord;
             backCoord.x = tx;
             backCoord.y = ty;
-            // gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
-            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            // gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/256.0  ,  (gl_FragCoord.y )/256.0 ) ); 
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
             init;
             for (int i = 0; i < uniformNumber; i+= 3){
               assign;
               //changePosition;
               if ( pixel_on_triangle ){
-                  //gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                  // gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
                   cal_Zbuffer;
                 if ( draw_pixel ){
                   renew_Zbuffer;
@@ -1030,8 +1030,8 @@ var code = '(' + function() {
 
       var canvas = document.getElementsByTagName("canvas")[1];
       canvas.style = '';
-      // canvas.height = 256;
-      // canvas.width = 256;
+      canvas.height = 256;
+      canvas.width = 256;
       var gl = document.getElementsByTagName("canvas")[1].getContext("webgl");
       ProgramDataMap = [];
       ShaderDataMap = [];
@@ -1042,10 +1042,10 @@ var code = '(' + function() {
       UniformLocMap = [];
 
 
-      var rewriteflag = 0;
+      var rewriteflag = 1;
       //判断是否进图rewrite的部分
 
-      if (rewriteflag == 0){
+      if (rewriteflag == 1){
   
       console.log("I am in the rewrite part");
   
@@ -1153,6 +1153,8 @@ var code = '(' + function() {
           newData.vertexSource = vertexShaderText;
           newData.fragSource = fragmentShaderText;
           ProgramDataMap.push(newData);
+          console.log(newData);
+          console.log(ProgramDataMap);
   
         }
       }
@@ -1164,11 +1166,15 @@ var code = '(' + function() {
     gl.useProgram = function (programName){
       //这块执行原函数，只需要知道使用了哪一个program就可以了
       gl.my_useProgram(programName);
+      // console.log("useprogram");
+      console.log("draw number", Num);
       for (var i = 0; i < ProgramDataMap.length; i++)
       //console/log("我们运行了useProgram");
       if (ProgramDataMap[i].programName == programName){
         //console.log("我们激活了program的状态");
         ProgramDataMap[i].activeFlag = 1;
+        console.log(ProgramDataMap[i].vertexSource);
+        console.log(ProgramDataMap[i].fragSource);
       } 
       else
         ProgramDataMap[i].activeFlag = 0;
@@ -1576,9 +1582,12 @@ var code = '(' + function() {
     gl.my_texParameteri(a, b, gl.NEAREST); 
   }
   
+  var clear_arr = [];
   gl.my_clear = gl.__proto__.clear;
   gl.clear = function(a){
-    console.log("clear");
+    gl.my_clear(a);
+    console.log("clear",Num);
+    clear_arr.push(Num);
   }
   
   
@@ -1594,9 +1603,11 @@ var code = '(' + function() {
   gl.drawElements = function(mode, count, type, offset){
     gl.viewport(0, 0, canvas.height, canvas.width );
     Num++;
-    console.log(Num);
-    if (Num < 800)
+    // console.log(Num,clear_arr);
+
+    if (Num < 9760)
          return;
+         
     // console.log("我要开始画了");
     //tt5 = performance.now();
     // var t0 = performance.now();
@@ -1835,10 +1846,11 @@ var code = '(' + function() {
       }
       /************************************************ */
   
-  
+      
+
   //改回来!!!!!!!!!!!!!!!!!!!
       if (activeProgramNum == 0){
-        console.log("进入activeProgramNum == 0");
+        // console.log("进入activeProgramNum == 0");
         //读取数据
         //attribute 读取
         //vec3 vec2
@@ -1925,7 +1937,8 @@ var code = '(' + function() {
         var v_normal = [];
         var v_vertex = [];
         var Mt = [];
-        Mt = my_multiple( u_mvp, u_effect );
+        //Mt = my_multiple( u_mvp, u_effect );
+        Mt = u_mvp;
         var tt = [];
         v_texcoord = a_texcoord;
         v_vertex = a_position;
@@ -1963,7 +1976,7 @@ var code = '(' + function() {
          ProgramDataMap[activeProgramNum].varyingData.push(newData4);
   
   
-          //判断是否是正面
+        //判断是否是正面
         var t0 = performance.now();
         var index_num = ProgramDataMap[activeProgramNum].varyingData[0].uniformData.length;
         var x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
@@ -2032,12 +2045,12 @@ var code = '(' + function() {
        ProgramDataMap[activeProgramNum].varyingData = [];
 
 
-       console.log("*************************************");
-       console.log(ProgramDataMap);
-       console.log(ShaderDataMap);
-       console.log(BufferDataMap);
-       console.log(AttriDataMap);
-       console.log(AttributeLocMap);
+      //  console.log("*************************************");
+      //  console.log(ProgramDataMap);
+      //  console.log(ShaderDataMap);
+      //  console.log(BufferDataMap);
+      //  console.log(AttriDataMap);
+      //  console.log(AttributeLocMap);
 
    
   
@@ -2053,7 +2066,7 @@ var code = '(' + function() {
       // var uniform_number  = 0;
     
       function devide_draw(left, right, tem_varying, gl){
-        console.log("进入devide_draw");
+        // console.log("进入devide_draw");
         var tem = [];
         var left_varying = [];
         var right_varying = [];
@@ -2071,7 +2084,7 @@ var code = '(' + function() {
         var canvas_mid;
         var canvas_right;
 
-        console.log(ProgramDataMap[1]);
+        // console.log(ProgramDataMap[1]);
       
       
         for (var i = 0; i < tem_varying.length; i++){
@@ -2138,10 +2151,10 @@ var code = '(' + function() {
           }
           //console.log("left");
           //console.log("left_varying",left_varying);
-          console.log("left");
-          console.log(right_canvas_buffer);
-          console.log(left_varying);
-          console.log(left_number);
+          // console.log("left");
+          // console.log(right_canvas_buffer);
+          // console.log(left_varying);
+          // console.log(left_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
@@ -2191,10 +2204,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("right");
-          console.log(right_canvas_buffer);
-          console.log(right_varying);
-          console.log(right_number);
+          // console.log("right");
+          // console.log(right_canvas_buffer);
+          // console.log(right_varying);
+          // console.log(right_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
@@ -2295,10 +2308,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("bot");
-          console.log(right_canvas_buffer);
-          console.log(bot_varying);
-          console.log(bot_number);
+          // console.log("bot");
+          // console.log(right_canvas_buffer);
+          // console.log(bot_varying);
+          // console.log(bot_number);
       
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
@@ -2350,10 +2363,10 @@ var code = '(' + function() {
           else 
             console.log("暂时还没有写这种情况");
           }
-          console.log("top");
-          console.log(right_canvas_buffer);
-          console.log(top_varying);
-          console.log(top_number);
+          // console.log("top");
+          // console.log(right_canvas_buffer);
+          // console.log(top_varying);
+          // console.log(top_number);
           gl.my_drawArrays(gl.TRIANGLES, 0, 6);
           gl.deleteBuffer(new_vertex_buffer);
         }
@@ -2392,22 +2405,45 @@ var code = '(' + function() {
     }else{
       //这里是观看效果的地方！！！！！！！！！！！！！！！！！！！！！！！
       var ElementNum = 0;
+      console.log("进入了rewroteflag = 0");
       gl.my_drawElements = gl.__proto__.drawElements;
       gl.drawElements = function(mode, count, type, offset){
         gl.my_viewport(0, 0, 256, 256 );
         ElementNum++;
-        // console.log(ElementNum);
-        if (ElementNum == 22){
-          gl.my_drawElements(mode, count, type, offset);
+        // console.log(ElementNum, program_num);
+        // if (ElementNum == 22){
+        gl.my_drawElements(mode, count, type, offset);
           // console.log('gl.drawElements',mode, count, type, offset);
-        }    
+        // }    
       }
+      var programName_num= [];
+      var program_num = [];
+      gl.my_useProgram =  gl.__proto__.useProgram;
+      gl.useProgram = function (programName){
+        //这块执行原函数，只需要知道使用了哪一个program就可以了
+        for (i = 0; i < programName_num.length; i++){
+          if (programName == programName_num[i]){
+            console.log("i = ", i);
+            gl.my_useProgram(programName);
+            program_num.push(ElementNum);
+            console.log(ElementNum);
+            return;
+          }
+        }
+        programName_num.push(programName);
+        console.log("i = ", programName_num.length - 1);
+        gl.my_useProgram(programName);
+        program_num.push(ElementNum);
+        console.log(ElementNum);
+      }
+
 
 
 
       gl.my_clear = gl.__proto__.clear;
       gl.clear = function(a){
         console.log("clear");
+        gl.my_clear(a);
       }
 
       gl.my_viewport = gl.__proto__.viewport;
