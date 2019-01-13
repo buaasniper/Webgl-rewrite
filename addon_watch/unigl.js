@@ -390,9 +390,9 @@ manualChangeShader = function(shaderSource){
         vetexID = 1;
         console.log("vetexID", vetexID);
         return `
-        attribute vec2 coordinates;
+        attribute vec2 vertPosition;
         void main(void) {
-        gl_Position =  vec4(coordinates, 0.0, 1.0);
+        gl_Position =  vec4(vertPosition, 0.0, 1.0);
         gl_PointSize = 1.0;
         }
         `;
@@ -441,7 +441,7 @@ manualChangeShader = function(shaderSource){
         uniform ivec3 tri_point[333];
         uniform ivec2 text_point[333];
         uniform int tri_number;
-        uniform sampler2D sampler;
+        uniform sampler2D background;
         struct tri_p {
           int x0, y0, x1, y1, z1, x2, y2, z2, x3,  y3, z3;
         };
@@ -484,23 +484,31 @@ manualChangeShader = function(shaderSource){
         ivec3 D_normalize(ivec3 a);
         vec4 col_transfer(ivec4 color); 
         vec4 col_transfer(ivec3 color, int a);    
-        // r,g,b 0 - 255   a 0 - 100                 
+        // r,g,b 0 - 255   a 0 - 100  
         void main()
         {
-          gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-          // init;
-          // for (int i = 0; i < uniformNumber; i+= 3){
-          //   assign;
-          //   //changePosition;
-          //   if ( pixel_on_triangle ){
-          //       cal_Zbuffer;
-          //     if ( draw_pixel ){
-          //       renew_Zbuffer;
-          //       gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-          //     } 
-          //   }
-          // } 
-        }
+          // int tx , ty;
+          // tx = int(gl_FragCoord.x) ; 
+          // ty = int(gl_FragCoord.y) ; 
+          // txt_coord backCoord;
+          // backCoord.x = tx;
+          // backCoord.y = ty;
+          // gl_FragColor = texture2D(background,vec2( (gl_FragCoord.x)/841.0  ,  (gl_FragCoord.y )/1143.0 ) ); 
+          init;
+          for (int i = 0; i < uniformNumber; i+= 3){
+            assign;
+            //changePosition;
+            if ( pixel_on_triangle ){
+                //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                cal_Zbuffer;
+              if ( draw_pixel ){
+                renew_Zbuffer;
+                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                // gl_FragColor = col_transfer( D_texture2D(sampler, fragTexCoord));
+              } 
+            }
+          } 
+        }               
         
         int judge(tri_p t) {
             if (( PinAB(t.x0 - t.x1, t.y0 - t.y1, t.x2 - t.x1, t.y2 - t.y1, t.x3 - t.x1, t.y3 - t.y1)+ PinAB(t.x0 - t.x2, t.y0 - t.y2, t.x3 - t.x2, t.y3 - t.y2, t.x1 - t.x2, t.y1 - t.y2) 
@@ -937,7 +945,7 @@ manualChangeShader = function(shaderSource){
       map1.set(a,b);
       if (a.length==16 && b.length==16) {
        out = new Float32Array(16);
-       mat4.multiply(out, a, b);
+       my_mat4.multiply(out, a, b);
        map2.set(b,out); 
        return out;
       }
@@ -1010,6 +1018,7 @@ manualChangeShader = function(shaderSource){
 
 var observer = new MutationObserver(function(mutations){
 if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
+    var canvas = document.getElementsByTagName("canvas")[1];
     var gl = document.getElementsByTagName("canvas")[1].getContext("webgl");
     ProgramDataMap = [];
     ShaderDataMap = [];
@@ -1039,7 +1048,7 @@ if (document.getElementsByTagName("canvas")[1]!=undefined && flag == 0) {
 
         //shaderSource = manualChangeShader(shaderSource);
 
-        console.log(shaderSource);
+        // console.log(shaderSource);
         gl.my_shaderSource(shaderName,shaderSource);
         for (var i = 0; i < ShaderDataMap.length; i++){
             if (ShaderDataMap[i].shaderName == shaderName){
@@ -1548,12 +1557,13 @@ gl.my_texParameteri = function(a , b, c){
   gl.my_texParameteri(a, b, gl.NEAREST); 
 }
 
-
 gl.my_clear = gl.__proto__.clear;
-gl.clear = function(){
-  console.log("gl.clear");
-  return;
+gl.clear = function(a){
+  console.log("clear");
 }
+
+
+
 
 
 /*^^^^^^^^^^^^^^^^^^^^^^^^texture 部分^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -1630,8 +1640,10 @@ var Num = 0;
   gl.drawArrays = function(mode, first, count){
 
     console.log(Num++);
-    if (Num > 500)
+    if (Num > 1000)
       return;
+
+
     var activeProgram;
     var activeProgramNum;
     activeProgram = getactiveProgram();
@@ -1669,12 +1681,171 @@ var Num = 0;
         ProgramDataMap[activeProgramNum].uniformData.push(newData);
       }
     } 
+
+    /************************************************ */
+    var testflag = 0;
+    if (testflag == 1){
+
+
+      function getPoints(){
+        var res = [];
+
+        for (var x = 0; x < 256; x ++) {
+            var y = 256 - 100 * Math.cos(2.0 * Math.PI * x / 100.0) + 30 * Math.cos(4.0 * Math.PI * x / 100.0) + 6 * Math.cos(6.0 * Math.PI * x / 100.0);
+            res.push(x / 150 - 0.8, y / 200 - 1.4, 0);
+        }
+        return res;
+    }
+
+
+    /*======= Defining and storing the geometry ======*/
+    var vertices = getPoints();
+    vertices.push.apply(vertices, [
+    -0.7,-0.1,0,
+    -0.3,0.6,0,
+    -0.3,-0.3,0,
+    0.2,0.6,0,
+    0.3,-0.3,0,
+    0.7,0.6,0
+        ]);
+
+        // Create an empty buffer object
+
+
+    // Create an empty buffer object
+    var vertex_buffer = gl.createBuffer();
+
+    // Bind appropriate array buffer to it
+    gl.my_bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+
+    // Pass the vertex data to the buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+    // Unbind the buffer
+    gl.my_bindBuffer(gl.ARRAY_BUFFER, null);
+
+    /*=================== Shaders ====================*/
+
+    // Vertex shader source code
+    var vertCode = 'attribute vec3 coordinates;' +
+        'void main(void) {' +
+            ' gl_Position = vec4(coordinates, 1.0);' +
+                '}';
+
+            // Create a vertex shader object
+            var vertShader = gl.my_createShader(gl.VERTEX_SHADER);
+
+            // Attach vertex shader source code
+            gl.my_shaderSource(vertShader, vertCode);
+
+            // Compile the vertex shader
+            gl.compileShader(vertShader);
+
+            // Fragment shader source code
+            var fragCode = 'void main(void) {' +
+                'gl_FragColor = vec4(1, 1, 1, 1.0);' +
+                    '}';
+                // Create fragment shader object
+                var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+
+                // Attach fragment shader source code
+                gl.my_shaderSource(fragShader, fragCode);
+
+                // Compile the fragmentt shader
+                gl.compileShader(fragShader);
+
+                // Create a shader program object to store
+                // the combined shader program
+                var shaderProgram = gl.my_createProgram();
+
+                // Attach a vertex shader
+                gl.my_attachShader(shaderProgram, vertShader);
+
+                // Attach a fragment shader
+                gl.my_attachShader(shaderProgram, fragShader);
+
+                // Link both the programs
+                gl.my_linkProgram(shaderProgram);
+
+                // Use the combined shader program object
+                gl.my_useProgram(shaderProgram);
+
+                /*======= Associating shaders to buffer objects ======*/
+
+                // Bind vertex buffer object
+                gl.my_bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+
+                // Get the attribute location
+                var coord = gl.my_getAttribLocation(shaderProgram, "coordinates");
+
+                // Point an attribute to the currently bound VBO
+                gl.my_vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+
+                // Enable the attribute
+                gl.enableVertexAttribArray(coord);
+
+                /*============ Drawing the triangle =============*/
+
+                // Clear the canvas
+                gl.clearColor(0, 0, 0, 1.0);
+
+                // Enable the depth test
+                gl.enable(gl.DEPTH_TEST);
+
+                // Clear the color and depth buffer
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+                canvas = document.getElementsByTagName("canvas")[1];
+                // Set the view port
+                gl.viewport(0, 0, canvas.width, canvas.height);
+
+                // Draw the triangle
+                //gl.drawArrays(gl.LINES, 0, 256);
+                gl.my_drawArrays(gl.LINE_STRIP, 0, 256);
+                gl.my_drawArrays(gl.LINES, 256, 6);
+
+
+
+
+
+
+
+
+    }
+    /************************************************ */
+
+
 //改回来!!!!!!!!!!!!!!!!!!!
     if (activeProgramNum == 0){
+      console.log("进入activeProgramNum == 0");
       //读取数据
       //attribute 读取
       //vec3 vec2
       //一维数据变二维数据
+
+      var testNumber = 1;
+      if (testNumber == 1){
+        var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        var backtexture = textureFromPixelArray(gl, gl.RGBA, canvas.width, canvas.height);
+        function textureFromPixelArray(gl, type, width, height) {
+            var texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            //确保不会翻转
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, gl.canvas);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            return texture;
+          }
+          gl.my_useProgram(ProgramDataMap[1].programName);
+          // var u_image0Location = gl.my_getUniformLocation(ProgramDataMap[1].programName, "background");     
+          // gl.my_uniform1i(u_image0Location, 0);
+          // gl.activeTexture(gl.TEXTURE0);
+          // gl.bindTexture(gl.TEXTURE_2D, backtexture);
+
+      }
+
+
       var a_position = [];
       var a_texcoord = [];
       var a_normal = [];
@@ -1789,7 +1960,8 @@ var Num = 0;
         x3 = tem_uniformData[i + 2][0];
         y3 = tem_uniformData[i + 2][1];
         z3 = tem_uniformData[i + 2][2];
-        if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+        //if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+        if (1){
         var t_length = ProgramDataMap[activeProgramNum].varyingData.length;
         var t_varyingData = ProgramDataMap[activeProgramNum].varyingData;
           for(j = 0; j < t_length; j++){
@@ -1800,6 +1972,29 @@ var Num = 0;
       }
       for (var idx in tem_varying)
         tem_varying[idx] = math.flatten(tem_varying[idx]);
+
+
+        var testNumber = 1;
+        if (testNumber == 1){
+          // var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+          // var backtexture = textureFromPixelArray(gl, gl.RGBA, canvas.width, canvas.height);
+          // function textureFromPixelArray(gl, type, width, height) {
+          //     var texture = gl.createTexture();
+          //     gl.bindTexture(gl.TEXTURE_2D, texture);
+          //     //确保不会翻转
+          //     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+          //     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, gl.canvas);
+          //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+          //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+          //     return texture;
+          //   }
+          //   gl.my_useProgram(ProgramDataMap[1].programName);
+            var u_image0Location = gl.my_getUniformLocation(ProgramDataMap[1].programName, "background");     
+            gl.my_uniform1i(u_image0Location, 0);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, backtexture);
+
+        }
 
 
       
@@ -1824,11 +2019,11 @@ var Num = 0;
 
     /*-------------------------draw array--------------------------------------*/
   
-    // var uniform_number  = 75;
-    var uniform_number  = 0;
+    var uniform_number  = 75;
+    // var uniform_number  = 0;
   
     function devide_draw(left, right, tem_varying, gl){
-      //console.log("version 1");
+      console.log("进入devide_draw");
       var tem = [];
       var left_varying = [];
       var right_varying = [];
@@ -1840,7 +2035,7 @@ var Num = 0;
       var activeProgramNum;
       var __VertexPositionAttributeLocation1;
       //在这里固定一下
-      __Program = ProgramDataMap[0].programName;
+      __Program = ProgramDataMap[1].programName;
       activeProgramNum = getactiveProgramNum();
       var canvas_left;
       var canvas_mid;
@@ -1994,7 +2189,7 @@ var Num = 0;
       var __Program;
       var activeProgramNum;
       var __VertexPositionAttributeLocation1;
-      __Program = getactiveProgram();
+      __Program = ProgramDataMap[1].programName;
       activeProgramNum = getactiveProgramNum();
     
     

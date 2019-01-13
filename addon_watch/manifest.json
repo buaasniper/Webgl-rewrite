@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Watch",
+    "name": "DeterExt",
     "version": "0",
     "permissions": [
         "activeTab",
