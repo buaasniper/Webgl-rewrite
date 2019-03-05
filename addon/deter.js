@@ -923,6 +923,101 @@ var code = '(' + function() {
   
       }
   
+    
+      manualChangeShader2 = function(shaderSource){
+  
+        //program 1======================================================================== 
+        
+        
+            if (shaderSource.replace("\n"," ").replace(/\s+/g, '') == `#ifdef GL_ES
+            precision mediump float;
+            #endif
+            
+            uniform sampler2D u_texture;
+            uniform float u_opacity;
+            uniform vec4  u_slice1;
+            uniform vec4  u_slice2;
+            uniform vec4  u_slice3;
+            
+            varying vec3 v_vertex;
+            varying vec3 v_normal;
+            varying vec2 v_texcoord;
+            
+            const vec3 kLightVector = vec3(0.3, 0.3, -0.9);
+            const vec3 kHalfVector = vec3(0.154, 0.154, -0.974);
+            
+            void main(void) {
+              vec4 vertex = vec4(v_vertex, 1.0);
+              if (dot(vertex, u_slice1) > 0.0 &&
+                  dot(vertex, u_slice2) > 0.0 &&
+                  dot(vertex, u_slice3) > 0.0) discard;
+                
+              vec3 normal = normalize(v_normal);
+              // half-Lambert lighting.
+              float light = 0.5 + 0.5*dot(normal, kLightVector);
+              float diffuse = light*u_opacity;
+              // Specular with fake fresnel effect.
+              float specular = max(0.0, dot(normal, kHalfVector));
+              specular *= 0.7 + 0.3*normal.z;
+              specular *= specular;
+              specular *= u_opacity;
+              vec3 fetch = texture2D(u_texture, v_texcoord).rgb;
+              gl_FragData[0] = vec4(diffuse*fetch + vec3(specular), u_opacity);
+            }
+            `.replace("\n"," ").replace(/\s+/g, '')){
+                console.log("I am in the shader A");
+                return `
+                #ifdef GL_ES
+            precision mediump float;
+            #endif
+            
+            uniform sampler2D u_texture;
+            uniform float u_opacity;
+            uniform vec4  u_slice1;
+            uniform vec4  u_slice2;
+            uniform vec4  u_slice3;
+            
+            varying vec3 v_vertex;
+            varying vec3 v_normal;
+            varying vec2 v_texcoord;
+            
+            const vec3 kLightVector = vec3(0.3, 0.3, -0.9);
+            const vec3 kHalfVector = vec3(0.154, 0.154, -0.974);
+            
+            void main(void) {
+              vec4 vertex = vec4(v_vertex, 1.0);
+              if (dot(vertex, u_slice1) > 0.0 &&
+                  dot(vertex, u_slice2) > 0.0 &&
+                  dot(vertex, u_slice3) > 0.0) discard;
+                
+              vec3 normal = normalize(v_normal);
+              // half-Lambert lighting.
+              float light = 0.5 + 0.5*dot(normal, kLightVector);
+              float diffuse = light*u_opacity;
+              // Specular with fake fresnel effect.
+              float specular = max(0.0, dot(normal, kHalfVector));
+              specular *= 0.7 + 0.3*normal.z;
+              specular *= specular;
+              specular *= u_opacity;
+              vec3 fetch = texture2D(u_texture, v_texcoord).rgb;
+              gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
+            }
+                `
+            }
+
+      
+        
+        
+        
+        
+        
+        
+            console.log("什么都没有进来！！！！！！！！！！！！！！！！！！！！！！！！");
+            return shaderSource;
+        
+        
+            }
+        
       var handle_gl_Position = function (gl_Position) {
         gl_Position = gl_Position.map(x => 
             [
@@ -1042,7 +1137,7 @@ var code = '(' + function() {
       UniformLocMap = [];
 
 
-      var rewriteflag = 1;
+      var rewriteflag = 0;
       //判断是否进图rewrite的部分
 
       if (rewriteflag == 1){
@@ -1603,21 +1698,11 @@ var code = '(' + function() {
   gl.drawElements = function(mode, count, type, offset){
     gl.viewport(0, 0, canvas.height, canvas.width );
     Num++;
-<<<<<<< HEAD
     // console.log(Num,clear_arr);
 
-    if (Num < 9760)
-         return;
-         
-=======
-    console.log(Num);
-
-
-    // if (Num < 800)
+    // if (Num < 9760)
     //      return;
-
-
->>>>>>> 2d2bc06add80c84ba63eb31fd5ab0d3087278d72
+         
     // console.log("我要开始画了");
     //tt5 = performance.now();
     // var t0 = performance.now();
@@ -1865,7 +1950,7 @@ var code = '(' + function() {
         //attribute 读取
         //vec3 vec2
         //一维数据变二维数据
-  
+        
         var testNumber = 1;
         if (testNumber == 1){
           var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
@@ -2004,8 +2089,8 @@ var code = '(' + function() {
           x3 = tem_uniformData[i + 2][0];
           y3 = tem_uniformData[i + 2][1];
           z3 = tem_uniformData[i + 2][2];
-          //if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
-          if (1){
+          if (((x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1)) > 0.0){
+          // if (1){
           var t_length = ProgramDataMap[activeProgramNum].varyingData.length;
           var t_varyingData = ProgramDataMap[activeProgramNum].varyingData;
             for(j = 0; j < t_length; j++){
@@ -2446,6 +2531,18 @@ var code = '(' + function() {
         program_num.push(ElementNum);
         console.log(ElementNum);
       }
+
+      gl.my_shaderSource = gl.__proto__.shaderSource;
+      gl.shaderSource = function(shaderName,shaderSource){
+          // console.log("version 25"); 
+  
+          shaderSource = manualChangeShader2(shaderSource);
+  
+          // console.log(shaderSource);
+          gl.my_shaderSource(shaderName, shaderSource);
+  
+      }
+      
 
 
 
